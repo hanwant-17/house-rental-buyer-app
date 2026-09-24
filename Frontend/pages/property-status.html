@@ -185,152 +185,9 @@
         </div>
 
 
-        <!-- Pending Property -->
-        <div class="status-card">
-
-            <div class="property-top">
-
-                <div class="property-image">
-                    <img src="../images/home-banner.jpg"
-                         alt="Modern 3 BHK House">
-                </div>
-
-                <div class="property-info">
-
-                    <h2>Modern 3 BHK House</h2>
-
-                    <p class="location">
-                        📍 Jodhpur, Rajasthan
-                    </p>
-
-                    <div class="details">
-                        <span>🛏 3 BHK</span>
-                        <span>🚿 2 Bathrooms</span>
-                        <span>📐 1500 sq.ft</span>
-                        <span>💰 ₹25,000 / month</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-section">
-
-                <div class="status-title">
-                    Verification Status
-                </div>
-
-                <span class="status-badge pending">
-                    🟡 Pending Verification
-                </span>
-
-                <p class="submitted-date">
-                    Submitted on: 18 September 2026
-                </p>
-
-            </div>
-
+        <div id="statusCardsContainer">
+            <p style="text-align: center; color: #667085; padding: 40px;">Loading your property statuses...</p>
         </div>
-
-
-        <!-- Approved Property -->
-        <div class="status-card">
-
-            <div class="property-top">
-
-                <div class="property-image">
-                    <img src="../images/flat-banner.jpg"
-                         alt="Premium 2 BHK Flat">
-                </div>
-
-                <div class="property-info">
-
-                    <h2>Premium 2 BHK Flat</h2>
-
-                    <p class="location">
-                        📍 Jaipur, Rajasthan
-                    </p>
-
-                    <div class="details">
-                        <span>🛏 2 BHK</span>
-                        <span>🚿 2 Bathrooms</span>
-                        <span>📐 1200 sq.ft</span>
-                        <span>💰 ₹45 Lakh</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-section">
-
-                <div class="status-title">
-                    Verification Status
-                </div>
-
-                <span class="status-badge approved">
-                    🟢 Approved
-                </span>
-
-                <p class="submitted-date">
-                    Approved by Admin on: 20 September 2026
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- Rejected Property -->
-        <div class="status-card">
-
-            <div class="property-top">
-
-                <div class="property-image">
-                    <img src="../images/home-banner.jpg"
-                         alt="Luxury 4 BHK Villa">
-                </div>
-
-                <div class="property-info">
-
-                    <h2>Luxury 4 BHK Villa</h2>
-
-                    <p class="location">
-                        📍 Udaipur, Rajasthan
-                    </p>
-
-                    <div class="details">
-                        <span>🛏 4 BHK</span>
-                        <span>🚿 3 Bathrooms</span>
-                        <span>📐 2200 sq.ft</span>
-                        <span>💰 ₹40,000 / month</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-section">
-
-                <div class="status-title">
-                    Verification Status
-                </div>
-
-                <span class="status-badge rejected">
-                    🔴 Rejected
-                </span>
-
-                <p class="submitted-date">
-                    Rejected by Admin. Please review property documents.
-                </p>
-
-            </div>
-
-        </div>
-
 
         <a href="broker-dashboard.html" class="back-button">
             ← Back to Dashboard
@@ -345,7 +202,125 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
+    <script>
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "BROKER") {
+            alert("Please login as a Broker.");
+            window.location.href = "login.html";
+        } else {
+            const userArea = document.querySelector(".user-area span");
+            if (userArea) {
+                userArea.textContent = `Welcome, ${user.name || "Broker"}`;
+            }
+        }
+
+        const container = document.getElementById("statusCardsContainer");
+
+        async function loadPropertyStatusList() {
+            try {
+                const response = await window.api.getMyProperties();
+                const properties = response.data || [];
+
+                if (properties.length === 0) {
+                    container.innerHTML = `
+                        <div class="status-card" style="text-align:center; padding:40px;">
+                            <div style="font-size:36px; margin-bottom:10px;">📋</div>
+                            <h3>No properties submitted yet</h3>
+                            <p style="color:#667085; margin:10px 0 20px;">Submit a property to track its Admin verification status.</p>
+                            <a href="add-property.html" class="back-button" style="display:inline-block;">+ Add Property</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                properties.forEach(prop => {
+                    const vStatus = prop.verificationStatus || "PENDING";
+                    const pStatus = prop.propertyStatus || "AVAILABLE";
+
+                    let badgeClass = "pending";
+                    let badgeIcon = "🟡";
+                    let statusDesc = "Pending Admin Verification. Details are currently being audited.";
+
+                    if (vStatus === "APPROVED") {
+                        badgeClass = "approved";
+                        badgeIcon = "🟢";
+                        statusDesc = `Approved by Admin! Currently ${pStatus}. Visible in customer search.`;
+                    } else if (vStatus === "REJECTED") {
+                        badgeClass = "rejected";
+                        badgeIcon = "🔴";
+                        statusDesc = `Rejected: ${prop.rejectionReason || "Please verify pricing and documents."}`;
+                    }
+
+                    const primaryImg = (prop.images && prop.images.length > 0) ? prop.images[0].imageUrl : "../images/flat-banner.jpg";
+
+                    const card = document.createElement("div");
+                    card.className = "status-card";
+                    card.innerHTML = `
+                        <div class="property-top">
+                            <div class="property-image">
+                                <img src="${primaryImg}" alt="${prop.title}">
+                            </div>
+
+                            <div class="property-info">
+                                <h2>${prop.title}</h2>
+                                <p class="location">📍 ${prop.city}, ${prop.address}</p>
+                                <div class="details">
+                                    <span>🛏 ${prop.bhk} BHK</span>
+                                    <span>🚿 ${prop.bathrooms || 1} Baths</span>
+                                    <span>📐 ${prop.areaSqft || 1000} sq.ft</span>
+                                    <span>💰 ₹${Number(prop.price).toLocaleString()} ${prop.purpose === 'RENT' ? '/ month' : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-section" style="margin-top:20px; border-top:1px solid #f1f5f9; padding-top:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <div>
+                                <div class="status-title">Verification & Lifecycle Status</div>
+                                <span class="status-badge ${badgeClass}" style="margin-top:5px; display:inline-block;">
+                                    ${badgeIcon} ${vStatus} (Deal: ${pStatus})
+                                </span>
+                                <p class="submitted-date" style="margin-top:5px;">${statusDesc}</p>
+                            </div>
+
+                            ${vStatus === 'APPROVED' ? `
+                                <div style="display:flex; gap:8px;">
+                                    <button onclick="handleStatusChange(${prop.propertyId}, 'RENTED')" style="background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
+                                        Mark as Rented
+                                    </button>
+                                    <button onclick="handleStatusChange(${prop.propertyId}, 'SOLD')" style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
+                                        Mark as Sold
+                                    </button>
+                                    <button onclick="handleStatusChange(${prop.propertyId}, 'AVAILABLE')" style="background:#64748b; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
+                                        Mark Available
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Error loading status: ${err.message}</p>`;
+            }
+        }
+
+        async function handleStatusChange(propertyId, newStatus) {
+            if (!confirm(`Update property status to ${newStatus}?`)) return;
+
+            try {
+                await window.api.updatePropertyStatus(propertyId, newStatus);
+                alert(`✅ Property status updated to ${newStatus}`);
+                loadPropertyStatusList();
+            } catch (error) {
+                alert("Status update failed: " + error.message);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadPropertyStatusList);
+    </script>
 </body>
 </html>

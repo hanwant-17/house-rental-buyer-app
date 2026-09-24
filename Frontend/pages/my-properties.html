@@ -222,155 +222,10 @@
 
 
         <!-- Property List -->
-        <div class="property-list">
-
-
-            <!-- Property 1 -->
-            <div class="my-property-card">
-
-                <div class="property-image">
-                    <img src="../images/home-banner.jpg"
-                         alt="Modern 3 BHK House">
-                </div>
-
-                <div class="property-content">
-
-                    <h3>Modern 3 BHK House</h3>
-
-                    <p class="property-location">
-                        📍 Jodhpur, Rajasthan
-                    </p>
-
-                    <div class="property-info">
-                        <span>🛏 3 BHK</span>
-                        <span>🚿 2 Bathrooms</span>
-                        <span>📐 1500 sq.ft</span>
-                    </div>
-
-                    <div class="property-price">
-                        ₹25,000 / month
-                    </div>
-
-                    <span class="status pending">
-                        Pending Verification
-                    </span>
-
-                    <div class="property-actions">
-
-                        <a href="property-details.html"
-                           class="view-btn">
-                            View
-                        </a>
-
-                        <a href="add-property.html"
-                           class="edit-btn">
-                            Edit
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- Property 2 -->
-            <div class="my-property-card">
-
-                <div class="property-image">
-                    <img src="../images/flat-banner.jpg"
-                         alt="Premium 2 BHK Flat">
-                </div>
-
-                <div class="property-content">
-
-                    <h3>Premium 2 BHK Flat</h3>
-
-                    <p class="property-location">
-                        📍 Jaipur, Rajasthan
-                    </p>
-
-                    <div class="property-info">
-                        <span>🛏 2 BHK</span>
-                        <span>🚿 2 Bathrooms</span>
-                        <span>📐 1200 sq.ft</span>
-                    </div>
-
-                    <div class="property-price">
-                        ₹45 Lakh
-                    </div>
-
-                    <span class="status approved">
-                        Approved
-                    </span>
-
-                    <div class="property-actions">
-
-                        <a href="property-details.html"
-                           class="view-btn">
-                            View
-                        </a>
-
-                        <a href="add-property.html"
-                           class="edit-btn">
-                            Edit
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- Property 3 -->
-            <div class="my-property-card">
-
-                <div class="property-image">
-                    <img src="../images/home-banner.jpg"
-                         alt="Luxury 4 BHK Villa">
-                </div>
-
-                <div class="property-content">
-
-                    <h3>Luxury 4 BHK Villa</h3>
-
-                    <p class="property-location">
-                        📍 Udaipur, Rajasthan
-                    </p>
-
-                    <div class="property-info">
-                        <span>🛏 4 BHK</span>
-                        <span>🚿 3 Bathrooms</span>
-                        <span>📐 2200 sq.ft</span>
-                    </div>
-
-                    <div class="property-price">
-                        ₹40,000 / month
-                    </div>
-
-                    <span class="status rejected">
-                        Rejected
-                    </span>
-
-                    <div class="property-actions">
-
-                        <a href="property-details.html"
-                           class="view-btn">
-                            View
-                        </a>
-
-                        <a href="add-property.html"
-                           class="edit-btn">
-                            Edit
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+        <div class="property-list" id="myPropertiesContainer">
+            <p style="grid-column: 1 / -1; text-align: center; color: #667085; padding: 40px;">
+                Loading your listed properties...
+            </p>
         </div>
 
     </main>
@@ -382,7 +237,109 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
+    <script>
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "BROKER") {
+            alert("Please login as a Broker to view your properties.");
+            window.location.href = "login.html";
+        } else {
+            const userArea = document.querySelector(".user-area span");
+            if (userArea) {
+                userArea.textContent = `Welcome, ${user.name || "Broker"}`;
+            }
+        }
+
+        const container = document.getElementById("myPropertiesContainer");
+
+        async function loadMyProperties() {
+            try {
+                const response = await window.api.getMyProperties();
+                const list = response.data || [];
+
+                if (list.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align:center; padding:50px; background:#fff; border-radius:14px; border:1px solid #e5e7eb;">
+                            <div style="font-size:40px; margin-bottom:10px;">🏠</div>
+                            <h3>No properties added yet</h3>
+                            <p style="color:#667085; margin:8px 0 20px;">Add your first property listing to send it for Admin verification.</p>
+                            <a href="add-property.html" class="add-property-btn">+ Add New Property</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                list.forEach(prop => {
+                    const vStatus = prop.verificationStatus || "PENDING";
+                    let statusClass = "pending";
+                    let statusLabel = "Pending Verification";
+
+                    if (vStatus === "APPROVED") {
+                        statusClass = "approved";
+                        statusLabel = "Approved & Live";
+                    } else if (vStatus === "REJECTED") {
+                        statusClass = "rejected";
+                        statusLabel = "Rejected";
+                    }
+
+                    const primaryImg = (prop.images && prop.images.length > 0) ? prop.images[0].imageUrl : "../images/flat-banner.jpg";
+                    const priceFormatted = Number(prop.price).toLocaleString();
+
+                    const card = document.createElement("div");
+                    card.className = "my-property-card";
+                    card.innerHTML = `
+                        <div class="property-image">
+                            <img src="${primaryImg}" alt="${prop.title}">
+                        </div>
+
+                        <div class="property-content">
+                            <h3>${prop.title}</h3>
+                            <p class="property-location">📍 ${prop.city}, ${prop.address}</p>
+
+                            <div class="property-info">
+                                <span>🛏 ${prop.bhk} BHK</span>
+                                <span>🚿 ${prop.bathrooms || 1} Baths</span>
+                                <span>📐 ${prop.areaSqft || 1000} sq.ft</span>
+                            </div>
+
+                            <div class="property-price">
+                                ₹${priceFormatted} ${prop.purpose === 'RENT' ? '/ month' : ''}
+                            </div>
+
+                            <span class="status ${statusClass}">
+                                ${statusLabel}
+                            </span>
+
+                            <div class="property-actions">
+                                <button onclick="viewPropDetails(${prop.propertyId})" class="view-btn" style="border:none; cursor:pointer;">
+                                    View
+                                </button>
+                                <a href="property-status.html" class="edit-btn">
+                                    Status (${prop.propertyStatus || 'AVAILABLE'})
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align:center; padding:40px; color:#b91c1c;">
+                        <p>Error loading your properties: ${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function viewPropDetails(id) {
+            localStorage.setItem("selectedPropertyId", id);
+            window.location.href = "property-details.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", loadMyProperties);
+    </script>
 </body>
 </html>
