@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Property - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/auth.css">
+
+    <style>
+        .property-form-section {
+            padding: 50px 20px;
+            background: #f5f7fb;
+        }
+
+        .property-form-container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #667085;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .form-group label span {
+            color: #dc2626;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #d0d5dd;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #1d4ed8;
+        }
+
+        .section-title {
+            font-size: 19px;
+            margin: 30px 0 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .submit-property-btn {
+            width: 100%;
+            border: none;
+            background: #1d4ed8;
+            color: #ffffff;
+            padding: 13px;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-property-btn:hover {
+            background: #1e40af;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 650px) {
+
+            .property-form-section {
+                padding: 30px 15px;
+            }
+
+            .property-form-container {
+                padding: 25px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🏠 HouseHub
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="broker-dashboard.html">Dashboard</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+
+    </nav>
+
+
+    <!-- Add Property Form -->
+    <section class="property-form-section">
+
+        <div class="property-form-container">
+
+            <a href="broker-dashboard.html" class="back-link">
+                ← Back to Dashboard
+            </a>
+
+            <div class="form-header">
+
+                <h1>Add New Property</h1>
+
+                <p>
+                    Enter your property details and submit them for
+                    Admin verification. The property will become
+                    visible to customers after approval.
+                </p>
+
+            </div>
+
+
+            <form id="addPropertyForm">
+
+
+                <!-- Basic Information -->
+                <h2 class="section-title">
+                    Property Information
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="propertyTitle">
+                        Property Title <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="propertyTitle"
+                        placeholder="Example: Modern 3 BHK House">
+
+                    <small class="error-message"></small>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="propertyType">
+                            Property Type <span>*</span>
+                        </label>
+
+                        <select id="propertyType">
+
+                            <option value="">
+                                Select property type
+                            </option>
+
+                            <option value="house">
+                                House
+                            </option>
+
+                            <option value="flat">
+                                Flat
+                            </option>
+
+                            <option value="villa">
+                                Villa
+                            </option>
+
+                            <option value="apartment">
+                                Apartment
+                            </option>
+
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="propertyPurpose">
+                            Property Purpose <span>*</span>
+                        </label>
+
+                        <select id="propertyPurpose">
+
+                            <option value="">
+                                Select purpose
+                            </option>
+
+                            <option value="rent">
+                                For Rent
+                            </option>
+
+                            <option value="buy">
+                                For Sale
+                            </option>
+
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="propertyPrice">
+                            Price / Rent <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="propertyPrice"
+                            placeholder="Example: ₹25,000 / month">
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="securityDeposit">
+                            Security Deposit
+                        </label>
+
+                        <input
+                            type="text"
+                            id="securityDeposit"
+                            placeholder="Example: ₹50,000">
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Location -->
+                <h2 class="section-title">
+                    Location Details
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="propertyAddress">
+                        Full Address <span>*</span>
+                    </label>
+
+                    <textarea
+                        id="propertyAddress"
+                        placeholder="Enter complete property address"></textarea>
+
+                    <small class="error-message"></small>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="propertyCity">
+                            City <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="propertyCity"
+                            placeholder="Enter city">
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="propertyState">
+                            State <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="propertyState"
+                            placeholder="Enter state">
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="propertyPincode">
+                        Pincode <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="propertyPincode"
+                        maxlength="6"
+                        placeholder="Enter 6-digit pincode">
+
+                    <small class="error-message"></small>
+
+                </div>
+
+
+                <!-- Property Details -->
+                <h2 class="section-title">
+                    Property Details
+                </h2>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="propertyBhk">
+                            BHK <span>*</span>
+                        </label>
+
+                        <select id="propertyBhk">
+
+                            <option value="">
+                                Select BHK
+                            </option>
+
+                            <option value="1">
+                                1 BHK
+                            </option>
+
+                            <option value="2">
+                                2 BHK
+                            </option>
+
+                            <option value="3">
+                                3 BHK
+                            </option>
+
+                            <option value="4">
+                                4 BHK
+                            </option>
+
+                            <option value="5+">
+                                5+ BHK
+                            </option>
+
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="bathrooms">
+                            Bathrooms <span>*</span>
+                        </label>
+
+                        <select id="bathrooms">
+
+                            <option value="">
+                                Select bathrooms
+                            </option>
+
+                            <option value="1">
+                                1
+                            </option>
+
+                            <option value="2">
+                                2
+                            </option>
+
+                            <option value="3">
+                                3
+                            </option>
+
+                            <option value="4+">
+                                4+
+                            </option>
+
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="propertyArea">
+                            Area <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="propertyArea"
+                            placeholder="Example: 1500 sq.ft">
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="furnishedStatus">
+                            Furnished Status
+                        </label>
+
+                        <select id="furnishedStatus">
+
+                            <option value="">
+                                Select status
+                            </option>
+
+                            <option value="fully">
+                                Fully Furnished
+                            </option>
+
+                            <option value="semi">
+                                Semi Furnished
+                            </option>
+
+                            <option value="unfurnished">
+                                Unfurnished
+                            </option>
+
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="parking">
+                            Parking
+                        </label>
+
+                        <select id="parking">
+
+                            <option value="">
+                                Select option
+                            </option>
+
+                            <option value="available">
+                                Available
+                            </option>
+
+                            <option value="not-available">
+                                Not Available
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="floor">
+                            Floor
+                        </label>
+
+                        <input
+                            type="text"
+                            id="floor"
+                            placeholder="Example: 2nd Floor">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+                <h2 class="section-title">
+                    Description
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="propertyDescription">
+                        Property Description <span>*</span>
+                    </label>
+
+                    <textarea
+                        id="propertyDescription"
+                        placeholder="Describe the property, nearby facilities, features etc."></textarea>
+
+                    <small class="error-message"></small>
+
+                </div>
+
+
+                <!-- Images -->
+                <h2 class="section-title">
+                    Property Images
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="propertyImages">
+                        Upload Property Images <span>*</span>
+                    </label>
+
+                    <input
+                        type="file"
+                        id="propertyImages"
+                        multiple
+                        accept=".jpg,.jpeg,.png">
+
+                    <small class="error-message"></small>
+
+                </div>
+
+
+                <!-- Documents -->
+                <h2 class="section-title">
+                    Property Documents
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="propertyDocuments">
+                        Upload Property Documents <span>*</span>
+                    </label>
+
+                    <input
+                        type="file"
+                        id="propertyDocuments"
+                        multiple
+                        accept=".jpg,.jpeg,.png,.pdf">
+
+                    <small class="error-message"></small>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="submit-property-btn">
+
+                    Submit Property for Verification
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <div class="footer-container">
+
+            <div>
+                <h3>🏠 HouseHub</h3>
+
+                <p>
+                    Find your perfect home for rent or purchase.
+                </p>
+            </div>
+
+
+            <div>
+
+                <h4>Quick Links</h4>
+
+                <a href="../index.html">Home</a>
+
+                <a href="properties.html">
+                    Properties
+                </a>
+
+                <a href="broker-dashboard.html">
+                    Dashboard
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <h4>For Users</h4>
+
+                <a href="customer-register.html">
+                    Customer Registration
+                </a>
+
+                <a href="broker-register.html">
+                    Broker Registration
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 HouseHub. All Rights Reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <script src="../js/property.js"></script>
+
+</body>
+
+</html>

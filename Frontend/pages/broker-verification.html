@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Broker Verification - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <style>
+        .verification-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 25px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #667085;
+        }
+
+        .broker-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .broker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .broker-header h2 {
+            font-size: 21px;
+            margin-bottom: 5px;
+        }
+
+        .broker-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: #fff7ed;
+            color: #c2410c;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .broker-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px 0;
+            border-top: 1px solid #eaecf0;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-item strong {
+            font-size: 13px;
+            color: #667085;
+        }
+
+        .detail-item span {
+            font-size: 15px;
+            color: #172033;
+        }
+
+        .documents {
+            margin-top: 20px;
+        }
+
+        .documents h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .document-list {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .document-btn {
+            padding: 9px 15px;
+            border: 1px solid #d0d5dd;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #344054;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .document-btn:hover {
+            background: #f5f7fb;
+        }
+
+        .verification-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .approve-btn,
+        .reject-btn {
+            border: none;
+            padding: 10px 22px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .approve-btn {
+            background: #16a34a;
+            color: #ffffff;
+        }
+
+        .approve-btn:hover {
+            background: #15803d;
+        }
+
+        .reject-btn {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .reject-btn:hover {
+            background: #b91c1c;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 700px) {
+
+            .verification-container {
+                padding: 35px 18px;
+            }
+
+            .broker-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .broker-details {
+                grid-template-columns: 1fr;
+            }
+
+            .verification-actions {
+                flex-direction: column;
+            }
+
+            .approve-btn,
+            .reject-btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+
+        <div class="logo">
+            🏠 HouseHub
+        </div>
+
+        <div class="user-area">
+
+            <span>Welcome, Admin</span>
+
+            <button id="logoutButton">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Broker Verification -->
+    <main class="verification-container">
+
+        <a href="admin-dashboard.html" class="back-btn">
+            ← Back to Admin Dashboard
+        </a>
+
+        <div class="page-header">
+
+            <h1>Broker Verification</h1>
+
+            <p>
+                Review broker registration requests and verify their
+                submitted information.
+            </p>
+
+        </div>
+
+
+        <!-- Broker Request 1 -->
+        <div class="broker-card">
+
+            <div class="broker-header">
+
+                <div>
+                    <h2>Rahul Sharma</h2>
+                    <p>Broker Registration Request</p>
+                </div>
+
+                <span class="status">
+                    Pending Verification
+                </span>
+
+            </div>
+
+
+            <div class="broker-details">
+
+                <div class="detail-item">
+                    <strong>Mobile Number</strong>
+                    <span>9876543210</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Email</strong>
+                    <span>rahul@example.com</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Agency / Company</strong>
+                    <span>Sharma Properties</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>City</strong>
+                    <span>Jodhpur, Rajasthan</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Experience</strong>
+                    <span>3 - 5 Years</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Registration Date</strong>
+                    <span>18 September 2026</span>
+                </div>
+
+            </div>
+
+
+            <!-- Documents -->
+            <div class="documents">
+
+                <h3>Submitted Documents</h3>
+
+                <div class="document-list">
+
+                    <a href="#" class="document-btn">
+                        📄 View ID Proof
+                    </a>
+
+                    <a href="#" class="document-btn">
+                        📄 View Address Proof
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="verification-actions">
+
+                <button
+                    class="approve-btn"
+                    onclick="approveBroker('Rahul Sharma')">
+                    ✓ Approve
+                </button>
+
+                <button
+                    class="reject-btn"
+                    onclick="rejectBroker('Rahul Sharma')">
+                    ✕ Reject
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Broker Request 2 -->
+        <div class="broker-card">
+
+            <div class="broker-header">
+
+                <div>
+                    <h2>Amit Verma</h2>
+                    <p>Broker Registration Request</p>
+                </div>
+
+                <span class="status">
+                    Pending Verification
+                </span>
+
+            </div>
+
+
+            <div class="broker-details">
+
+                <div class="detail-item">
+                    <strong>Mobile Number</strong>
+                    <span>9123456780</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Email</strong>
+                    <span>amit@example.com</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Agency / Company</strong>
+                    <span>Verma Real Estate</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>City</strong>
+                    <span>Jaipur, Rajasthan</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Experience</strong>
+                    <span>1 - 3 Years</span>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Registration Date</strong>
+                    <span>18 September 2026</span>
+                </div>
+
+            </div>
+
+
+            <div class="documents">
+
+                <h3>Submitted Documents</h3>
+
+                <div class="document-list">
+
+                    <a href="#" class="document-btn">
+                        📄 View ID Proof
+                    </a>
+
+                    <a href="#" class="document-btn">
+                        📄 View Address Proof
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="verification-actions">
+
+                <button
+                    class="approve-btn"
+                    onclick="approveBroker('Amit Verma')">
+                    ✓ Approve
+                </button>
+
+                <button
+                    class="reject-btn"
+                    onclick="rejectBroker('Amit Verma')">
+                    ✕ Reject
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 HouseHub. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <script src="../js/auth.js"></script>
+
+    <script>
+
+        function approveBroker(name) {
+
+            alert(
+                name +
+                " has been approved successfully."
+            );
+        }
+
+
+        function rejectBroker(name) {
+
+            alert(
+                name +
+                " has been rejected."
+            );
+        }
+
+    </script>
+
+</body>
+
+</html>

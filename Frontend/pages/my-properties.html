@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Properties - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <style>
+        .properties-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 45px 25px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .add-property-btn {
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .add-property-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .property-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .my-property-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 190px;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-content {
+            padding: 20px;
+        }
+
+        .property-content h3 {
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .property-location {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .property-info {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .property-info span {
+            font-size: 13px;
+            color: #475467;
+        }
+
+        .property-price {
+            color: #1d4ed8;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pending {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .approved {
+            background: #ecfdf3;
+            color: #15803d;
+        }
+
+        .rejected {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .property-actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn,
+        .edit-btn {
+            padding: 9px 14px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            background: #eef4ff;
+            color: #1d4ed8;
+        }
+
+        .edit-btn {
+            background: #f2f4f7;
+            color: #344054;
+        }
+
+        .empty-message {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 50px 20px;
+            text-align: center;
+            color: #667085;
+        }
+
+        @media (max-width: 950px) {
+            .property-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .properties-page {
+                padding: 30px 18px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .property-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+
+        <div class="logo">
+            🏠 HouseHub
+        </div>
+
+        <div class="user-area">
+            <span>Broker</span>
+            <button id="logoutButton">Logout</button>
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="properties-page">
+
+        <div class="page-header">
+
+            <div>
+                <h1>My Properties</h1>
+                <p>Manage your submitted properties and verification status.</p>
+            </div>
+
+            <a href="add-property.html" class="add-property-btn">
+                + Add Property
+            </a>
+
+        </div>
+
+
+        <!-- Property List -->
+        <div class="property-list">
+
+
+            <!-- Property 1 -->
+            <div class="my-property-card">
+
+                <div class="property-image">
+                    <img src="../images/home-banner.jpg"
+                         alt="Modern 3 BHK House">
+                </div>
+
+                <div class="property-content">
+
+                    <h3>Modern 3 BHK House</h3>
+
+                    <p class="property-location">
+                        📍 Jodhpur, Rajasthan
+                    </p>
+
+                    <div class="property-info">
+                        <span>🛏 3 BHK</span>
+                        <span>🚿 2 Bathrooms</span>
+                        <span>📐 1500 sq.ft</span>
+                    </div>
+
+                    <div class="property-price">
+                        ₹25,000 / month
+                    </div>
+
+                    <span class="status pending">
+                        Pending Verification
+                    </span>
+
+                    <div class="property-actions">
+
+                        <a href="property-details.html"
+                           class="view-btn">
+                            View
+                        </a>
+
+                        <a href="add-property.html"
+                           class="edit-btn">
+                            Edit
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Property 2 -->
+            <div class="my-property-card">
+
+                <div class="property-image">
+                    <img src="../images/flat-banner.jpg"
+                         alt="Premium 2 BHK Flat">
+                </div>
+
+                <div class="property-content">
+
+                    <h3>Premium 2 BHK Flat</h3>
+
+                    <p class="property-location">
+                        📍 Jaipur, Rajasthan
+                    </p>
+
+                    <div class="property-info">
+                        <span>🛏 2 BHK</span>
+                        <span>🚿 2 Bathrooms</span>
+                        <span>📐 1200 sq.ft</span>
+                    </div>
+
+                    <div class="property-price">
+                        ₹45 Lakh
+                    </div>
+
+                    <span class="status approved">
+                        Approved
+                    </span>
+
+                    <div class="property-actions">
+
+                        <a href="property-details.html"
+                           class="view-btn">
+                            View
+                        </a>
+
+                        <a href="add-property.html"
+                           class="edit-btn">
+                            Edit
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Property 3 -->
+            <div class="my-property-card">
+
+                <div class="property-image">
+                    <img src="../images/home-banner.jpg"
+                         alt="Luxury 4 BHK Villa">
+                </div>
+
+                <div class="property-content">
+
+                    <h3>Luxury 4 BHK Villa</h3>
+
+                    <p class="property-location">
+                        📍 Udaipur, Rajasthan
+                    </p>
+
+                    <div class="property-info">
+                        <span>🛏 4 BHK</span>
+                        <span>🚿 3 Bathrooms</span>
+                        <span>📐 2200 sq.ft</span>
+                    </div>
+
+                    <div class="property-price">
+                        ₹40,000 / month
+                    </div>
+
+                    <span class="status rejected">
+                        Rejected
+                    </span>
+
+                    <div class="property-actions">
+
+                        <a href="property-details.html"
+                           class="view-btn">
+                            View
+                        </a>
+
+                        <a href="add-property.html"
+                           class="edit-btn">
+                            Edit
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="../js/auth.js"></script>
+
+</body>
+</html>

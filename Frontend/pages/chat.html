@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <style>
+        .chat-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .chat-header {
+            background: #ffffff;
+            padding: 20px 25px;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .chat-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .broker-status {
+    font-size: 13px !important;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+        .chat-container {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0 0 12px 12px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 25px;
+            min-height: 380px;
+            overflow-y: auto;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .broker-message {
+            background: #f1f5f9;
+            margin-right: auto;
+        }
+
+        .customer-message {
+            background: #2563eb;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message-time {
+    display: block;
+    font-size: 11px;
+    margin-top: 5px;
+    opacity: 0.8;
+    color: #667085;
+}
+
+.customer-message .message-time {
+    color: #ffffff;
+}
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 18px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input:focus {
+            border-color: #2563eb;
+        }
+
+        .send-button {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .send-button:hover {
+            background: #1d4ed8;
+        }
+
+        .privacy-note {
+            text-align: center;
+            color: #667085;
+            font-size: 12px;
+            padding: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .message {
+                max-width: 85%;
+            }
+
+            .chat-input-area {
+                padding: 12px;
+            }
+
+            .send-button {
+                padding: 10px 15px;
+            }
+        }
+
+        .clear-chat-btn {
+    margin-top: 15px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #dc2626;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.clear-chat-btn:hover {
+    background: #b91c1c;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+        <div class="logo">🏠 HouseHub</div>
+
+        <div class="user-area">
+            <span>Customer</span>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </nav>
+
+
+    <!-- Chat Page -->
+    <main class="chat-page">
+
+        <div class="chat-header">
+            <h2>💬 Chat with Broker</h2>
+            <p class="broker-status">🟢 Broker is available</p>
+            <p>Broker: <span id="chatBrokerName">Loading...</span></p>
+            <p>Property: <span id="chatPropertyName">Loading...</span></p>
+            <p>📍 <span id="chatPropertyLocation">Loading...</span></p>
+            <p>💰 <span id="chatPropertyPrice">Loading...</span></p>
+            <button id="clearChatButton" class="clear-chat-btn">
+    🗑️ Clear Chat
+</button>
+        </div>
+
+        <div class="chat-container">
+
+            <div class="messages" id="messages">
+
+                <div class="message broker-message">
+                    Hello! How can I help you regarding this property?
+                    <span class="message-time">10:30 AM</span>
+                </div>
+
+                <div class="message customer-message">
+                    Is this property still available?
+                    <span class="message-time">10:32 AM</span>
+                </div>
+
+                <div class="message broker-message">
+                    Yes, the property is currently available.
+                    <span class="message-time">10:33 AM</span>
+                </div>
+
+            </div>
+
+
+            <!-- Message Input -->
+            <div class="chat-input-area">
+
+                <input
+                    type="text"
+                    id="messageInput"
+                    class="chat-input"
+                    placeholder="Type your message..."
+                >
+
+                <button
+                    id="sendButton"
+                    class="send-button">
+                    Send
+                </button>
+
+            </div>
+
+            <div class="privacy-note">
+                🔒 Your personal contact details are not shared with the broker.
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer class="dashboard-footer">
+        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="../js/auth.js"></script>
+
+    <script>
+
+const chatPropertyName =
+    document.getElementById("chatPropertyName");
+
+const chatBrokerName =
+    document.getElementById("chatBrokerName");
+
+const chatPropertyLocation =
+    document.getElementById("chatPropertyLocation");
+
+const chatPropertyPrice =
+    document.getElementById("chatPropertyPrice");
+
+const selectedPropertyId =
+    localStorage.getItem("selectedPropertyId");
+
+const properties = [
+    {
+        id: 1,
+        title: "Modern 3 BHK House",
+        location: "Jodhpur, Rajasthan",
+        price: "₹25,000 / month"
+    },
+    {
+        id: 2,
+        title: "Premium 2 BHK Flat",
+        location: "Jaipur, Rajasthan",
+        price: "₹45 Lakh"
+    },
+    {
+        id: 3,
+        title: "Luxury 4 BHK Villa",
+        location: "Udaipur, Rajasthan",
+        price: "₹40,000 / month"
+    }
+];
+
+const selectedProperty = properties.find(
+    property => property.id == selectedPropertyId
+);
+
+if (selectedProperty) {
+
+    chatBrokerName.textContent = "Rahul Sharma";
+
+    chatPropertyName.textContent =
+        selectedProperty.title;
+
+    chatPropertyLocation.textContent =
+        selectedProperty.location;
+
+    chatPropertyPrice.textContent =
+        selectedProperty.price;
+}
+
+
+// ===============================
+// CHAT MESSAGE SECTION
+// ===============================
+
+const messageInput =
+    document.getElementById("messageInput");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const messages =
+    document.getElementById("messages");
+
+const clearChatButton =
+    document.getElementById("clearChatButton");
+
+clearChatButton.addEventListener(
+    "click",
+    function () {
+
+        const confirmClear =
+            confirm("Are you sure you want to clear this chat?");
+
+        if (!confirmClear) {
+            return;
+        }
+
+        localStorage.removeItem(chatStorageKey);
+
+        savedMessages = [];
+
+        messages.innerHTML = "";
+
+        alert("Chat cleared successfully.");
+
+    }
+);
+
+
+// Get saved messages
+const chatStorageKey =
+    "chatMessages_" + (selectedPropertyId || "default");
+
+let savedMessages =
+    JSON.parse(localStorage.getItem(chatStorageKey)) || [];
+
+// Display old messages
+savedMessages.forEach(function(message) {
+
+    const messageDiv =
+        document.createElement("div");
+
+    messageDiv.className =
+        "message customer-message";
+
+    messageDiv.innerHTML = `
+        ${message.text}
+        <span class="message-time">
+            ${message.time}
+        </span>
+    `;
+
+    messages.appendChild(messageDiv);
+
+});
+
+
+// Scroll to bottom
+messages.scrollTop =
+    messages.scrollHeight;
+
+
+// Send button
+sendButton.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+// Enter key
+messageInput.addEventListener(
+    "keypress",
+    function(event) {
+
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+
+    }
+);
+
+
+// Send Message Function
+function sendMessage() {
+
+    const message =
+        messageInput.value.trim();
+
+    if (message === "") {
+        return;
+    }
+
+
+    const currentTime =
+        new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+
+    // Create message object
+    const newMessage = {
+        text: message,
+        time: currentTime
+    };
+
+
+    // Save message
+    savedMessages.push(newMessage);
+
+
+    localStorage.setItem(
+    chatStorageKey,
+    JSON.stringify(savedMessages)
+);
+
+
+    // Display message
+    const messageDiv =
+        document.createElement("div");
+
+    messageDiv.className =
+        "message customer-message";
+
+    messageDiv.innerHTML = `
+        ${message}
+        <span class="message-time">
+            ${currentTime}
+        </span>
+    `;
+
+
+    messages.appendChild(messageDiv);
+
+
+    // Clear input
+    messageInput.value = "";
+
+
+    // Scroll to bottom
+    messages.scrollTop =
+        messages.scrollHeight;
+}
+// Demo broker reply
+setTimeout(function () {
+
+    const brokerReply =
+        document.createElement("div");
+
+    brokerReply.className =
+        "message broker-message";
+
+    const brokerTime =
+        new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+    brokerReply.innerHTML = `
+        Thank you for your interest. How can I help you?
+        <span class="message-time">
+            ${brokerTime}
+        </span>
+    `;
+
+    messages.appendChild(brokerReply);
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+}, 1000);
+
+</script>
+
+</body>
+</html>

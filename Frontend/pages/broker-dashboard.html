@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Broker Dashboard - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+
+        <div class="logo">
+            🏠 HouseHub
+        </div>
+
+        <div class="user-area">
+
+            <span>Welcome, Broker</span>
+
+            <button id="logoutButton">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Dashboard -->
+    <main class="dashboard-container">
+
+        <div class="dashboard-header">
+
+            <h1>Broker Dashboard</h1>
+
+            <p>
+                Manage your properties, verification requests and
+                customer communication.
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+
+            <!-- Add Property -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    ➕
+                </div>
+
+                <h3>Add Property</h3>
+
+                <p>
+                    Add a new house, flat, villa or apartment and
+                    submit it for Admin verification.
+                </p>
+
+                <a href="add-property.html">
+                    Add Property →
+                </a>
+
+            </div>
+
+
+            <!-- My Properties -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    🏠
+                </div>
+
+                <h3>My Properties</h3>
+
+                <p>
+                    View and manage all properties submitted by you.
+                </p>
+
+                <a href="my-properties.html">View Properties →</a>
+
+            </div>
+
+
+            <!-- Pending Verification -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    ⏳
+                </div>
+
+                <h3>Pending Verification</h3>
+
+                <p>
+                    Check properties that are waiting for Admin
+                    verification.
+                </p>
+
+                <a href="property-status.html">Check Status →</a>
+
+            </div>
+
+
+            <!-- Approved Properties -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    ✅
+                </div>
+
+                <h3>Approved Properties</h3>
+
+                <p>
+                    View properties approved by Admin and available
+                    to customers.
+                </p>
+
+                <a href="properties.html">
+                    View Approved →
+                </a>
+
+            </div>
+
+
+            <!-- Customer Chats -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    💬
+                </div>
+
+                <h3>Customer Chats</h3>
+
+                <p>
+                    Chat with interested customers without sharing
+                    personal contact details.
+                </p>
+
+                <a href="chat.html">Open Chats →</a>
+
+            </div>
+
+
+            <!-- Profile -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    👤
+                </div>
+
+                <h3>My Profile</h3>
+
+                <p>
+                    View and manage your broker profile and
+                    verification information.
+                </p>
+
+                <a href="broker-profile.html">View Profile →</a>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 HouseHub. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <script src="../js/auth.js"></script>
+
+</body>
+
+</html>

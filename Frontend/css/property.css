@@ -1,0 +1,916 @@
+/* =========================
+   RESET & GLOBAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f8fafc;
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    height: 70px;
+
+    padding: 0 6%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #eeeeee;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 28px;
+}
+
+.navbar nav a {
+    color: #444;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    transition: 0.3s;
+}
+
+.navbar nav a:hover,
+.navbar nav a.active {
+    color: #2563eb;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-btn {
+    color: #2563eb;
+
+    padding: 9px 17px;
+
+    font-weight: 600;
+}
+
+.register-btn {
+    background: #2563eb;
+    color: white;
+
+    padding: 10px 18px;
+
+    border-radius: 7px;
+
+    font-weight: 600;
+}
+
+.register-btn:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================
+   PROPERTY HEADER
+========================= */
+
+.property-header {
+    background: #eff6ff;
+
+    padding: 55px 6%;
+
+    text-align: center;
+}
+
+.header-content {
+    max-width: 800px;
+
+    margin: auto;
+}
+
+.header-content p {
+    color: #2563eb;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 8px;
+}
+
+.header-content h1 {
+    font-size: 40px;
+
+    margin-bottom: 10px;
+}
+
+.header-content span {
+    color: #666;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   MAIN PROPERTY SECTION
+========================= */
+
+.property-section {
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 45px 6% 80px;
+}
+
+
+/* =========================
+   FILTER BOX
+========================= */
+
+.filter-box {
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        0.8fr
+        auto;
+
+    gap: 12px;
+
+    align-items: end;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+
+    margin-bottom: 45px;
+}
+
+.filter-item label {
+    display: block;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #555;
+
+    margin-bottom: 7px;
+}
+
+.filter-item input,
+.filter-item select {
+    width: 100%;
+
+    height: 43px;
+
+    padding: 0 12px;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    background: white;
+
+    color: #333;
+}
+
+.filter-item input:focus,
+.filter-item select:focus {
+    border-color: #2563eb;
+}
+
+.filter-button {
+    height: 43px;
+
+    padding: 0 24px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.filter-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================
+   RESULT HEADING
+========================= */
+
+.result-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.result-heading h2 {
+    font-size: 25px;
+}
+
+.result-heading span {
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   PROPERTY GRID
+========================= */
+
+.property-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 25px;
+}
+
+
+/* =========================
+   PROPERTY CARD
+========================= */
+
+.property-card {
+    background: white;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    border: 1px solid #eeeeee;
+
+    transition: 0.3s;
+}
+
+.property-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+.property-card-image {
+    height: 220px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #eeeeee;
+}
+
+.property-card-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: 0.4s;
+}
+
+.property-card:hover .property-card-image img {
+    transform: scale(1.05);
+}
+
+.property-purpose {
+    position: absolute;
+
+    top: 15px;
+    left: 15px;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.property-purpose.buy {
+    background: #16a34a;
+}
+
+
+/* =========================
+   PROPERTY CARD CONTENT
+========================= */
+
+.property-card-content {
+    padding: 20px;
+}
+
+.property-card-content h3 {
+    font-size: 19px;
+
+    margin-bottom: 7px;
+}
+
+.property-location {
+    color: #777;
+
+    font-size: 13px;
+
+    margin-bottom: 15px;
+}
+
+.property-info {
+    display: flex;
+
+    gap: 12px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.property-info span {
+    color: #666;
+
+    font-size: 12px;
+}
+
+.property-card-bottom {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding-top: 15px;
+}
+
+.property-price {
+    font-size: 17px;
+
+    font-weight: 700;
+}
+
+.view-button {
+    padding: 8px 14px;
+
+    border: 1px solid #2563eb;
+
+    border-radius: 6px;
+
+    background: white;
+
+    color: #2563eb;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.view-button:hover {
+    background: #2563eb;
+
+    color: white;
+}
+
+
+/* =========================
+   NO PROPERTY MESSAGE
+========================= */
+
+.no-properties {
+    text-align: center;
+
+    padding: 70px 20px;
+
+    background: white;
+
+    border-radius: 12px;
+}
+
+.no-properties h3 {
+    font-size: 22px;
+
+    margin-bottom: 8px;
+}
+
+.no-properties p {
+    color: #777;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    background: #111827;
+
+    color: white;
+
+    padding: 55px 7% 20px;
+}
+
+.footer-content {
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns: 2fr 1fr 1fr;
+
+    gap: 50px;
+
+    padding-bottom: 35px;
+}
+
+.footer-content h2 {
+    font-size: 25px;
+
+    margin-bottom: 10px;
+}
+
+.footer-content h2 span {
+    color: #60a5fa;
+}
+
+.footer-content h3 {
+    font-size: 16px;
+
+    margin-bottom: 15px;
+}
+
+.footer-content p,
+.footer-content a {
+    color: #9ca3af;
+
+    font-size: 14px;
+}
+
+.footer-content a {
+    display: block;
+
+    margin-bottom: 8px;
+}
+
+.footer-content a:hover {
+    color: white;
+}
+
+.copyright {
+    text-align: center;
+
+    border-top: 1px solid #374151;
+
+    padding-top: 18px;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    .navbar nav {
+        display: none;
+    }
+
+    .filter-box {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+
+    .property-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+        padding: 0 5%;
+    }
+
+    .nav-buttons .login-btn {
+        display: none;
+    }
+
+    .property-header {
+        padding: 45px 5%;
+    }
+
+    .header-content h1 {
+        font-size: 32px;
+    }
+
+    .property-section {
+        padding: 35px 5% 60px;
+    }
+
+    .filter-box {
+        grid-template-columns: 1fr;
+    }
+
+    .property-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+/* ==========================================
+   PROPERTY DETAILS PAGE
+   ========================================== */
+
+.property-details-section {
+    min-height: 70vh;
+    padding: 60px 8%;
+    background: #f5f7fb;
+}
+
+
+/* MAIN PROPERTY CONTAINER */
+
+.property-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: 48% 52%;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+
+/* PROPERTY IMAGE */
+
+.property-details-image {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    overflow: hidden;
+}
+
+.property-details-image img {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* DETAILS CONTENT */
+
+.property-details-content {
+    padding: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* PURPOSE */
+
+.details-purpose {
+    display: inline-block;
+    width: fit-content;
+
+    background: #e8f7ee;
+    color: #16803c;
+
+    padding: 7px 14px;
+    border-radius: 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    margin-bottom: 15px;
+}
+
+
+/* TITLE */
+
+.property-details-content h1 {
+    margin: 0 0 12px;
+
+    font-size: 34px;
+    line-height: 1.2;
+
+    color: #172033;
+}
+
+
+/* LOCATION */
+
+.details-location {
+    margin: 0 0 28px;
+
+    color: #667085;
+    font-size: 16px;
+}
+
+
+/* PROPERTY INFORMATION */
+
+.details-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+
+    margin-bottom: 28px;
+}
+
+.details-info div {
+    background: #f7f8fa;
+
+    padding: 16px;
+
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.details-info strong {
+    color: #667085;
+    font-size: 14px;
+}
+
+.details-info span {
+    color: #172033;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+
+/* PRICE */
+
+.details-price {
+    font-size: 28px;
+    font-weight: 700;
+
+    color: #1d4ed8;
+
+    margin-bottom: 18px;
+}
+
+
+/* DESCRIPTION */
+
+.details-description {
+    color: #667085;
+    font-size: 15px;
+    line-height: 1.7;
+
+    margin-bottom: 30px;
+}
+
+
+/* BUTTON AREA */
+
+.details-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+
+/* CHAT BUTTON */
+
+.chat-broker-btn {
+    border: none;
+
+    background: #1d4ed8;
+    color: #ffffff;
+
+    padding: 13px 22px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.chat-broker-btn:hover {
+    background: #163da8;
+    transform: translateY(-1px);
+}
+
+
+/* BACK BUTTON */
+
+.back-properties-btn {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 13px 22px;
+
+    border-radius: 8px;
+
+    background: #eef1f5;
+    color: #172033;
+
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.back-properties-btn:hover {
+    background: #dfe4ea;
+}
+
+
+/* PROPERTY NOT FOUND */
+
+.no-property {
+    max-width: 600px;
+    margin: 50px auto;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    padding: 50px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.no-property h2 {
+    color: #172033;
+    margin-bottom: 10px;
+}
+
+.no-property p {
+    color: #667085;
+    margin-bottom: 20px;
+}
+
+.no-property a {
+    display: inline-block;
+
+    background: #1d4ed8;
+    color: #ffffff;
+
+    text-decoration: none;
+
+    padding: 11px 20px;
+
+    border-radius: 7px;
+}
+
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 900px) {
+
+    .property-details-section {
+        padding: 40px 5%;
+    }
+
+    .property-details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .property-details-image {
+        min-height: 350px;
+    }
+
+    .property-details-image img {
+        min-height: 350px;
+        max-height: 450px;
+    }
+
+    .property-details-content {
+        padding: 35px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .property-details-section {
+        padding: 25px 4%;
+    }
+
+    .property-details-content {
+        padding: 25px 20px;
+    }
+
+    .property-details-content h1 {
+        font-size: 26px;
+    }
+
+    .details-info {
+        grid-template-columns: 1fr;
+    }
+
+    .details-price {
+        font-size: 24px;
+    }
+
+    .details-actions {
+        flex-direction: column;
+    }
+
+    .chat-broker-btn,
+    .back-properties-btn {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+}

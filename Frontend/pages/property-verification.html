@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Property Verification - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <style>
+        .verification-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 25px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 15px;
+        }
+
+        .property-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .property-header h2 {
+            font-size: 21px;
+            margin-bottom: 6px;
+        }
+
+        .property-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: #fff7ed;
+            color: #c2410c;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .property-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            padding: 20px 0;
+            border-top: 1px solid #eaecf0;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .property-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-item strong {
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .detail-item span {
+            color: #172033;
+            font-size: 15px;
+        }
+
+        .property-price {
+            color: #1d4ed8 !important;
+            font-size: 17px !important;
+            font-weight: 700;
+        }
+
+        .documents {
+            margin-top: 20px;
+        }
+
+        .documents h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .document-list {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .document-btn {
+            padding: 9px 15px;
+            border: 1px solid #d0d5dd;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #344054;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .document-btn:hover {
+            background: #f5f7fb;
+        }
+
+        .verification-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .approve-btn,
+        .reject-btn {
+            border: none;
+            padding: 10px 22px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .approve-btn {
+            background: #16a34a;
+            color: #ffffff;
+        }
+
+        .approve-btn:hover {
+            background: #15803d;
+        }
+
+        .reject-btn {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .reject-btn:hover {
+            background: #b91c1c;
+        }
+
+        @media (max-width: 800px) {
+
+            .property-content {
+                grid-template-columns: 1fr;
+            }
+
+            .property-image {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .verification-container {
+                padding: 35px 18px;
+            }
+
+            .property-header {
+                flex-direction: column;
+            }
+
+            .property-details {
+                grid-template-columns: 1fr;
+            }
+
+            .verification-actions {
+                flex-direction: column;
+            }
+
+            .approve-btn,
+            .reject-btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+
+        <div class="logo">
+            🏠 HouseHub
+        </div>
+
+        <div class="user-area">
+
+            <span>Welcome, Admin</span>
+
+            <button id="logoutButton">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="verification-container">
+
+        <a href="admin-dashboard.html" class="back-btn">
+            ← Back to Admin Dashboard
+        </a>
+
+
+        <div class="page-header">
+
+            <h1>Property Verification</h1>
+
+            <p>
+                Review property details and documents submitted by
+                brokers before publishing the property.
+            </p>
+
+        </div>
+
+
+        <!-- Property Request -->
+        <div class="property-card">
+
+            <div class="property-header">
+
+                <div>
+                    <h2>Modern 3 BHK House</h2>
+                    <p>
+                        Submitted by: Rahul Sharma
+                    </p>
+                </div>
+
+                <span class="status">
+                    Pending Verification
+                </span>
+
+            </div>
+
+
+            <div class="property-content">
+
+                <!-- Property Image -->
+                <div class="property-image">
+
+                    <img
+                        src="../images/home-banner.jpg"
+                        alt="Modern 3 BHK House">
+
+                </div>
+
+
+                <!-- Property Details -->
+                <div class="property-details">
+
+                    <div class="detail-item">
+                        <strong>Property Type</strong>
+                        <span>House</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Purpose</strong>
+                        <span>For Rent</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Location</strong>
+                        <span>Jodhpur, Rajasthan</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>BHK</strong>
+                        <span>3 BHK</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Bathrooms</strong>
+                        <span>2</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Area</strong>
+                        <span>1500 sq.ft</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Furnished Status</strong>
+                        <span>Semi Furnished</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Parking</strong>
+                        <span>Available</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Monthly Rent</strong>
+                        <span class="property-price">
+                            ₹25,000 / month
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Security Deposit</strong>
+                        <span>
+                            ₹50,000
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Documents -->
+            <div class="documents">
+
+                <h3>Property Documents</h3>
+
+                <div class="document-list">
+
+                    <a href="#" class="document-btn">
+                        📄 Property Document
+                    </a>
+
+                    <a href="#" class="document-btn">
+                        📄 Ownership Proof
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="verification-actions">
+
+                <button
+                    class="approve-btn"
+                    onclick="approveProperty('Modern 3 BHK House')">
+
+                    ✓ Approve Property
+
+                </button>
+
+                <button
+                    class="reject-btn"
+                    onclick="rejectProperty('Modern 3 BHK House')">
+
+                    ✕ Reject Property
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 HouseHub. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <script src="../js/auth.js"></script>
+
+    <script>
+
+        function approveProperty(propertyName) {
+
+            alert(
+                propertyName +
+                " has been approved successfully."
+            );
+
+        }
+
+
+        function rejectProperty(propertyName) {
+
+            alert(
+                propertyName +
+                " has been rejected."
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+
+        <div class="logo">
+            🏠 HouseHub
+        </div>
+
+        <div class="user-area">
+            <span>Welcome, Admin</span>
+
+            <button id="logoutButton">
+                Logout
+            </button>
+        </div>
+
+    </nav>
+
+
+    <!-- Dashboard -->
+    <main class="dashboard-container">
+
+        <div class="dashboard-header">
+            <h1>Admin Dashboard</h1>
+
+            <p>
+                Manage users, brokers, properties and verification requests.
+            </p>
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <!-- Broker Verification -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    👤
+                </div>
+
+                <h3>Broker Verification</h3>
+
+                <p>
+                    Review newly registered brokers and approve or reject
+                    their verification requests.
+                </p>
+
+                <a href="broker-verification.html">
+    Review Brokers →
+</a>
+
+            </div>
+
+
+            <!-- Property Verification -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    🏠
+                </div>
+
+                <h3>Property Verification</h3>
+
+                <p>
+                    Check property details and documents submitted by
+                    brokers before publishing them.
+                </p>
+
+                <a href="property-verification.html">
+    Review Properties →
+</a>
+
+            </div>
+
+
+            <!-- Customers -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    👥
+                </div>
+
+                <h3>Customers</h3>
+
+                <p>
+                    View registered customers and manage customer
+                    accounts.
+                </p>
+
+                <a href="#">
+                    View Customers →
+                </a>
+
+            </div>
+
+
+            <!-- Approved Brokers -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    🏢
+                </div>
+
+                <h3>Approved Brokers</h3>
+
+                <p>
+                    View brokers whose registration has been approved
+                    by the administrator.
+                </p>
+
+                <a href="#">
+                    View Brokers →
+                </a>
+
+            </div>
+
+
+            <!-- Approved Properties -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    🏘️
+                </div>
+
+                <h3>Approved Properties</h3>
+
+                <p>
+                    View properties that have completed the admin
+                    verification process.
+                </p>
+
+                <a href="properties.html">
+                    View Properties →
+                </a>
+
+            </div>
+
+
+            <!-- Reports -->
+            <div class="dashboard-card">
+
+                <div class="card-icon">
+                    ⚠️
+                </div>
+
+                <h3>Reports & Complaints</h3>
+
+                <p>
+                    Review user reports and complaints related to
+                    brokers and properties.
+                </p>
+
+                <a href="#">
+                    View Reports →
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 HouseHub. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <script src="../js/auth.js"></script>
+
+</body>
+
+</html>

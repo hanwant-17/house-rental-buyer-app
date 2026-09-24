@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Properties - HouseHub</title>
+
+    <link rel="stylesheet" href="../css/property.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            House<span>Hub</span>
+        </div>
+
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="properties.html" class="active">Buy</a>
+            <a href="properties.html">Rent</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <a href="login.html" class="login-btn">Login</a>
+
+            <a href="customer-register.html"
+               class="register-btn">
+                Register
+            </a>
+        </div>
+
+    </header>
+
+
+    <!-- ================= PAGE HEADER ================= -->
+
+    <section class="property-header">
+
+        <div class="header-content">
+
+            <p>EXPLORE PROPERTIES</p>
+
+            <h1>Find Your Perfect Property</h1>
+
+            <span>
+                Search verified homes and flats available
+                for rent or purchase.
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SEARCH & FILTER ================= -->
+
+    <section class="property-section">
+
+        <div class="filter-box">
+
+            <div class="filter-item">
+
+                <label>Location</label>
+
+                <input
+                    type="text"
+                    id="locationFilter"
+                    placeholder="Enter city or location"
+                >
+
+            </div>
+
+
+            <div class="filter-item">
+
+                <label>Purpose</label>
+
+                <select id="purposeFilter">
+
+                    <option value="">Buy / Rent</option>
+
+                    <option value="buy">
+                        Buy
+                    </option>
+
+                    <option value="rent">
+                        Rent
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-item">
+
+                <label>Property Type</label>
+
+                <select id="typeFilter">
+
+                    <option value="">
+                        All Types
+                    </option>
+
+                    <option value="house">
+                        House
+                    </option>
+
+                    <option value="flat">
+                        Flat
+                    </option>
+
+                    <option value="villa">
+                        Villa
+                    </option>
+
+                    <option value="apartment">
+                        Apartment
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-item">
+
+                <label>BHK</label>
+
+                <select id="bhkFilter">
+
+                    <option value="">
+                        Any BHK
+                    </option>
+
+                    <option value="1">
+                        1 BHK
+                    </option>
+
+                    <option value="2">
+                        2 BHK
+                    </option>
+
+                    <option value="3">
+                        3 BHK
+                    </option>
+
+                    <option value="4">
+                        4+ BHK
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="filter-button"
+                id="filterButton">
+
+                Search
+
+            </button>
+
+        </div>
+
+
+        <!-- ================= PROPERTY RESULT ================= -->
+
+        <div class="result-heading">
+
+            <h2>Available Properties</h2>
+
+            <span id="propertyCount">
+                Properties
+            </span>
+
+        </div>
+
+
+        <!--
+            IMPORTANT:
+
+            Currently property cards are only
+            temporary frontend data.
+
+            Later these cards will be generated
+            automatically from the backend API.
+        -->
+
+        <div
+            class="property-grid"
+            id="propertyGrid">
+
+            <!-- Property cards will appear here -->
+
+        </div>
+
+
+        <!-- EMPTY RESULT MESSAGE -->
+
+        <div
+            class="no-properties"
+            id="noProperties"
+            style="display: none;">
+
+            <h3>No Properties Found</h3>
+
+            <p>
+                Try changing your search or filter.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div>
+
+                <h2>
+                    House<span>Hub</span>
+                </h2>
+
+                <p>
+                    Find your perfect home for rent
+                    or purchase.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h3>Quick Links</h3>
+
+                <a href="../index.html">
+                    Home
+                </a>
+
+                <a href="properties.html">
+                    Properties
+                </a>
+
+                <a href="login.html">
+                    Login
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <h3>Users</h3>
+
+                <a href="customer-register.html">
+                    Customer
+                </a>
+
+                <a href="broker-register.html">
+                    Broker / Owner
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 House Rental & Buyer App.
+            All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="../js/property.js"></script>
+
+</body>
+
+</html>
