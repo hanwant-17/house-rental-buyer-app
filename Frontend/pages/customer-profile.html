@@ -185,6 +185,7 @@
     <main class="profile-page">
 
         <div class="profile-heading">
+            <a href="customer-dashboard.html" style="color:#2563eb; text-decoration:none; font-weight:600; font-size:14px; display:inline-block; margin-bottom:12px;">← Back to Dashboard</a>
             <h1>👤 My Profile</h1>
 
             <p>
@@ -202,8 +203,8 @@
                 </div>
 
                 <div>
-                    <h2>Customer Profile</h2>
-                    <p>Manage your account information</p>
+                    <h2 id="displayName">Customer Profile</h2>
+                    <p id="displayEmail">Manage your account information</p>
                 </div>
 
             </div>
@@ -220,7 +221,7 @@
                     <input
                         type="text"
                         id="profileName"
-                        value="Bhavesh"
+                        value=""
                         required
                     >
 
@@ -253,7 +254,7 @@
                     <input
                         type="email"
                         id="profileEmail"
-                        value="customer@example.com"
+                        value=""
                         disabled
                     >
 
@@ -306,7 +307,7 @@
                     <input
                         type="text"
                         id="profileRole"
-                        value="Customer"
+                        value="Verified Customer"
                         disabled
                     >
 
@@ -338,46 +339,53 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
-        const profileForm =
-            document.getElementById("customerProfileForm");
+        document.addEventListener("DOMContentLoaded", function() {
+            const user = window.api ? window.api.getCurrentUser() : null;
 
-        if (profileForm) {
+            if (!user || !user.token) {
+                alert("Please login first to view your profile.");
+                window.location.href = "login.html";
+                return;
+            }
 
-            profileForm.addEventListener("submit", function(event) {
+            if (user.role !== "CUSTOMER") {
+                alert("This profile page is for Customers. Redirecting...");
+                window.location.href = user.role === "BROKER" ? "broker-profile.html" : "admin-dashboard.html";
+                return;
+            }
 
-                event.preventDefault();
+            const nameInput = document.getElementById("profileName");
+            const emailInput = document.getElementById("profileEmail");
+            const displayName = document.getElementById("displayName");
+            const displayEmail = document.getElementById("displayEmail");
+            const userArea = document.querySelector(".user-area span");
 
-                const name =
-                    document.getElementById("profileName").value.trim();
+            if (nameInput && user.name) nameInput.value = user.name;
+            if (emailInput && user.email) emailInput.value = user.email;
+            if (displayName && user.name) displayName.textContent = user.name;
+            if (displayEmail && user.email) displayEmail.textContent = user.email;
+            if (userArea && user.name) userArea.textContent = `Welcome, ${user.name}`;
 
-                const mobile =
-                    document.getElementById("profileMobile").value.trim();
-
-                const city =
-                    document.getElementById("profileCity").value.trim();
-
-                if (name === "") {
-                    alert("Please enter your name.");
-                    return;
-                }
-
-                if (!/^[0-9]{10}$/.test(mobile)) {
-                    alert("Please enter a valid 10-digit mobile number.");
-                    return;
-                }
-
-                if (city === "") {
-                    alert("Please enter your city.");
-                    return;
-                }
-
-                alert("Profile updated successfully.");
-            });
-
-        }
+            const profileForm = document.getElementById("customerProfileForm");
+            if (profileForm) {
+                profileForm.addEventListener("submit", function(event) {
+                    event.preventDefault();
+                    const newName = nameInput.value.trim();
+                    if (!newName) {
+                        alert("Please enter your name.");
+                        return;
+                    }
+                    localStorage.setItem("userName", newName);
+                    if (displayName) displayName.textContent = newName;
+                    if (userArea) userArea.textContent = `Welcome, ${newName}`;
+                    alert("✅ Profile updated successfully.");
+                });
+            }
+        });
     </script>
 
 </body>

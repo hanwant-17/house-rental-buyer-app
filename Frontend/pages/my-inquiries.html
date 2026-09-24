@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Inquiries - HouseHub</title>
+    <title>My Inquiries & Visits - HouseHub</title>
 
     <link rel="stylesheet" href="../css/dashboard.css">
 
@@ -16,17 +16,62 @@
         }
 
         .page-heading {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .page-heading h1 {
-            font-size: 30px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 6px;
         }
 
         .page-heading p {
             color: #667085;
             font-size: 14px;
+        }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Tabs */
+        .tab-bar {
+            display: flex;
+            gap: 12px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 25px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #667085;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
         }
 
         .inquiry-list {
@@ -40,7 +85,12 @@
             border: 1px solid #e5e7eb;
             border-radius: 14px;
             padding: 22px;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .inquiry-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
         }
 
         .inquiry-top {
@@ -52,7 +102,8 @@
 
         .property-name {
             font-size: 19px;
-            margin-bottom: 7px;
+            margin-bottom: 5px;
+            color: #111827;
         }
 
         .location {
@@ -62,42 +113,46 @@
 
         .status {
             display: inline-block;
-            padding: 7px 13px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
+            text-transform: uppercase;
         }
 
         .pending {
             background: #fff7ed;
             color: #c2410c;
+            border: 1px solid #ffedd5;
         }
 
-        .responded {
+        .responded, .confirmed {
             background: #ecfdf3;
             color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
-        .closed {
+        .closed, .cancelled {
             background: #f2f4f7;
             color: #475467;
+            border: 1px solid #e5e7eb;
         }
 
         .inquiry-details {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            margin-top: 20px;
-            padding-top: 18px;
-            border-top: 1px solid #e5e7eb;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid #f2f4f7;
         }
 
         .detail-box span {
             display: block;
             color: #667085;
             font-size: 12px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .detail-box strong {
@@ -105,19 +160,47 @@
             color: #172033;
         }
 
+        .message-bubble {
+            margin-top: 15px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #2563eb;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .reply-bubble {
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border-left: 3px solid #16a34a;
+            font-size: 14px;
+            color: #14532d;
+        }
+
         .inquiry-actions {
-            margin-top: 20px;
+            margin-top: 18px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .chat-btn,
-        .view-btn {
+        .view-btn,
+        .action-btn {
             text-decoration: none;
-            padding: 9px 15px;
-            border-radius: 7px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .chat-btn {
@@ -134,14 +217,68 @@
             color: #1d4ed8;
         }
 
-        .closed-message {
+        .view-btn:hover {
+            background: #dbeafe;
+        }
+
+        .confirm-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            background: #15803d;
+        }
+
+        .cancel-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .reply-form {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .reply-input {
+            flex: 1;
+            padding: 9px 13px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .reply-input:focus {
+            border-color: #2563eb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+        }
+
+        .empty-state .icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .empty-state p {
             color: #667085;
-            font-size: 13px;
-            padding: 9px 0;
+            font-size: 14px;
         }
 
         @media (max-width: 700px) {
-
             .inquiries-page {
                 padding: 30px 18px;
             }
@@ -150,12 +287,8 @@
                 flex-direction: column;
             }
 
-            .inquiry-details {
-                grid-template-columns: 1fr;
-            }
-
-            .status {
-                align-self: flex-start;
+            .reply-form {
+                flex-direction: column;
             }
         }
     </style>
@@ -165,16 +298,14 @@
 
     <!-- Navbar -->
     <nav class="dashboard-navbar">
-
         <div class="logo">
             🏠 HouseHub
         </div>
 
         <div class="user-area">
-            <span>Customer</span>
+            <span id="userGreeting">User</span>
             <button id="logoutButton">Logout</button>
         </div>
-
     </nav>
 
 
@@ -182,182 +313,32 @@
     <main class="inquiries-page">
 
         <div class="page-heading">
+            <div>
+                <a href="#" id="backToDashboard" class="back-link">← Back to Dashboard</a>
+                <h1 id="pageTitle">📋 Inquiries & Visits</h1>
+                <p id="pageSubtitle">Track your property inquiries, site visits, and broker communication.</p>
+            </div>
+        </div>
 
-            <h1>📋 My Inquiries</h1>
-
-            <p>
-                Track your property inquiries and communication with brokers.
-            </p>
-
+        <!-- Navigation Tabs -->
+        <div class="tab-bar">
+            <button class="tab-button active" id="tabInquiries" onclick="switchTab('inquiries')">
+                📩 Property Inquiries (<span id="inquiryCount">0</span>)
+            </button>
+            <button class="tab-button" id="tabVisits" onclick="switchTab('visits')">
+                📅 Site Visits (<span id="visitCount">0</span>)
+            </button>
         </div>
 
 
-        <div class="inquiry-list">
+        <!-- Inquiries List Container -->
+        <div class="inquiry-list" id="inquiriesContainer">
+            <p style="text-align:center; color:#667085; padding:40px;">Loading inquiries...</p>
+        </div>
 
-
-            <!-- Inquiry 1 -->
-            <div class="inquiry-card">
-
-                <div class="inquiry-top">
-
-                    <div>
-                        <h2 class="property-name">
-                            Modern 3 BHK House
-                        </h2>
-
-                        <p class="location">
-                            📍 Jodhpur, Rajasthan
-                        </p>
-                    </div>
-
-                    <span class="status pending">
-                        🟡 Pending
-                    </span>
-
-                </div>
-
-
-                <div class="inquiry-details">
-
-                    <div class="detail-box">
-                        <span>Broker</span>
-                        <strong>Rahul Sharma</strong>
-                    </div>
-
-                    <div class="detail-box">
-                        <span>Inquiry Date</span>
-                        <strong>20 September 2026</strong>
-                    </div>
-
-                    <div class="detail-box">
-                        <span>Property Price</span>
-                        <strong>₹25,000 / month</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="inquiry-actions">
-
-                    <a href="chat.html" class="chat-btn">
-                        💬 Chat with Broker
-                    </a>
-
-                    <a href="property-details.html" class="view-btn">
-                        View Property
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- Inquiry 2 -->
-            <div class="inquiry-card">
-
-                <div class="inquiry-top">
-
-                    <div>
-                        <h2 class="property-name">
-                            Premium 2 BHK Flat
-                        </h2>
-
-                        <p class="location">
-                            📍 Jaipur, Rajasthan
-                        </p>
-                    </div>
-
-                    <span class="status responded">
-                        🟢 Responded
-                    </span>
-
-                </div>
-
-
-                <div class="inquiry-details">
-
-                    <div class="detail-box">
-                        <span>Broker</span>
-                        <strong>Amit Verma</strong>
-                    </div>
-
-                    <div class="detail-box">
-                        <span>Inquiry Date</span>
-                        <strong>19 September 2026</strong>
-                    </div>
-
-                    <div class="detail-box">
-                        <span>Property Price</span>
-                        <strong>₹45 Lakh</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="inquiry-actions">
-
-                    <a href="chat.html" class="chat-btn">
-                        💬 Continue Chat
-                    </a>
-
-                    <a href="property-details.html" class="view-btn">
-                        View Property
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- Inquiry 3 -->
-            <div class="inquiry-card">
-
-                <div class="inquiry-top">
-
-                    <div>
-                        <h2 class="property-name">
-                            Luxury 4 BHK Villa
-                        </h2>
-
-                        <p class="location">
-                            📍 Udaipur, Rajasthan
-                        </p>
-                    </div>
-
-                    <span class="status closed">
-                        ⚪ Closed
-                    </span>
-
-                </div>
-
-
-                <div class="inquiry-details">
-
-                    <div class="detail-box">
-                        <span>Broker</span>
-                        <strong>Rahul Sharma</strong>
-                    </div>
-
-                    <div class="detail-box">
-                        <span>Inquiry Date</span>
-                        <strong>15 September 2026</strong>
-                    </div>
-
-                    <div class="detail-box">
-                        <span>Property Price</span>
-                        <strong>₹40,000 / month</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="closed-message">
-                    This inquiry has been closed.
-                </div>
-
-            </div>
-
-
+        <!-- Visits List Container -->
+        <div class="inquiry-list" id="visitsContainer" style="display:none;">
+            <p style="text-align:center; color:#667085; padding:40px;">Loading site visits...</p>
         </div>
 
     </main>
@@ -369,7 +350,283 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
+
+    <script>
+        let currentTab = "inquiries";
+        let user = null;
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            user = window.api ? window.api.getCurrentUser() : null;
+
+            if (!user || !user.token) {
+                alert("Please login first to view inquiries and visits.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Set user greeting and dashboard link
+            const greeting = document.getElementById("userGreeting");
+            const backLink = document.getElementById("backToDashboard");
+            
+            if (user.role === "BROKER") {
+                if (greeting) greeting.textContent = `Broker: ${user.name || "Broker"}`;
+                if (backLink) backLink.href = "broker-dashboard.html";
+                document.getElementById("pageTitle").textContent = "📋 Client Inquiries & Site Visits";
+                document.getElementById("pageSubtitle").textContent = "Respond to client inquiries and manage scheduled site visits.";
+            } else {
+                if (greeting) greeting.textContent = `Welcome, ${user.name || "Customer"}`;
+                if (backLink) backLink.href = "customer-dashboard.html";
+            }
+
+            // Load data
+            await Promise.all([loadInquiries(), loadVisits()]);
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabInquiries = document.getElementById("tabInquiries");
+            const tabVisits = document.getElementById("tabVisits");
+            const inquiriesCont = document.getElementById("inquiriesContainer");
+            const visitsCont = document.getElementById("visitsContainer");
+
+            if (tab === "inquiries") {
+                tabInquiries.classList.add("active");
+                tabVisits.classList.remove("active");
+                inquiriesCont.style.display = "flex";
+                visitsCont.style.display = "none";
+            } else {
+                tabVisits.classList.add("active");
+                tabInquiries.classList.remove("active");
+                inquiriesCont.style.display = "none";
+                visitsCont.style.display = "flex";
+            }
+        }
+
+        // ==========================================
+        // 1. INQUIRIES LOADER
+        // ==========================================
+        async function loadInquiries() {
+            const container = document.getElementById("inquiriesContainer");
+            const countBadge = document.getElementById("inquiryCount");
+
+            try {
+                let response;
+                if (user.role === "BROKER") {
+                    response = await window.api.getBrokerInquiries();
+                } else {
+                    response = await window.api.getCustomerInquiries();
+                }
+
+                const inquiries = (response && response.data) ? response.data : [];
+                countBadge.textContent = inquiries.length;
+
+                if (inquiries.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📩</div>
+                            <h3>No inquiries found</h3>
+                            <p>${user.role === 'BROKER' ? 'You have not received any client inquiries yet.' : 'You have not submitted any property inquiries yet.'}</p>
+                            ${user.role === 'CUSTOMER' ? '<a href="properties.html" class="chat-btn" style="display:inline-block; margin-top:15px;">Browse Properties</a>' : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                inquiries.forEach(inq => {
+                    const statusClass = (inq.status === 'RESPONDED') ? 'responded' : 'pending';
+                    const dateFormatted = inq.createdAt ? new Date(inq.createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' }) : "Recent";
+                    
+                    const card = document.createElement("div");
+                    card.className = "inquiry-card";
+                    card.innerHTML = `
+                        <div class="inquiry-top">
+                            <div>
+                                <h2 class="property-name">${inq.propertyTitle || 'Property #' + inq.propertyId}</h2>
+                                <p class="location">Property ID: #${inq.propertyId}</p>
+                            </div>
+                            <span class="status ${statusClass}">${inq.status || 'PENDING'}</span>
+                        </div>
+
+                        <div class="inquiry-details">
+                            <div class="detail-box">
+                                <span>${user.role === 'BROKER' ? 'Client Name' : 'Inquired By'}</span>
+                                <strong>${inq.customerName || 'Customer'}</strong>
+                            </div>
+                            <div class="detail-box">
+                                <span>Inquiry Date</span>
+                                <strong>${dateFormatted}</strong>
+                            </div>
+                            <div class="detail-box">
+                                <span>Inquiry ID</span>
+                                <strong>#INQ-${inq.inquiryId}</strong>
+                            </div>
+                        </div>
+
+                        <div class="message-bubble">
+                            <strong>Message:</strong> ${inq.message}
+                        </div>
+
+                        ${inq.brokerReply ? `
+                            <div class="reply-bubble">
+                                <strong>Broker Reply:</strong> ${inq.brokerReply}
+                            </div>
+                        ` : ''}
+
+                        ${(user.role === 'BROKER' && !inq.brokerReply) ? `
+                            <form class="reply-form" onsubmit="handleSendReply(event, ${inq.inquiryId})">
+                                <input type="text" class="reply-input" placeholder="Type your reply to this client..." required id="replyInput-${inq.inquiryId}">
+                                <button type="submit" class="action-btn confirm-btn">Send Reply</button>
+                            </form>
+                        ` : ''}
+
+                        <div class="inquiry-actions">
+                            <button onclick="goToChat(${inq.propertyId})" class="chat-btn">
+                                💬 Open In-App Chat
+                            </button>
+                            <button onclick="viewProperty(${inq.propertyId})" class="view-btn">
+                                View Property
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Failed to load inquiries: ${err.message}</p>`;
+            }
+        }
+
+        // ==========================================
+        // 2. SITE VISITS LOADER
+        // ==========================================
+        async function loadVisits() {
+            const container = document.getElementById("visitsContainer");
+            const countBadge = document.getElementById("visitCount");
+
+            try {
+                let response;
+                if (user.role === "BROKER") {
+                    response = await window.api.getBrokerVisits();
+                } else {
+                    response = await window.api.getCustomerVisits();
+                }
+
+                const visits = (response && response.data) ? response.data : [];
+                countBadge.textContent = visits.length;
+
+                if (visits.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📅</div>
+                            <h3>No site visits scheduled</h3>
+                            <p>${user.role === 'BROKER' ? 'No site visit requests received yet.' : 'You have not scheduled any property visits yet.'}</p>
+                            ${user.role === 'CUSTOMER' ? '<a href="properties.html" class="chat-btn" style="display:inline-block; margin-top:15px;">Explore Properties</a>' : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                visits.forEach(v => {
+                    const statusClass = (v.status === 'CONFIRMED') ? 'confirmed' : ((v.status === 'CANCELLED') ? 'cancelled' : 'pending');
+                    
+                    const card = document.createElement("div");
+                    card.className = "inquiry-card";
+                    card.innerHTML = `
+                        <div class="inquiry-top">
+                            <div>
+                                <h2 class="property-name">${v.propertyTitle || 'Property #' + v.propertyId}</h2>
+                                <p class="location">Property ID: #${v.propertyId}</p>
+                            </div>
+                            <span class="status ${statusClass}">${v.status || 'PENDING'}</span>
+                        </div>
+
+                        <div class="inquiry-details">
+                            <div class="detail-box">
+                                <span>${user.role === 'BROKER' ? 'Client Name' : 'Visitor'}</span>
+                                <strong>${v.customerName || 'Customer'}</strong>
+                            </div>
+                            <div class="detail-box">
+                                <span>Scheduled Date</span>
+                                <strong>📅 ${v.visitDate || 'TBD'}</strong>
+                            </div>
+                            <div class="detail-box">
+                                <span>Time Slot</span>
+                                <strong>⏰ ${v.timeSlot || 'Flexible'}</strong>
+                            </div>
+                        </div>
+
+                        ${v.notes ? `
+                            <div class="message-bubble">
+                                <strong>Special Request / Notes:</strong> ${v.notes}
+                            </div>
+                        ` : ''}
+
+                        <div class="inquiry-actions">
+                            ${(user.role === 'BROKER' && v.status === 'PENDING') ? `
+                                <button onclick="handleVisitStatus(${v.visitId}, 'CONFIRMED')" class="action-btn confirm-btn">
+                                    ✓ Confirm Visit
+                                </button>
+                                <button onclick="handleVisitStatus(${v.visitId}, 'CANCELLED')" class="action-btn cancel-btn">
+                                    ✗ Cancel Visit
+                                </button>
+                            ` : ''}
+                            <button onclick="goToChat(${v.propertyId})" class="chat-btn">
+                                💬 Chat with ${user.role === 'BROKER' ? 'Client' : 'Broker'}
+                            </button>
+                            <button onclick="viewProperty(${v.propertyId})" class="view-btn">
+                                View Property
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Failed to load visits: ${err.message}</p>`;
+            }
+        }
+
+        // ==========================================
+        // 3. ACTION HANDLERS
+        // ==========================================
+        async function handleSendReply(event, inquiryId) {
+            event.preventDefault();
+            const input = document.getElementById(`replyInput-${inquiryId}`);
+            if (!input || !input.value.trim()) return;
+
+            try {
+                await window.api.replyInquiry(inquiryId, input.value.trim());
+                alert("Reply sent successfully to the client.");
+                await loadInquiries();
+            } catch (err) {
+                alert("Failed to send reply: " + err.message);
+            }
+        }
+
+        async function handleVisitStatus(visitId, status) {
+            if (!confirm(`Are you sure you want to mark this visit as ${status}?`)) return;
+
+            try {
+                await window.api.updateVisitStatus(visitId, status);
+                alert(`Visit marked as ${status}.`);
+                await loadVisits();
+            } catch (err) {
+                alert("Failed to update visit status: " + err.message);
+            }
+        }
+
+        function goToChat(propertyId) {
+            localStorage.setItem("selectedPropertyId", propertyId);
+            window.location.href = "chat.html";
+        }
+
+        function viewProperty(propertyId) {
+            localStorage.setItem("selectedPropertyId", propertyId);
+            window.location.href = "property-details.html";
+        }
+    </script>
 
 </body>
 </html>

@@ -220,6 +220,68 @@ const api = {
 
     async markChatAsRead(chatId) {
         return await this.request(`/chats/${chatId}/read`, { method: "PUT" });
+    },
+
+    // ==========================================
+    // ❤️ WISHLIST APIS
+    // ==========================================
+
+    async getWishlist() {
+        return await this.request("/wishlist", { method: "GET" });
+    },
+
+    async addToWishlist(propertyId) {
+        return await this.request(`/wishlist/${propertyId}`, { method: "POST" });
+    },
+
+    async removeFromWishlist(propertyId) {
+        return await this.request(`/wishlist/${propertyId}`, { method: "DELETE" });
+    },
+
+    // ==========================================
+    // 📩 INQUIRIES & VISITS APIS
+    // ==========================================
+
+    async sendInquiry(propertyId, message) {
+        return await this.request("/inquiries", {
+            method: "POST",
+            body: JSON.stringify({ propertyId, message })
+        });
+    },
+
+    async getCustomerInquiries() {
+        return await this.request("/inquiries/customer", { method: "GET" });
+    },
+
+    async getBrokerInquiries() {
+        return await this.request("/inquiries/broker", { method: "GET" });
+    },
+
+    async replyInquiry(inquiryId, reply) {
+        return await this.request(`/inquiries/${inquiryId}?reply=${encodeURIComponent(reply)}`, {
+            method: "PUT"
+        });
+    },
+
+    async scheduleVisit(propertyId, visitDate, timeSlot, notes = "") {
+        return await this.request("/visits", {
+            method: "POST",
+            body: JSON.stringify({ propertyId, visitDate, timeSlot, notes })
+        });
+    },
+
+    async getCustomerVisits() {
+        return await this.request("/visits/customer", { method: "GET" });
+    },
+
+    async getBrokerVisits() {
+        return await this.request("/visits/broker", { method: "GET" });
+    },
+
+    async updateVisitStatus(visitId, status) {
+        return await this.request(`/visits/${visitId}?status=${status.toUpperCase()}`, {
+            method: "PUT"
+        });
     }
 };
 

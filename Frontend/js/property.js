@@ -84,6 +84,20 @@ function displayProperties(propertyList) {
 async function loadPublicProperties() {
     if (!propertyGrid) return;
 
+    // Check if coming from Home page search box
+    const savedLocation = localStorage.getItem("searchLocation");
+    const savedPurpose = localStorage.getItem("searchPurpose");
+    if (savedLocation || savedPurpose) {
+        const locationInput = document.getElementById("locationFilter");
+        const purposeSelect = document.getElementById("purposeFilter");
+        if (locationInput && savedLocation) locationInput.value = savedLocation;
+        if (purposeSelect && savedPurpose) purposeSelect.value = savedPurpose.toLowerCase();
+        localStorage.removeItem("searchLocation");
+        localStorage.removeItem("searchPurpose");
+        await filterProperties();
+        return;
+    }
+
     try {
         propertyGrid.innerHTML = `<p style="text-align:center; color:#667085; padding:40px; grid-column: 1 / -1;">Loading verified properties...</p>`;
         
@@ -201,9 +215,12 @@ async function loadPropertyDetails() {
                                 <h1 style="font-size:26px; margin:10px 0 5px;">${prop.title}</h1>
                                 <p style="color:#667085; font-size:15px;">📍 ${prop.address}, ${prop.city}, ${prop.state || ''}</p>
                             </div>
-                            <div style="text-align:right;">
+                            <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
                                 <div style="font-size:26px; font-weight:bold; color:#1d4ed8;">${priceDisplay}</div>
                                 <span style="font-size:13px; color:#16a34a; font-weight:600;">✓ Verified Listing</span>
+                                <button onclick="toggleWishlist(${prop.propertyId}, this)" style="background:#fff; border:1px solid #f43f5e; color:#f43f5e; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; margin-top:4px;">
+                                    ❤️ Add to Wishlist
+                                </button>
                             </div>
                         </div>
 
@@ -244,7 +261,7 @@ async function loadPropertyDetails() {
                         </p>
 
                         <!-- Broker Contact Box (RULE 3: In-App Chat Only, No Phone Expose) -->
-                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:25px;">
                             <div>
                                 <div style="font-size:13px; color:#166534; font-weight:600;">LISTED BY VERIFIED BROKER</div>
                                 <h4 style="margin:4px 0; font-size:18px;">${brokerName} (${brokerCode})</h4>
@@ -254,12 +271,133 @@ async function loadPropertyDetails() {
                                 💬 In-App Chat with Broker
                             </button>
                         </div>
+
+                        <!-- Customer Actions: Inquiry & Visit Scheduling Grid -->
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; margin-top:20px;">
+                            <!-- Send Quick Inquiry -->
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
+                                <h4 style="margin-bottom:6px; font-size:17px; color:#1e293b;">📩 Send an Inquiry</h4>
+                                <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Have questions about price or agreement? Ask the broker directly.</p>
+                                <form onsubmit="submitInquiry(event, ${prop.propertyId})">
+                                    <textarea id="inquiryMessageInput" placeholder="Hi, I am interested in this property. Is the rent negotiable?" required rows="3" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; margin-bottom:10px; resize:vertical; outline:none; box-sizing:border-box;"></textarea>
+                                    <button type="submit" style="background:#2563eb; color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+                                        Send Inquiry
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Schedule Site Visit -->
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
+                                <h4 style="margin-bottom:6px; font-size:17px; color:#1e293b;">📅 Schedule a Site Visit</h4>
+                                <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Pick a convenient date and time to physically inspect the property.</p>
+                                <form id="visitScheduleForm" onsubmit="submitVisit(event, ${prop.propertyId})">
+                                    <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                                        <div style="flex:1; min-width:140px;">
+                                            <label style="font-size:12px; color:#64748b; display:block; margin-bottom:4px;">Visit Date</label>
+                                            <input type="date" id="visitDateInput" required style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; box-sizing:border-box;">
+                                        </div>
+                                        <div style="flex:1; min-width:140px;">
+                                            <label style="font-size:12px; color:#64748b; display:block; margin-bottom:4px;">Time Slot</label>
+                                            <select id="visitTimeSlot" required style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; box-sizing:border-box;">
+                                                <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+                                                <option value="02:00 PM - 04:00 PM">02:00 PM - 04:00 PM</option>
+                                                <option value="05:00 PM - 07:00 PM">05:00 PM - 07:00 PM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="text" id="visitNotesInput" placeholder="Optional notes (e.g. Coming with family)" style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; margin-bottom:10px; box-sizing:border-box;">
+                                    <button type="submit" style="background:#0f172a; color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+                                        Schedule Visit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     } catch (err) {
         propertyDetails.innerHTML = `<p style="padding:40px; text-align:center; color:#b91c1c;">Error loading details: ${err.message}</p>`;
+    }
+}
+
+// Wishlist Action
+async function toggleWishlist(propertyId, btn) {
+    const user = window.api ? window.api.getCurrentUser() : null;
+    if (!user || !user.token) {
+        alert("Please login first to save properties to your wishlist.");
+        window.location.href = "login.html";
+        return;
+    }
+    if (user.role !== "CUSTOMER") {
+        alert("Only Customers can add properties to wishlist.");
+        return;
+    }
+
+    try {
+        await window.api.addToWishlist(propertyId);
+        btn.textContent = "❤️ Saved in Wishlist";
+        btn.style.background = "#fee2e2";
+        btn.style.borderColor = "#fda4af";
+        alert("Property added to your Wishlist!");
+    } catch (err) {
+        alert("Wishlist: " + err.message);
+    }
+}
+
+// Direct Inquiry Action
+async function submitInquiry(event, propertyId) {
+    event.preventDefault();
+    const user = window.api ? window.api.getCurrentUser() : null;
+    if (!user || !user.token) {
+        alert("Please login as Customer to send an inquiry.");
+        window.location.href = "login.html";
+        return;
+    }
+    if (user.role !== "CUSTOMER") {
+        alert("Only Customers can send inquiries.");
+        return;
+    }
+    const messageInput = document.getElementById("inquiryMessageInput");
+    if (!messageInput || !messageInput.value.trim()) return;
+
+    try {
+        await window.api.sendInquiry(propertyId, messageInput.value.trim());
+        alert("✅ Inquiry sent successfully! The broker will respond soon. You can track it in 'My Inquiries'.");
+        messageInput.value = "";
+    } catch (err) {
+        alert("Failed to send inquiry: " + err.message);
+    }
+}
+
+// Schedule Site Visit Action
+async function submitVisit(event, propertyId) {
+    event.preventDefault();
+    const user = window.api ? window.api.getCurrentUser() : null;
+    if (!user || !user.token) {
+        alert("Please login as Customer to schedule a visit.");
+        window.location.href = "login.html";
+        return;
+    }
+    if (user.role !== "CUSTOMER") {
+        alert("Only Customers can schedule site visits.");
+        return;
+    }
+    const visitDate = document.getElementById("visitDateInput").value;
+    const timeSlot = document.getElementById("visitTimeSlot").value;
+    const notes = document.getElementById("visitNotesInput").value.trim();
+
+    if (!visitDate) {
+        alert("Please select a date for the visit.");
+        return;
+    }
+
+    try {
+        await window.api.scheduleVisit(propertyId, visitDate, timeSlot, notes);
+        alert("✅ Site visit scheduled successfully! The broker will confirm your slot. Track it in 'My Inquiries & Visits'.");
+        document.getElementById("visitScheduleForm").reset();
+    } catch (err) {
+        alert("Failed to schedule visit: " + err.message);
     }
 }
 

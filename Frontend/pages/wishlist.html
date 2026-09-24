@@ -204,141 +204,10 @@
         </div>
 
 
-        <div class="wishlist-grid">
-
-
-            <!-- Wishlist Property 1 -->
-            <div class="wishlist-card" id="wishlist-1">
-
-                <div class="wishlist-image">
-
-                    <img src="../images/home-banner.jpg"
-                         alt="Modern 3 BHK House">
-
-                    <button
-                        class="remove-btn"
-                        onclick="removeWishlist(1)">
-                        ♥
-                    </button>
-
-                </div>
-
-                <div class="wishlist-content">
-
-                    <h3>Modern 3 BHK House</h3>
-
-                    <p class="location">
-                        📍 Jodhpur, Rajasthan
-                    </p>
-
-                    <div class="property-info">
-                        <span>🛏 3 BHK</span>
-                        <span>🚿 2 Bathrooms</span>
-                        <span>📐 1500 sq.ft</span>
-                    </div>
-
-                    <div class="price">
-                        ₹25,000 / month
-                    </div>
-
-                    <a href="property-details.html"
-                       class="view-btn">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- Wishlist Property 2 -->
-            <div class="wishlist-card" id="wishlist-2">
-
-                <div class="wishlist-image">
-
-                    <img src="../images/flat-banner.jpg"
-                         alt="Premium 2 BHK Flat">
-
-                    <button
-                        class="remove-btn"
-                        onclick="removeWishlist(2)">
-                        ♥
-                    </button>
-
-                </div>
-
-                <div class="wishlist-content">
-
-                    <h3>Premium 2 BHK Flat</h3>
-
-                    <p class="location">
-                        📍 Jaipur, Rajasthan
-                    </p>
-
-                    <div class="property-info">
-                        <span>🛏 2 BHK</span>
-                        <span>🚿 2 Bathrooms</span>
-                        <span>📐 1200 sq.ft</span>
-                    </div>
-
-                    <div class="price">
-                        ₹45 Lakh
-                    </div>
-
-                    <a href="property-details.html"
-                       class="view-btn">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- Wishlist Property 3 -->
-            <div class="wishlist-card" id="wishlist-3">
-
-                <div class="wishlist-image">
-
-                    <img src="../images/home-banner.jpg"
-                         alt="Luxury 4 BHK Villa">
-
-                    <button
-                        class="remove-btn"
-                        onclick="removeWishlist(3)">
-                        ♥
-                    </button>
-
-                </div>
-
-                <div class="wishlist-content">
-
-                    <h3>Luxury 4 BHK Villa</h3>
-
-                    <p class="location">
-                        📍 Udaipur, Rajasthan
-                    </p>
-
-                    <div class="property-info">
-                        <span>🛏 4 BHK</span>
-                        <span>🚿 3 Bathrooms</span>
-                        <span>📐 2200 sq.ft</span>
-                    </div>
-
-                    <div class="price">
-                        ₹40,000 / month
-                    </div>
-
-                    <a href="property-details.html"
-                       class="view-btn">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-
+        <div class="wishlist-grid" id="wishlistContainer">
+            <p style="grid-column: 1 / -1; text-align: center; color: #667085; padding: 40px;">
+                Loading your saved properties...
+            </p>
         </div>
 
     </main>
@@ -350,25 +219,99 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
-
-        function removeWishlist(id) {
-
-            const card = document.getElementById("wishlist-" + id);
-
-            if (card) {
-
-                card.remove();
-
-                alert("Property removed from wishlist.");
-
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "CUSTOMER") {
+            alert("Please login as a Customer to view your wishlist.");
+            window.location.href = "login.html";
+        } else {
+            const userArea = document.querySelector(".user-area span");
+            if (userArea) {
+                userArea.textContent = `Welcome, ${user.name || "Customer"}`;
             }
-
         }
 
-    </script>
+        const container = document.getElementById("wishlistContainer");
 
+        async function loadWishlist() {
+            try {
+                const response = await window.api.getWishlist();
+                const items = response.data || [];
+
+                if (items.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align:center; padding:50px; background:#fff; border-radius:14px; border:1px solid #e5e7eb;">
+                            <div style="font-size:40px; margin-bottom:10px;">❤️</div>
+                            <h3>Your wishlist is empty</h3>
+                            <p style="color:#667085; margin:10px 0 20px;">Explore verified properties and save your favorites here.</p>
+                            <a href="properties.html" class="view-btn" style="display:inline-block;">Explore Properties</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                items.forEach(item => {
+                    const prop = item.property || {};
+                    const primaryImg = (prop.images && prop.images.length > 0) ? prop.images[0].imageUrl : "../images/flat-banner.jpg";
+                    const priceFormatted = Number(prop.price).toLocaleString();
+
+                    const card = document.createElement("div");
+                    card.className = "wishlist-card";
+                    card.innerHTML = `
+                        <div class="wishlist-image">
+                            <img src="${primaryImg}" alt="${prop.title}">
+                            <button class="remove-btn" onclick="handleRemoveWishlist(${prop.propertyId})">
+                                ♥
+                            </button>
+                        </div>
+
+                        <div class="wishlist-content">
+                            <h3>${prop.title}</h3>
+                            <p class="location">📍 ${prop.city}, ${prop.address}</p>
+
+                            <div class="property-info">
+                                <span>🛏 ${prop.bhk} BHK</span>
+                                <span>🚿 ${prop.bathrooms || 1} Baths</span>
+                                <span>📐 ${prop.areaSqft || 1000} sq.ft</span>
+                            </div>
+
+                            <div class="price">
+                                ₹${priceFormatted} ${prop.purpose === 'RENT' ? '/ month' : ''}
+                            </div>
+
+                            <button onclick="viewPropDetails(${prop.propertyId})" class="view-btn" style="width:100%; border:none; cursor:pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; color:#b91c1c; padding:30px;">Error loading wishlist: ${err.message}</p>`;
+            }
+        }
+
+        async function handleRemoveWishlist(propertyId) {
+            if (!confirm("Remove this property from your wishlist?")) return;
+
+            try {
+                await window.api.removeFromWishlist(propertyId);
+                loadWishlist();
+            } catch (e) {
+                alert("Failed to remove item: " + e.message);
+            }
+        }
+
+        function viewPropDetails(id) {
+            localStorage.setItem("selectedPropertyId", id);
+            window.location.href = "property-details.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", loadWishlist);
+    </script>
 </body>
 </html>

@@ -309,67 +309,61 @@
                 </div>
 
 
+                <!-- Broker Code / ID -->
+                <div class="profile-group">
+                    <label>
+                        Official Broker Code (Rule 1)
+                    </label>
+                    <div class="status-box" id="brokerCodeDisplay" style="background:#eff6ff; color:#1d4ed8; font-weight:bold; font-family:monospace; font-size:15px;">
+                        Loading...
+                    </div>
+                </div>
+
+                <!-- Account Status -->
+                <div class="profile-group">
+                    <label>
+                        Verification Status
+                    </label>
+                    <div class="status-box" id="brokerStatusDisplay">
+                        ✓ Approved Broker
+                    </div>
+                </div>
+
                 <!-- ID Verification -->
                 <div class="profile-group">
-
                     <label>
                         ID Verification
                     </label>
-
                     <div class="status-box">
                         ✓ Verified
                     </div>
-
                 </div>
-
 
                 <!-- Address Verification -->
                 <div class="profile-group">
-
                     <label>
                         Address Verification
                     </label>
-
                     <div class="status-box">
                         ✓ Verified
                     </div>
-
                 </div>
-
-
-                <!-- Account Status -->
-                <div class="profile-group full-width">
-
-                    <label>
-                        Account Status
-                    </label>
-
-                    <div class="status-box">
-                        ✓ Approved Broker
-                    </div>
-
-                </div>
-
 
                 <!-- Save -->
-                <div class="profile-actions">
-
+                <div class="profile-actions full-width" style="grid-column: 1 / -1;">
                     <button
                         type="submit"
                         class="save-button"
                     >
                         Save Changes
                     </button>
-
                 </div>
 
             </form>
 
-
             <div class="privacy-note">
                 🔒 Your profile and verification information is securely managed by HouseHub.
             </div>
-
 
             <a
                 href="broker-dashboard.html"
@@ -382,112 +376,77 @@
 
     </section>
 
-
     <!-- Footer -->
     <footer class="footer">
-
         <div class="footer-container">
-
             <div>
                 <h3>🏠 HouseHub</h3>
                 <p>
                     Find your perfect home for rent or purchase.
                 </p>
             </div>
-
             <div>
                 <h4>Quick Links</h4>
                 <a href="../index.html">Home</a>
                 <a href="properties.html">Properties</a>
                 <a href="broker-dashboard.html">Dashboard</a>
             </div>
-
             <div>
                 <h4>For Users</h4>
-                <a href="customer-register.html">
-                    Customer Registration
-                </a>
-
-                <a href="broker-register.html">
-                    Broker Registration
-                </a>
+                <a href="customer-register.html">Customer Registration</a>
+                <a href="broker-register.html">Broker Registration</a>
             </div>
-
         </div>
-
         <div class="footer-bottom">
-            <p>
-                © 2026 HouseHub. All Rights Reserved.
-            </p>
+            <p>© 2026 HouseHub. All Rights Reserved.</p>
         </div>
-
     </footer>
 
-
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
-        const brokerProfileForm =
-            document.getElementById("brokerProfileForm");
+        document.addEventListener("DOMContentLoaded", function() {
+            const user = window.api ? window.api.getCurrentUser() : null;
 
-        if (brokerProfileForm) {
+            if (!user || !user.token) {
+                alert("Please login first to view broker profile.");
+                window.location.href = "login.html";
+                return;
+            }
 
-            brokerProfileForm.addEventListener(
-                "submit",
-                function(event) {
+            if (user.role !== "BROKER") {
+                alert("This profile page is for Brokers.");
+                window.location.href = "customer-profile.html";
+                return;
+            }
 
+            const nameInput = document.getElementById("brokerProfileName");
+            const emailInput = document.getElementById("brokerProfileEmail");
+            const brokerCodeBox = document.getElementById("brokerCodeDisplay");
+            const brokerStatusBox = document.getElementById("brokerStatusDisplay");
+
+            if (nameInput && user.name) nameInput.value = user.name;
+            if (emailInput && user.email) emailInput.value = user.email;
+            
+            if (brokerCodeBox) {
+                brokerCodeBox.textContent = user.brokerCode || "BRK-VERIFIED-PARTNER";
+            }
+
+            const brokerProfileForm = document.getElementById("brokerProfileForm");
+            if (brokerProfileForm) {
+                brokerProfileForm.addEventListener("submit", function(event) {
                     event.preventDefault();
-
-                    const name =
-                        document.getElementById(
-                            "brokerProfileName"
-                        ).value.trim();
-
-                    const mobile =
-                        document.getElementById(
-                            "brokerProfileMobile"
-                        ).value.trim();
-
-                    const agency =
-                        document.getElementById(
-                            "brokerProfileAgency"
-                        ).value.trim();
-
-                    const city =
-                        document.getElementById(
-                            "brokerProfileCity"
-                        ).value.trim();
-
-
-                    if (name === "") {
-                        alert("Please enter your full name.");
+                    const newName = nameInput.value.trim();
+                    if (!newName) {
+                        alert("Please enter your name.");
                         return;
                     }
-
-                    if (!/^[0-9]{10}$/.test(mobile)) {
-                        alert(
-                            "Please enter a valid 10-digit mobile number."
-                        );
-                        return;
-                    }
-
-                    if (agency === "") {
-                        alert("Please enter your agency name.");
-                        return;
-                    }
-
-                    if (city === "") {
-                        alert("Please enter your city.");
-                        return;
-                    }
-
-
-                    alert(
-                        "Profile changes saved successfully!"
-                    );
-                }
-            );
-        }
+                    localStorage.setItem("userName", newName);
+                    alert("✅ Broker profile updated successfully!");
+                });
+            }
+        });
     </script>
 
 </body>
