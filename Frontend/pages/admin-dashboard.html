@@ -88,7 +88,6 @@
 
             <!-- Customers -->
             <div class="dashboard-card">
-
                 <div class="card-icon">
                     👥
                 </div>
@@ -100,16 +99,14 @@
                     accounts.
                 </p>
 
-                <a href="#">
+                <a href="admin-customers.html" id="customersCardLink">
                     View Customers →
                 </a>
-
             </div>
 
 
             <!-- Approved Brokers -->
             <div class="dashboard-card">
-
                 <div class="card-icon">
                     🏢
                 </div>
@@ -121,16 +118,14 @@
                     by the administrator.
                 </p>
 
-                <a href="#">
+                <a href="approved-brokers.html" id="approvedBrokersCardLink">
                     View Brokers →
                 </a>
-
             </div>
 
 
             <!-- Approved Properties -->
             <div class="dashboard-card">
-
                 <div class="card-icon">
                     🏘️
                 </div>
@@ -142,16 +137,14 @@
                     verification process.
                 </p>
 
-                <a href="properties.html">
+                <a href="properties.html" id="approvedPropsCardLink">
                     View Properties →
                 </a>
-
             </div>
 
 
             <!-- Reports -->
             <div class="dashboard-card">
-
                 <div class="card-icon">
                     ⚠️
                 </div>
@@ -163,10 +156,9 @@
                     brokers and properties.
                 </p>
 
-                <a href="#">
+                <a href="admin-reports.html" id="reportsCardLink">
                     View Reports →
                 </a>
-
             </div>
 
         </div>
@@ -176,11 +168,9 @@
 
     <!-- Footer -->
     <footer class="dashboard-footer">
-
         <p>
             © 2026 HouseHub. All Rights Reserved.
         </p>
-
     </footer>
 
 
@@ -200,7 +190,7 @@
                 const response = await window.api.getAdminStats();
                 const stats = response.data || {};
                 
-                // Add badges to cards if pending items exist
+                // Broker Verification Badge
                 const brokerCard = document.querySelector("a[href='broker-verification.html']");
                 if (brokerCard && stats.pendingBrokersCount > 0) {
                     brokerCard.innerHTML = `Review Brokers (${stats.pendingBrokersCount} Pending) →`;
@@ -208,11 +198,43 @@
                     brokerCard.style.fontWeight = "bold";
                 }
 
+                // Property Verification Badge
                 const propCard = document.querySelector("a[href='property-verification.html']");
                 if (propCard && stats.pendingPropertiesCount > 0) {
                     propCard.innerHTML = `Review Properties (${stats.pendingPropertiesCount} Pending) →`;
                     propCard.style.color = "#dc2626";
                     propCard.style.fontWeight = "bold";
+                }
+
+                // Customers Card
+                const customersLink = document.getElementById("customersCardLink");
+                if (customersLink && stats.totalCustomers !== undefined) {
+                    customersLink.innerHTML = `View Customers (${stats.totalCustomers}) →`;
+                }
+
+                // Approved Brokers Card
+                const approvedBrokersLink = document.getElementById("approvedBrokersCardLink");
+                if (approvedBrokersLink && stats.approvedBrokersCount !== undefined) {
+                    approvedBrokersLink.innerHTML = `View Brokers (${stats.approvedBrokersCount} Verified) →`;
+                    approvedBrokersLink.style.color = "#16a34a";
+                }
+
+                // Approved Properties Card
+                const approvedPropsLink = document.getElementById("approvedPropsCardLink");
+                if (approvedPropsLink && stats.activePropertiesCount !== undefined) {
+                    approvedPropsLink.innerHTML = `View Live Properties (${stats.activePropertiesCount}) →`;
+                }
+
+                // Reports & Complaints Card
+                const reportsLink = document.getElementById("reportsCardLink");
+                if (reportsLink) {
+                    if (stats.pendingReportsCount > 0) {
+                        reportsLink.innerHTML = `View Reports (${stats.pendingReportsCount} Pending Review) →`;
+                        reportsLink.style.color = "#dc2626";
+                        reportsLink.style.fontWeight = "bold";
+                    } else if (stats.totalReportsCount !== undefined) {
+                        reportsLink.innerHTML = `View Reports (${stats.totalReportsCount}) →`;
+                    }
                 }
             } catch (err) {
                 console.warn("Could not fetch admin stats:", err.message);

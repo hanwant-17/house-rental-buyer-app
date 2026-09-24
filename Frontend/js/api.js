@@ -153,6 +153,31 @@ const api = {
         return await this.request("/admin/stats", { method: "GET" });
     },
 
+    async getAdminCustomers() {
+        return await this.request("/admin/customers", { method: "GET" });
+    },
+
+    async getApprovedBrokers() {
+        return await this.request("/admin/brokers/approved", { method: "GET" });
+    },
+
+    async getAdminReports() {
+        return await this.request("/admin/reports", { method: "GET" });
+    },
+
+    async updateReportStatus(reportId, status, remarks = "") {
+        return await this.request(`/admin/reports/${reportId}/status?status=${status.toUpperCase()}&remarks=${encodeURIComponent(remarks)}`, {
+            method: "PUT"
+        });
+    },
+
+    async submitReport(reportData) {
+        return await this.request("/reports", {
+            method: "POST",
+            body: JSON.stringify(reportData)
+        });
+    },
+
     // ==========================================
     // 🏠 PROPERTY APIS
     // ==========================================

@@ -3,14 +3,19 @@ package com.houseapp.controller;
 import com.houseapp.dto.ApiResponse;
 import com.houseapp.dto.BrokerApprovalDto;
 import com.houseapp.dto.PropertyApprovalDto;
+import com.houseapp.dto.ReportDto;
 import com.houseapp.entity.Broker;
+import com.houseapp.entity.Customer;
 import com.houseapp.entity.Property;
+import com.houseapp.entity.VerificationStatus;
 import com.houseapp.repository.BrokerRepository;
+import com.houseapp.repository.CustomerRepository;
 import com.houseapp.repository.PropertyRepository;
 import com.houseapp.repository.UserRepository;
 import com.houseapp.security.UserDetailsImpl;
 import com.houseapp.service.BrokerService;
 import com.houseapp.service.PropertyService;
+import com.houseapp.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,8 +34,10 @@ public class AdminController {
 
     private final BrokerService brokerService;
     private final PropertyService propertyService;
+    private final ReportService reportService;
     private final UserRepository userRepository;
     private final BrokerRepository brokerRepository;
+    private final CustomerRepository customerRepository;
     private final PropertyRepository propertyRepository;
 
     // ==========================================
@@ -63,6 +70,26 @@ public class AdminController {
     }
 
     // ==========================================
+    // APPROVED BROKERS
+    // ==========================================
+
+    @GetMapping("/brokers/approved")
+    public ResponseEntity<ApiResponse<List<Broker>>> getApprovedBrokers() {
+        List<Broker> approved = brokerRepository.findByVerificationStatus(VerificationStatus.APPROVED);
+        return ResponseEntity.ok(ApiResponse.success("Approved brokers fetched successfully.", approved));
+    }
+
+    // ==========================================
+    // CUSTOMER MANAGEMENT
+    // ==========================================
+
+    @GetMapping("/customers")
+    public ResponseEntity<ApiResponse<List<Customer>>> getAllCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        return ResponseEntity.ok(ApiResponse.success("All customers fetched successfully.", customers));
+    }
+
+    // ==========================================
     // PROPERTY VERIFICATION (RULE 2 & 4)
     // ==========================================
 
@@ -92,6 +119,25 @@ public class AdminController {
     }
 
     // ==========================================
+    // REPORTS & COMPLAINTS
+    // ==========================================
+
+    @GetMapping("/reports")
+    public ResponseEntity<ApiResponse<List<ReportDto>>> getAllReports() {
+        List<ReportDto> reports = reportService.getAllReports();
+        return ResponseEntity.ok(ApiResponse.success("All reports fetched successfully.", reports));
+    }
+
+    @PutMapping("/reports/{id}/status")
+    public ResponseEntity<ApiResponse<ReportDto>> updateReportStatus(
+            @PathVariable("id") Long reportId,
+            @RequestParam String status,
+            @RequestParam(required = false, defaultValue = "") String remarks) {
+        ReportDto updated = reportService.updateReportStatus(reportId, status, remarks);
+        return ResponseEntity.ok(ApiResponse.success("Report status updated to: " + status, updated));
+    }
+
+    // ==========================================
     // ADMIN DASHBOARD STATS
     // ==========================================
 
@@ -100,10 +146,14 @@ public class AdminController {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalUsers", userRepository.count());
         stats.put("totalBrokers", brokerRepository.count());
+        stats.put("totalCustomers", customerRepository.count());
         stats.put("totalProperties", propertyRepository.count());
         stats.put("pendingBrokersCount", brokerService.getPendingBrokers().size());
+        stats.put("approvedBrokersCount", brokerRepository.findByVerificationStatus(VerificationStatus.APPROVED).size());
         stats.put("pendingPropertiesCount", propertyService.getPendingProperties().size());
         stats.put("activePropertiesCount", propertyService.getAllPublicProperties().size());
+        stats.put("totalReportsCount", reportService.getAllReports().size());
+        stats.put("pendingReportsCount", reportService.getAllReports().stream().filter(r -> "PENDING".equalsIgnoreCase(r.getStatus())).count());
 
         return ResponseEntity.ok(ApiResponse.success("Admin dashboard statistics.", stats));
     }

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Complaints - HouseHub Admin</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 45px 25px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Filter Tabs */
+        .tab-bar {
+            display: flex;
+            gap: 12px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            padding: 10px 18px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667085;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+
+        .reports-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .report-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        }
+
+        .report-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .report-target {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .report-type-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #f1f5f9;
+            color: #475467;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #ffedd5;
+        }
+
+        .status-resolved {
+            background: #ecfdf3;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-dismissed {
+            background: #f2f4f7;
+            color: #475467;
+            border: 1px solid #e5e7eb;
+        }
+
+        .report-reason {
+            font-size: 15px;
+            font-weight: 600;
+            color: #b91c1c;
+            margin-bottom: 8px;
+        }
+
+        .report-desc {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .report-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #64748b;
+            flex-wrap: wrap;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .report-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-resolve {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-resolve:hover {
+            background: #15803d;
+        }
+
+        .btn-dismiss {
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-dismiss:hover {
+            background: #fecaca;
+        }
+
+        .admin-remarks-box {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #f0fdf4;
+            border-left: 3px solid #16a34a;
+            font-size: 13px;
+            color: #14532d;
+            border-radius: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            color: #667085;
+        }
+
+        .empty-state .icon {
+            font-size: 44px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+        <div class="logo">
+            🏠 HouseHub <span style="font-size:12px; background:#eff6ff; color:#2563eb; padding:3px 8px; border-radius:12px; margin-left:8px;">Admin Panel</span>
+        </div>
+        <div class="user-area">
+            <span>Admin</span>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="page-container">
+        <a href="admin-dashboard.html" class="back-link">← Back to Admin Dashboard</a>
+
+        <div class="page-header">
+            <div>
+                <h1>⚠️ Reports & Complaints</h1>
+                <p>Manage and resolve complaints submitted by customers and brokers.</p>
+            </div>
+            <div style="font-size:15px; font-weight:600; color:#475467;">
+                Total Reports: <span id="reportCount" style="color:#2563eb;">0</span>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="filterReports('ALL', this)">All Reports</button>
+            <button class="tab-btn" onclick="filterReports('PENDING', this)">Pending Review</button>
+            <button class="tab-btn" onclick="filterReports('RESOLVED', this)">Resolved</button>
+            <button class="tab-btn" onclick="filterReports('DISMISSED', this)">Dismissed</button>
+        </div>
+
+        <div class="reports-list" id="reportsContainer">
+            <p style="text-align:center; padding:40px; color:#667085;">Loading complaints and reports...</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        let allReports = [];
+        let currentFilter = 'ALL';
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "ADMIN") {
+                alert("Access restricted: Please login as Admin.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            await loadReports();
+        });
+
+        async function loadReports() {
+            const container = document.getElementById("reportsContainer");
+            const countSpan = document.getElementById("reportCount");
+
+            try {
+                const response = await window.api.getAdminReports();
+                allReports = response.data || [];
+                countSpan.textContent = allReports.length;
+                renderReports();
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="empty-state" style="color:#b91c1c;">
+                        Failed to load reports: ${err.message}
+                    </div>
+                `;
+            }
+        }
+
+        function filterReports(status, btn) {
+            currentFilter = status;
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderReports();
+        }
+
+        function renderReports() {
+            const container = document.getElementById("reportsContainer");
+            const filtered = currentFilter === 'ALL' 
+                ? allReports 
+                : allReports.filter(r => (r.status || '').toUpperCase() === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">✓</div>
+                        <h3>No ${currentFilter === 'ALL' ? '' : currentFilter.toLowerCase()} reports</h3>
+                        <p>There are no complaints under this category at this moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+            filtered.forEach(rep => {
+                const status = (rep.status || 'PENDING').toUpperCase();
+                let statusClass = 'status-pending';
+                if (status === 'RESOLVED') statusClass = 'status-resolved';
+                if (status === 'DISMISSED') statusClass = 'status-dismissed';
+
+                const dateStr = rep.createdAt ? new Date(rep.createdAt).toLocaleDateString("en-IN", {
+                    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                }) : "Recent";
+
+                const card = document.createElement("div");
+                card.className = "report-card";
+                card.innerHTML = `
+                    <div class="report-top">
+                        <div>
+                            <span class="report-type-badge">${rep.targetType || 'COMPLAINT'}</span>
+                            <div class="report-target">${rep.targetTitle || 'Report #' + rep.reportId}</div>
+                        </div>
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </div>
+
+                    <div class="report-reason">⚠️ ${rep.reason || 'General Dispute'}</div>
+                    <div class="report-desc">${rep.description || 'No description provided.'}</div>
+
+                    <div class="report-meta">
+                        <div>Reported By: <strong>${rep.reporterName || 'User'} (${rep.reporterEmail || ''})</strong></div>
+                        <div>Date: <strong>${dateStr}</strong></div>
+                        <div>Report ID: <strong>#REP-${rep.reportId}</strong></div>
+                    </div>
+
+                    ${rep.adminRemarks ? `
+                        <div class="admin-remarks-box">
+                            <strong>Admin Action Note:</strong> ${rep.adminRemarks}
+                        </div>
+                    ` : ''}
+
+                    ${status === 'PENDING' ? `
+                        <div class="report-actions">
+                            <button onclick="handleReportAction(${rep.reportId}, 'RESOLVED')" class="btn-resolve">
+                                ✓ Mark as Resolved
+                            </button>
+                            <button onclick="handleReportAction(${rep.reportId}, 'DISMISSED')" class="btn-dismiss">
+                                ✗ Dismiss Complaint
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function handleReportAction(reportId, action) {
+            const remarks = prompt(`Enter optional remarks for marking this report as ${action}:`);
+            if (remarks === null) return; // user cancelled prompt
+
+            try {
+                await window.api.updateReportStatus(reportId, action, remarks);
+                alert(`Report #${reportId} has been marked as ${action}.`);
+                await loadReports();
+            } catch (err) {
+                alert("Failed to update report: " + err.message);
+            }
+        }
+    </script>
+</body>
+</html>

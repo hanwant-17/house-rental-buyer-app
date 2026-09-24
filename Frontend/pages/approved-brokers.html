@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Brokers - HouseHub Admin</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 45px 25px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .broker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        .broker-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .broker-name {
+            font-size: 19px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .broker-agency {
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .broker-code-badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 15px 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 15px;
+        }
+
+        .info-item span {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .info-item strong {
+            font-size: 14px;
+            color: #1e293b;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #ecfdf3;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            color: #667085;
+        }
+
+        .empty-state .icon {
+            font-size: 44px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+        <div class="logo">
+            🏠 HouseHub <span style="font-size:12px; background:#eff6ff; color:#2563eb; padding:3px 8px; border-radius:12px; margin-left:8px;">Admin Panel</span>
+        </div>
+        <div class="user-area">
+            <span>Admin</span>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="page-container">
+        <a href="admin-dashboard.html" class="back-link">← Back to Admin Dashboard</a>
+
+        <div class="page-header">
+            <div>
+                <h1>🏢 Approved & Verified Brokers</h1>
+                <p>Brokers who have completed official identity and document verification (Rule 1).</p>
+            </div>
+            <div style="font-size:15px; font-weight:600; color:#475467;">
+                Total Verified: <span id="brokerCount" style="color:#16a34a;">0</span>
+            </div>
+        </div>
+
+        <div class="broker-grid" id="brokersContainer">
+            <p style="grid-column: 1 / -1; text-align:center; padding:40px; color:#667085;">
+                Loading approved brokers...
+            </p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "ADMIN") {
+                alert("Access restricted: Please login as Admin.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            await loadApprovedBrokers();
+        });
+
+        async function loadApprovedBrokers() {
+            const container = document.getElementById("brokersContainer");
+            const countSpan = document.getElementById("brokerCount");
+
+            try {
+                const response = await window.api.getApprovedBrokers();
+                const brokers = response.data || [];
+
+                countSpan.textContent = brokers.length;
+
+                if (brokers.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">🏢</div>
+                            <h3>No approved brokers yet</h3>
+                            <p>Once you review and approve pending broker applications, they will appear here with their generated Broker Code.</p>
+                            <a href="broker-verification.html" class="back-link" style="display:inline-block; margin-top:12px;">Review Pending Brokers →</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                brokers.forEach(b => {
+                    const u = b.user || {};
+                    const name = u.name || "Broker";
+                    const email = u.email || "N/A";
+                    const mobile = u.mobile || "N/A";
+                    const agency = b.agencyName || "Independent Broker";
+                    const city = b.city || "Not Specified";
+                    const exp = b.experienceYears ? `${b.experienceYears} Years` : "Experienced";
+                    const brokerCode = b.brokerCode || "BRK-VERIFIED";
+                    const license = b.licenseNumber || "Verified Document";
+
+                    const card = document.createElement("div");
+                    card.className = "broker-card";
+                    card.innerHTML = `
+                        <div>
+                            <div class="card-top">
+                                <div>
+                                    <div class="broker-name">${name}</div>
+                                    <div class="broker-agency">🏢 ${agency}</div>
+                                </div>
+                                <span class="broker-code-badge">${brokerCode}</span>
+                            </div>
+
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span>Operating City</span>
+                                    <strong>📍 ${city}</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Experience</span>
+                                    <strong>⏳ ${exp}</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Contact Email</span>
+                                    <strong style="word-break:break-all;">✉️ ${email}</strong>
+                                </div>
+                                <div class="info-item">
+                                    <span>Phone Number</span>
+                                    <strong>📞 ${mobile}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div style="font-size:12px; color:#64748b;">
+                                License: <strong>${license}</strong>
+                            </div>
+                            <span class="badge-verified">✓ Approved Partner</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="empty-state" style="color:#b91c1c;">
+                        Failed to load brokers: ${err.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

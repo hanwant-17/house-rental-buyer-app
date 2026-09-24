@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management - HouseHub Admin</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 45px 25px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .customers-table-wrapper {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475467;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .badge-active {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #ecfdf3;
+            color: #15803d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #667085;
+        }
+
+        .empty-state .icon {
+            font-size: 44px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .customers-table-wrapper {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+        <div class="logo">
+            🏠 HouseHub <span style="font-size:12px; background:#eff6ff; color:#2563eb; padding:3px 8px; border-radius:12px; margin-left:8px;">Admin Panel</span>
+        </div>
+        <div class="user-area">
+            <span>Admin</span>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="page-container">
+        <a href="admin-dashboard.html" class="back-link">← Back to Admin Dashboard</a>
+
+        <div class="page-header">
+            <div>
+                <h1>👥 Registered Customers</h1>
+                <p>Manage and monitor customer accounts registered on HouseHub.</p>
+            </div>
+            <div style="font-size:15px; font-weight:600; color:#475467;">
+                Total Customers: <span id="customerCount" style="color:#2563eb;">0</span>
+            </div>
+        </div>
+
+        <div class="customers-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email Address</th>
+                        <th>Mobile</th>
+                        <th>Preferred City</th>
+                        <th>Interest</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:40px; color:#667085;">
+                            Loading registered customers...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "ADMIN") {
+                alert("Access restricted: Please login as Admin.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            await loadCustomers();
+        });
+
+        async function loadCustomers() {
+            const tbody = document.getElementById("customersTableBody");
+            const countSpan = document.getElementById("customerCount");
+
+            try {
+                const response = await window.api.getAdminCustomers();
+                const customers = response.data || [];
+
+                countSpan.textContent = customers.length;
+
+                if (customers.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="icon">👥</div>
+                                    <h3>No customers registered yet</h3>
+                                    <p>When customers sign up on HouseHub, they will be listed here.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                customers.forEach(c => {
+                    const u = c.user || {};
+                    const name = u.name || "Customer";
+                    const email = u.email || "N/A";
+                    const mobile = u.mobile || "N/A";
+                    const city = c.preferredCity || "Not Specified";
+                    const purpose = c.preferredPurpose || "RENT & BUY";
+                    const initial = name.charAt(0).toUpperCase();
+
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>
+                            <div class="customer-info">
+                                <div class="customer-avatar">${initial}</div>
+                                <div>
+                                    <strong>${name}</strong>
+                                    <div style="font-size:12px; color:#64748b;">ID: #CST-${c.customerId || u.userId}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${email}</td>
+                        <td>${mobile}</td>
+                        <td>📍 ${city}</td>
+                        <td><span style="font-size:12px; background:#f1f5f9; padding:4px 8px; border-radius:6px; font-weight:600;">${purpose}</span></td>
+                        <td><span class="badge-active">Active</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:30px; color:#b91c1c;">
+                            Failed to load customers: ${err.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
