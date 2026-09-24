@@ -1,0 +1,41 @@
+### 1. Admin Login (Get JWT Token)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@househub.com",
+  "password": "Admin@123"
+}
+
+### 2. Customer Registration
+POST http://localhost:8080/api/auth/customer/register
+Content-Type: application/json
+
+{
+  "name": "Hanwant Singh",
+  "mobile": "9876543210",
+  "email": "hanwant@example.com",
+  "password": "Customer@123",
+  "city": "Jodhpur",
+  "userType": "RENT"
+}
+
+### 3. Broker Registration (Status: PENDING)
+POST http://localhost:8080/api/auth/broker/register
+Content-Type: application/json
+
+{
+  "name": "Rahul Sharma",
+  "mobile": "9123456780",
+  "email": "rahul@properties.com",
+  "password": "Broker@123",
+  "city": "Jodhpur",
+  "agencyName": "Sharma Properties",
+  "experience": "5 Years"
+}
+
+### 4. Public Properties List (No token required)
+GET http://localhost:8080/api/properties
+
+### 5. Search Properties (No token required)
+GET http://localhost:8080/api/properties/search?city=Jodhpur&purpose=RENT

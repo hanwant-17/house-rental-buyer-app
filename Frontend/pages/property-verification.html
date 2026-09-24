@@ -270,140 +270,9 @@
         </div>
 
 
-        <!-- Property Request -->
-        <div class="property-card">
-
-            <div class="property-header">
-
-                <div>
-                    <h2>Modern 3 BHK House</h2>
-                    <p>
-                        Submitted by: Rahul Sharma
-                    </p>
-                </div>
-
-                <span class="status">
-                    Pending Verification
-                </span>
-
-            </div>
-
-
-            <div class="property-content">
-
-                <!-- Property Image -->
-                <div class="property-image">
-
-                    <img
-                        src="../images/home-banner.jpg"
-                        alt="Modern 3 BHK House">
-
-                </div>
-
-
-                <!-- Property Details -->
-                <div class="property-details">
-
-                    <div class="detail-item">
-                        <strong>Property Type</strong>
-                        <span>House</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Purpose</strong>
-                        <span>For Rent</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Location</strong>
-                        <span>Jodhpur, Rajasthan</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>BHK</strong>
-                        <span>3 BHK</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Bathrooms</strong>
-                        <span>2</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Area</strong>
-                        <span>1500 sq.ft</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Furnished Status</strong>
-                        <span>Semi Furnished</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Parking</strong>
-                        <span>Available</span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Monthly Rent</strong>
-                        <span class="property-price">
-                            ₹25,000 / month
-                        </span>
-                    </div>
-
-                    <div class="detail-item">
-                        <strong>Security Deposit</strong>
-                        <span>
-                            ₹50,000
-                        </span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- Documents -->
-            <div class="documents">
-
-                <h3>Property Documents</h3>
-
-                <div class="document-list">
-
-                    <a href="#" class="document-btn">
-                        📄 Property Document
-                    </a>
-
-                    <a href="#" class="document-btn">
-                        📄 Ownership Proof
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- Actions -->
-            <div class="verification-actions">
-
-                <button
-                    class="approve-btn"
-                    onclick="approveProperty('Modern 3 BHK House')">
-
-                    ✓ Approve Property
-
-                </button>
-
-                <button
-                    class="reject-btn"
-                    onclick="rejectProperty('Modern 3 BHK House')">
-
-                    ✕ Reject Property
-
-                </button>
-
-            </div>
-
+        <!-- Dynamic Property Requests Container -->
+        <div id="propertyRequestsContainer">
+            <p style="text-align:center; color:#667085; padding:30px;">Loading pending properties...</p>
         </div>
 
     </main>
@@ -419,31 +288,146 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
-
-        function approveProperty(propertyName) {
-
-            alert(
-                propertyName +
-                " has been approved successfully."
-            );
-
+        // Check Admin Auth Guard
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "ADMIN") {
+            alert("Access restricted: Please login as Admin.");
+            window.location.href = "login.html";
         }
 
+        const container = document.getElementById("propertyRequestsContainer");
 
-        function rejectProperty(propertyName) {
+        async function loadPendingProperties() {
+            try {
+                container.innerHTML = '<p style="text-align:center; color:#667085; padding:30px;">Loading pending property listings...</p>';
+                const response = await window.api.getPendingProperties();
+                const properties = response.data || [];
 
-            alert(
-                propertyName +
-                " has been rejected."
-            );
+                if (properties.length === 0) {
+                    container.innerHTML = `
+                        <div class="property-card" style="text-align:center; padding:40px;">
+                            <div style="font-size:40px; margin-bottom:10px;">🏠</div>
+                            <h2>No Pending Properties</h2>
+                            <p style="color:#667085; margin-top:5px;">All submitted properties have been reviewed and published!</p>
+                        </div>
+                    `;
+                    return;
+                }
 
+                container.innerHTML = "";
+                properties.forEach(prop => {
+                    const brokerUser = (prop.broker && prop.broker.user) ? prop.broker.user : {};
+                    const primaryImg = (prop.images && prop.images.length > 0) ? prop.images[0].imageUrl : "../images/home-banner.jpg";
+
+                    const card = document.createElement("div");
+                    card.className = "property-card";
+                    card.innerHTML = `
+                        <div class="property-header">
+                            <div>
+                                <h2>${prop.title}</h2>
+                                <p>Submitted by: <strong>${brokerUser.name || "Broker"}</strong> (${prop.broker.brokerCode || "Verified Broker"})</p>
+                            </div>
+                            <span class="status">Pending Verification</span>
+                        </div>
+
+                        <div class="property-content">
+                            <div class="property-image">
+                                <img src="${primaryImg}" alt="${prop.title}">
+                            </div>
+
+                            <div class="property-details">
+                                <div class="detail-item">
+                                    <strong>Property Type</strong>
+                                    <span>${prop.propertyType || "Apartment"}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Purpose</strong>
+                                    <span>For ${prop.purpose || "Rent"}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>City & Address</strong>
+                                    <span>${prop.city}, ${prop.address}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>BHK</strong>
+                                    <span>${prop.bhk} BHK (${prop.bathrooms || 1} Baths)</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Area</strong>
+                                    <span>${prop.areaSqft || "N/A"} sq.ft</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Furnished Status</strong>
+                                    <span>${prop.furnishedStatus || "Unfurnished"}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Parking</strong>
+                                    <span>${prop.parking ? "Available" : "Not Available"}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Price / Rent</strong>
+                                    <span class="property-price">₹${Number(prop.price).toLocaleString()} ${prop.purpose === 'RENT' ? '/ month' : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="documents">
+                            <h3>Amenities & Description</h3>
+                            <p style="font-size:14px; color:#475467; margin-bottom:10px;">${prop.description || "No description provided."}</p>
+                            <small style="color:#667085;">Amenities: ${prop.amenities || "None"}</small>
+                        </div>
+
+                        <div class="verification-actions">
+                            <button class="approve-btn" onclick="handleApproveProperty(${prop.propertyId}, '${prop.title}')">
+                                ✓ Approve & Make LIVE
+                            </button>
+                            <button class="reject-btn" onclick="handleRejectProperty(${prop.propertyId}, '${prop.title}')">
+                                ✕ Reject
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="property-card" style="text-align:center; padding:30px; color:#b91c1c;">
+                        <p>Failed to load pending properties: ${err.message}</p>
+                        <button onclick="loadPendingProperties()" style="margin-top:10px; padding:6px 12px; cursor:pointer;">Retry</button>
+                    </div>
+                `;
+            }
         }
 
+        async function handleApproveProperty(propertyId, title) {
+            if (!confirm(`Are you sure you want to approve "${title}"? It will become visible to all customers immediately.`)) return;
+
+            try {
+                await window.api.approveProperty(propertyId);
+                alert(`✅ Success! "${title}" has been approved and is now LIVE for customers!`);
+                loadPendingProperties();
+            } catch (error) {
+                alert("Approval failed: " + error.message);
+            }
+        }
+
+        async function handleRejectProperty(propertyId, title) {
+            const reason = prompt(`Enter reason for rejecting "${title}":`, "Property details or price mismatch.");
+            if (!reason) return;
+
+            try {
+                await window.api.rejectProperty(propertyId, reason);
+                alert(`✕ "${title}" has been rejected.`);
+                loadPendingProperties();
+            } catch (error) {
+                alert("Rejection failed: " + error.message);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadPendingProperties);
     </script>
-
 </body>
-
 </html>

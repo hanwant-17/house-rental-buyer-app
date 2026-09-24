@@ -184,8 +184,42 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
-</body>
+    <script>
+        // Check Admin Auth Guard
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "ADMIN") {
+            alert("Access restricted: Please login as Admin.");
+            window.location.href = "login.html";
+        }
 
+        async function loadAdminStats() {
+            try {
+                const response = await window.api.getAdminStats();
+                const stats = response.data || {};
+                
+                // Add badges to cards if pending items exist
+                const brokerCard = document.querySelector("a[href='broker-verification.html']");
+                if (brokerCard && stats.pendingBrokersCount > 0) {
+                    brokerCard.innerHTML = `Review Brokers (${stats.pendingBrokersCount} Pending) →`;
+                    brokerCard.style.color = "#dc2626";
+                    brokerCard.style.fontWeight = "bold";
+                }
+
+                const propCard = document.querySelector("a[href='property-verification.html']");
+                if (propCard && stats.pendingPropertiesCount > 0) {
+                    propCard.innerHTML = `Review Properties (${stats.pendingPropertiesCount} Pending) →`;
+                    propCard.style.color = "#dc2626";
+                    propCard.style.fontWeight = "bold";
+                }
+            } catch (err) {
+                console.warn("Could not fetch admin stats:", err.message);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadAdminStats);
+    </script>
+</body>
 </html>

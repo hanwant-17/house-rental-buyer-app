@@ -232,185 +232,9 @@
         </div>
 
 
-        <!-- Broker Request 1 -->
-        <div class="broker-card">
-
-            <div class="broker-header">
-
-                <div>
-                    <h2>Rahul Sharma</h2>
-                    <p>Broker Registration Request</p>
-                </div>
-
-                <span class="status">
-                    Pending Verification
-                </span>
-
-            </div>
-
-
-            <div class="broker-details">
-
-                <div class="detail-item">
-                    <strong>Mobile Number</strong>
-                    <span>9876543210</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Email</strong>
-                    <span>rahul@example.com</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Agency / Company</strong>
-                    <span>Sharma Properties</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>City</strong>
-                    <span>Jodhpur, Rajasthan</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Experience</strong>
-                    <span>3 - 5 Years</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Registration Date</strong>
-                    <span>18 September 2026</span>
-                </div>
-
-            </div>
-
-
-            <!-- Documents -->
-            <div class="documents">
-
-                <h3>Submitted Documents</h3>
-
-                <div class="document-list">
-
-                    <a href="#" class="document-btn">
-                        📄 View ID Proof
-                    </a>
-
-                    <a href="#" class="document-btn">
-                        📄 View Address Proof
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- Actions -->
-            <div class="verification-actions">
-
-                <button
-                    class="approve-btn"
-                    onclick="approveBroker('Rahul Sharma')">
-                    ✓ Approve
-                </button>
-
-                <button
-                    class="reject-btn"
-                    onclick="rejectBroker('Rahul Sharma')">
-                    ✕ Reject
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- Broker Request 2 -->
-        <div class="broker-card">
-
-            <div class="broker-header">
-
-                <div>
-                    <h2>Amit Verma</h2>
-                    <p>Broker Registration Request</p>
-                </div>
-
-                <span class="status">
-                    Pending Verification
-                </span>
-
-            </div>
-
-
-            <div class="broker-details">
-
-                <div class="detail-item">
-                    <strong>Mobile Number</strong>
-                    <span>9123456780</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Email</strong>
-                    <span>amit@example.com</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Agency / Company</strong>
-                    <span>Verma Real Estate</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>City</strong>
-                    <span>Jaipur, Rajasthan</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Experience</strong>
-                    <span>1 - 3 Years</span>
-                </div>
-
-                <div class="detail-item">
-                    <strong>Registration Date</strong>
-                    <span>18 September 2026</span>
-                </div>
-
-            </div>
-
-
-            <div class="documents">
-
-                <h3>Submitted Documents</h3>
-
-                <div class="document-list">
-
-                    <a href="#" class="document-btn">
-                        📄 View ID Proof
-                    </a>
-
-                    <a href="#" class="document-btn">
-                        📄 View Address Proof
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <div class="verification-actions">
-
-                <button
-                    class="approve-btn"
-                    onclick="approveBroker('Amit Verma')">
-                    ✓ Approve
-                </button>
-
-                <button
-                    class="reject-btn"
-                    onclick="rejectBroker('Amit Verma')">
-                    ✕ Reject
-                </button>
-
-            </div>
-
+        <!-- Dynamic Broker Requests Container -->
+        <div id="brokerRequestsContainer">
+            <p style="text-align:center; color:#667085; padding:30px;">Loading pending broker requests...</p>
         </div>
 
     </main>
@@ -426,29 +250,138 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
-
-        function approveBroker(name) {
-
-            alert(
-                name +
-                " has been approved successfully."
-            );
+        // Check Admin Auth Guard
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "ADMIN") {
+            alert("Access restricted: Please login as Admin.");
+            window.location.href = "login.html";
         }
 
+        const container = document.getElementById("brokerRequestsContainer");
 
-        function rejectBroker(name) {
+        async function loadPendingBrokers() {
+            try {
+                container.innerHTML = '<p style="text-align:center; color:#667085; padding:30px;">Loading pending broker requests...</p>';
+                const response = await window.api.getPendingBrokers();
+                const brokers = response.data || [];
 
-            alert(
-                name +
-                " has been rejected."
-            );
+                if (brokers.length === 0) {
+                    container.innerHTML = `
+                        <div class="broker-card" style="text-align:center; padding:40px;">
+                            <div style="font-size:40px; margin-bottom:10px;">✅</div>
+                            <h2>No Pending Requests</h2>
+                            <p style="color:#667085; margin-top:5px;">All broker registrations have been reviewed and verified!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = "";
+                brokers.forEach(broker => {
+                    const u = broker.user || {};
+                    const card = document.createElement("div");
+                    card.className = "broker-card";
+                    card.innerHTML = `
+                        <div class="broker-header">
+                            <div>
+                                <h2>${u.name || "Broker Application"}</h2>
+                                <p>Broker Registration Request (Application ID: #${broker.brokerId})</p>
+                            </div>
+                            <span class="status">Pending Verification</span>
+                        </div>
+
+                        <div class="broker-details">
+                            <div class="detail-item">
+                                <strong>Mobile Number</strong>
+                                <span>${u.mobile || "N/A"}</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Email Address</strong>
+                                <span>${u.email || "N/A"}</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Agency / Company</strong>
+                                <span>${broker.agencyName || "Independent"}</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>City</strong>
+                                <span>${broker.city || "N/A"}</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Experience</strong>
+                                <span>${broker.experience || "N/A"}</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Applied Date</strong>
+                                <span>${broker.createdAt ? new Date(broker.createdAt).toLocaleDateString() : "Recent"}</span>
+                            </div>
+                        </div>
+
+                        <div class="documents">
+                            <h3>Submitted KYC Documents</h3>
+                            <div class="document-list">
+                                <a href="${broker.idProofUrl || '#'}" target="_blank" class="document-btn">
+                                    📄 View ID Proof
+                                </a>
+                                <a href="${broker.addressProofUrl || '#'}" target="_blank" class="document-btn">
+                                    📄 View Address Proof
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="verification-actions">
+                            <button class="approve-btn" onclick="handleApprove(${broker.brokerId}, '${u.name || "Broker"}')">
+                                ✓ Approve & Assign Broker ID
+                            </button>
+                            <button class="reject-btn" onclick="handleReject(${broker.brokerId}, '${u.name || "Broker"}')">
+                                ✕ Reject
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="broker-card" style="text-align:center; padding:30px; color:#b91c1c;">
+                        <p>Failed to load pending brokers: ${err.message}</p>
+                        <button onclick="loadPendingBrokers()" style="margin-top:10px; padding:6px 12px; cursor:pointer;">Retry</button>
+                    </div>
+                `;
+            }
         }
 
+        async function handleApprove(brokerId, name) {
+            if (!confirm(`Are you sure you want to approve ${name} and generate an official Broker ID?`)) return;
+
+            try {
+                const response = await window.api.approveBroker(brokerId);
+                const assignedCode = response.data && response.data.brokerCode ? response.data.brokerCode : "Generated";
+                alert(`✅ Success! ${name} has been approved.\nOfficial Broker ID assigned: ${assignedCode}`);
+                loadPendingBrokers();
+            } catch (error) {
+                alert("Approval failed: " + error.message);
+            }
+        }
+
+        async function handleReject(brokerId, name) {
+            const reason = prompt(`Enter reason for rejecting ${name}:`, "Documents could not be verified.");
+            if (!reason) return;
+
+            try {
+                await window.api.rejectBroker(brokerId, reason);
+                alert(`✕ ${name} application has been rejected.`);
+                loadPendingBrokers();
+            } catch (error) {
+                alert("Rejection failed: " + error.message);
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener("DOMContentLoaded", loadPendingBrokers);
     </script>
-
 </body>
-
 </html>

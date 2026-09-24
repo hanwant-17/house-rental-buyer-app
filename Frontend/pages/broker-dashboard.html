@@ -182,8 +182,21 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
+    <script>
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "BROKER") {
+            // alert("Please login as Broker.");
+            // window.location.href = "login.html";
+        } else {
+            const userArea = document.querySelector(".user-area span");
+            if (userArea) {
+                const codeBadge = user.brokerCode ? ` (${user.brokerCode})` : "";
+                userArea.textContent = `Welcome, ${user.name || "Broker"}${codeBadge}`;
+            }
+        }
+    </script>
 </body>
-
 </html>

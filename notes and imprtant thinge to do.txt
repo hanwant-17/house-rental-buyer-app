@@ -1,0 +1,18 @@
+notes and imprtant thinge to do
+
+1. application.properties       if file me sql ka password add karna hai
+
+2. token ke liye ye command hai $res = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method Post -ContentType "application/json" -Body '{"email":"admin@househub.com","password":"Admin@123"}'
+$res.data.token
+
+3. token= eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBob3VzZWh1Yi5jb20iLCJ1c2VySWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNzkwMjY3NDYzLCJleHAiOjE3OTAzNTM4NjN9.CxbmzgZL5GG1W...
+        = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBob3VzZWh1Yi5jb20iLCJ1c2VySWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNzkwMjY5MzgzLCJleHAiOjE3OTAzNTU3ODN9.o-G0OZ6STA5YJlScPK4dsNn-0Q47caQf4jDsiPFw7IA
+
+4. token add karo    $token = "YAHAN_APNA_COPIED_TOKEN_PASTE_KAREIN"
+
+5. fir yr command chala do      Invoke-RestMethod -Uri "http://localhost:8080/api/admin/brokers/pending" -Method Get -Headers @{ Authorization = "Bearer $token" }
+
+6. single command for al this
+    $login = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method Post -ContentType "application/json" -Body '{"email":"admin@househub.com","password":"Admin@123"}'
+$token = $login.data.token
+Invoke-RestMethod -Uri "http://localhost:8080/api/admin/brokers/pending" -Method Get -Headers @{ Authorization = "Bearer $token" }

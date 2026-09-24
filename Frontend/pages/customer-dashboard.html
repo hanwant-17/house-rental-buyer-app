@@ -162,8 +162,20 @@
     </footer>
 
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
+    <script>
+        const user = window.api ? window.api.getCurrentUser() : null;
+        if (!user || user.role !== "CUSTOMER") {
+            // alert("Please login as Customer.");
+            // window.location.href = "login.html";
+        } else {
+            const userArea = document.querySelector(".user-area span");
+            if (userArea && user.name) {
+                userArea.textContent = `Welcome, ${user.name}`;
+            }
+        }
+    </script>
 </body>
-
 </html>
