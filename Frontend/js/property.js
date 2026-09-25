@@ -84,12 +84,46 @@ function displayProperties(propertyList) {
 async function loadPublicProperties() {
     if (!propertyGrid) return;
 
-    // Check if coming from Home page search box
+    // 1. Check URL parameters for ?purpose=BUY or ?purpose=RENT
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPurpose = urlParams.get("purpose");
+
+    const headerTitle = document.querySelector(".header-content h1");
+    const headerCategory = document.querySelector(".header-content p");
+    const headerSpan = document.querySelector(".header-content span");
+    const purposeSelect = document.getElementById("purposeFilter");
+
+    // Dynamic navbar active state
+    const navBuy = document.getElementById("navBuy") || document.querySelector("a[href*='purpose=BUY']");
+    const navRent = document.getElementById("navRent") || document.querySelector("a[href*='purpose=RENT']");
+
+    if (urlPurpose) {
+        const cleanPurpose = urlPurpose.toUpperCase();
+        if (purposeSelect) purposeSelect.value = cleanPurpose.toLowerCase();
+
+        if (cleanPurpose === "BUY") {
+            if (navBuy) navBuy.classList.add("active");
+            if (navRent) navRent.classList.remove("active");
+            if (headerCategory) headerCategory.textContent = "PROPERTIES FOR SALE";
+            if (headerTitle) headerTitle.textContent = "Buy Your Dream Home";
+            if (headerSpan) headerSpan.textContent = "Explore verified houses, villas, and apartments available for immediate purchase.";
+        } else if (cleanPurpose === "RENT") {
+            if (navRent) navRent.classList.add("active");
+            if (navBuy) navBuy.classList.remove("active");
+            if (headerCategory) headerCategory.textContent = "PROPERTIES FOR RENT";
+            if (headerTitle) headerTitle.textContent = "Rent Your Ideal Space";
+            if (headerSpan) headerSpan.textContent = "Explore verified apartments and houses available for monthly rental.";
+        }
+
+        await filterProperties();
+        return;
+    }
+
+    // 2. Check if coming from Home page search box
     const savedLocation = localStorage.getItem("searchLocation");
     const savedPurpose = localStorage.getItem("searchPurpose");
     if (savedLocation || savedPurpose) {
         const locationInput = document.getElementById("locationFilter");
-        const purposeSelect = document.getElementById("purposeFilter");
         if (locationInput && savedLocation) locationInput.value = savedLocation;
         if (purposeSelect && savedPurpose) purposeSelect.value = savedPurpose.toLowerCase();
         localStorage.removeItem("searchLocation");
