@@ -49,10 +49,10 @@ public class BrokerService {
             throw new BadRequestException("Broker is already approved with Broker ID: " + broker.getBrokerCode());
         }
 
-        // Generate official Broker ID (e.g. BRK-2026-1001) if not explicitly provided
+        // Keep existing broker code on re-verification, or generate new if none exists
         String generatedCode = (dto != null && dto.getCustomBrokerCode() != null && !dto.getCustomBrokerCode().isBlank())
                 ? dto.getCustomBrokerCode()
-                : generateUniqueBrokerCode();
+                : (broker.getBrokerCode() != null && !broker.getBrokerCode().isBlank() ? broker.getBrokerCode() : generateUniqueBrokerCode());
 
         broker.setBrokerCode(generatedCode);
         broker.setVerificationStatus(VerificationStatus.APPROVED);

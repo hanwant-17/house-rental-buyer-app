@@ -316,9 +316,14 @@
                                 <span>${broker.experience || "N/A"}</span>
                             </div>
                             <div class="detail-item">
-                                <strong>Applied Date</strong>
-                                <span>${broker.createdAt ? new Date(broker.createdAt).toLocaleDateString() : "Recent"}</span>
+                                <strong>${broker.brokerCode ? 'Broker Code (Re-verify)' : 'Applied Date'}</strong>
+                                <span style="${broker.brokerCode ? 'color:#1d4ed8; font-weight:700;' : ''}">${broker.brokerCode ? broker.brokerCode : (broker.createdAt ? new Date(broker.createdAt).toLocaleDateString() : "Recent")}</span>
                             </div>
+                            ${broker.rejectionReason ? `
+                                <div style="grid-column: 1 / -1; background:#fff7ed; border:1px solid #fed7aa; padding:8px 12px; border-radius:6px; font-size:12px; color:#c2410c;">
+                                    <strong>Audit / Update Note:</strong> ${broker.rejectionReason}
+                                </div>
+                            ` : ''}
                         </div>
 
                         <div class="documents">

@@ -41,6 +41,9 @@ public class User {
     @Builder.Default
     private String status = "ACTIVE"; // ACTIVE, PENDING, SUSPENDED
 
+    @Column(name = "profile_image", length = 500)
+    private String profileImage;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

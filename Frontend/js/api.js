@@ -112,6 +112,28 @@ const api = {
     },
 
     // ==========================================
+    // 👤 USER PROFILE APIS
+    // ==========================================
+
+    async getMyProfile() {
+        return await this.request("/profile/me", { method: "GET" });
+    },
+
+    async updateCustomerProfile(profileData) {
+        return await this.request("/profile/customer", {
+            method: "PUT",
+            body: JSON.stringify(profileData)
+        });
+    },
+
+    async updateBrokerProfile(profileData) {
+        return await this.request("/profile/broker", {
+            method: "PUT",
+            body: JSON.stringify(profileData)
+        });
+    },
+
+    // ==========================================
     // 🛡️ ADMIN VERIFICATION APIS (RULE 1, 2, 4)
     // ==========================================
 

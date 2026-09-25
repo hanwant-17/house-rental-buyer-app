@@ -279,44 +279,26 @@
 
                         <div class="status-section" style="margin-top:20px; border-top:1px solid #f1f5f9; padding-top:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                             <div>
-                                <div class="status-title">Verification & Lifecycle Status</div>
-                                <span class="status-badge ${badgeClass}" style="margin-top:5px; display:inline-block;">
-                                    ${badgeIcon} ${vStatus} (Deal: ${pStatus})
+                                <div class="status-title" style="font-weight:700; color:#1e293b; margin-bottom:6px;">Verification Status (Rule 2)</div>
+                                <span class="status-badge ${badgeClass}" style="display:inline-block; font-size:13px; font-weight:700; padding:6px 14px;">
+                                    ${badgeIcon} ${vStatus}
                                 </span>
-                                <p class="submitted-date" style="margin-top:5px;">${statusDesc}</p>
+                                <p class="submitted-date" style="margin-top:8px; font-size:13px; color:#475467;">
+                                    ${statusDesc}
+                                </p>
                             </div>
 
-                            ${vStatus === 'APPROVED' ? `
-                                <div style="display:flex; gap:8px;">
-                                    <button onclick="handleStatusChange(${prop.propertyId}, 'RENTED')" style="background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
-                                        Mark as Rented
-                                    </button>
-                                    <button onclick="handleStatusChange(${prop.propertyId}, 'SOLD')" style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
-                                        Mark as Sold
-                                    </button>
-                                    <button onclick="handleStatusChange(${prop.propertyId}, 'AVAILABLE')" style="background:#64748b; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
-                                        Mark Available
-                                    </button>
-                                </div>
-                            ` : ''}
+                            <div>
+                                <a href="my-properties.html" style="display:inline-block; background:#eff6ff; color:#2563eb; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; border:1px solid #bfdbfe;">
+                                    Manage in My Properties →
+                                </a>
+                            </div>
                         </div>
                     `;
                     container.appendChild(card);
                 });
             } catch (err) {
                 container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Error loading status: ${err.message}</p>`;
-            }
-        }
-
-        async function handleStatusChange(propertyId, newStatus) {
-            if (!confirm(`Update property status to ${newStatus}?`)) return;
-
-            try {
-                await window.api.updatePropertyStatus(propertyId, newStatus);
-                alert(`✅ Property status updated to ${newStatus}`);
-                loadPropertyStatusList();
-            } catch (error) {
-                alert("Status update failed: " + error.message);
             }
         }
 

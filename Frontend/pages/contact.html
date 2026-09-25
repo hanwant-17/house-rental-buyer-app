@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - HouseHub</title>
+    <link rel="stylesheet" href="../css/property.css">
+    <style>
+        .contact-hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 70px 20px;
+            text-align: center;
+        }
+
+        .contact-hero h1 {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .contact-hero p {
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.92;
+            line-height: 1.6;
+        }
+
+        .contact-wrapper {
+            max-width: 1150px;
+            margin: -35px auto 60px;
+            padding: 0 20px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .contact-info-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 35px 30px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            height: fit-content;
+        }
+
+        .info-card-header h2 {
+            font-size: 22px;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .info-card-header p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-text h4 {
+            font-size: 14px;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .info-text p, .info-text a {
+            font-size: 14px;
+            color: #64748b;
+            text-decoration: none;
+            line-height: 1.5;
+        }
+
+        .info-text a:hover {
+            color: #2563eb;
+        }
+
+        .contact-form-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 35px 30px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-card-header h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .form-card-header p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #344054;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .submit-contact-btn {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .submit-contact-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .faq-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .faq-header h2 {
+            font-size: 26px;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .faq-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px 20px;
+        }
+
+        .faq-item h4 {
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .faq-item p {
+            font-size: 14px;
+            color: #475467;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 850px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="logo">
+            House<span>Hub</span>
+        </div>
+
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="properties.html?purpose=BUY">Buy</a>
+            <a href="properties.html?purpose=RENT">Rent</a>
+            <a href="about.html">About</a>
+            <a href="contact.html" class="active" style="color:#2563eb; font-weight:600;">Contact</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="customer-register.html" class="register-btn">Register</a>
+        </div>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="contact-hero">
+        <h1>Contact HouseHub Support</h1>
+        <p>Have questions about renting, purchasing, broker onboarding, or property verification? Our dedicated team is here to help you.</p>
+    </section>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="contact-wrapper">
+
+        <div class="contact-grid">
+            <!-- Left Info Card -->
+            <div class="contact-info-card">
+                <div class="info-card-header">
+                    <h2>Reach Out to Us</h2>
+                    <p>We are available Monday to Saturday to answer all queries and guide your real estate journey.</p>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-text">
+                        <h4>Headquarters</h4>
+                        <p>HouseHub Towers, 4th Floor, High Court Road, Sardarpura, Jodhpur, Rajasthan - 342003</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">✉️</div>
+                    <div class="info-text">
+                        <h4>Email Us</h4>
+                        <p><a href="mailto:support@househub.com">support@househub.com</a></p>
+                        <p><a href="mailto:verification@househub.com">verification@househub.com</a></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">📞</div>
+                    <div class="info-text">
+                        <h4>Customer Helpline</h4>
+                        <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                        <p style="font-size:12px; color:#94a3b8;">(10:00 AM - 7:00 PM IST)</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">⏱️</div>
+                    <div class="info-text">
+                        <h4>Working Hours</h4>
+                        <p>Monday - Saturday: 9:00 AM - 7:00 PM<br>Sunday: Emergency Chat Support</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Contact Form -->
+            <div class="contact-form-card">
+                <div class="form-card-header">
+                    <h2>Send Us a Message</h2>
+                    <p>Fill out the form below and our team will get back to you within 24 hours.</p>
+                </div>
+
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactName">Your Full Name <span>*</span></label>
+                            <input type="text" id="contactName" placeholder="e.g. Bhavesh Patel" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email Address <span>*</span></label>
+                            <input type="email" id="contactEmail" placeholder="e.g. bhavesh@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactMobile">Mobile Number <span>*</span></label>
+                            <input type="tel" id="contactMobile" placeholder="10-digit mobile number" maxlength="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactCategory">Inquiry Type <span>*</span></label>
+                            <select id="contactCategory" required>
+                                <option value="">Select category</option>
+                                <option value="property">Property Listing Help</option>
+                                <option value="broker">Broker Registration & Approval</option>
+                                <option value="site_visit">Site Visit Assistance</option>
+                                <option value="report">Report a Misleading Listing</option>
+                                <option value="other">General Feedback / Inquiry</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactSubject">Subject <span>*</span></label>
+                        <input type="text" id="contactSubject" placeholder="Brief subject of your message" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactMessage">Message / Details <span>*</span></label>
+                        <textarea id="contactMessage" placeholder="Write your query or message here..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-contact-btn" id="contactSubmitBtn">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="faq-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Quick answers to common questions about HouseHub</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h4>❓ How does broker verification work?</h4>
+                    <p>Every broker must submit legitimate government ID and address proofs during registration. Our Admin team audits these documents and issues an official Broker ID (e.g. BRK-2026-1001) before they can list properties or interact with clients.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Why do properties need Admin verification?</h4>
+                    <p>To eliminate duplicate listings, fake images, and deceptive pricing, all property submissions undergo Admin review. Only properties meeting all verification criteria are published for buyers and tenants.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ How do I schedule a physical site visit?</h4>
+                    <p>Registered customers can visit any property details page and use the "Schedule Site Visit" tool to choose a preferred date and time slot. The broker confirms the appointment directly within the app.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Is my personal contact information shared publicly?</h4>
+                    <p>No. HouseHub offers built-in direct In-App Chat. You can communicate with brokers and negotiate visits without your private mobile number being exposed.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div>
+                <h3>🏠 HouseHub</h3>
+                <p>Find your perfect home for rent or purchase with verified confidence.</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <a href="../index.html">Home</a>
+                <a href="properties.html">Properties</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div>
+                <h4>For Users</h4>
+                <a href="customer-register.html">Customer Registration</a>
+                <a href="broker-register.html">Broker Registration</a>
+                <a href="login.html">Login</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 HouseHub. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById("contactName").value.trim();
+            const email = document.getElementById("contactEmail").value.trim();
+            const subject = document.getElementById("contactSubject").value.trim();
+
+            const btn = document.getElementById("contactSubmitBtn");
+            btn.disabled = true;
+            btn.textContent = "Sending Message...";
+
+            setTimeout(() => {
+                alert(`✅ Thank you, ${name}!\n\nYour message regarding "${subject}" has been received. Our support team will get back to you at ${email} shortly.`);
+                document.getElementById("contactForm").reset();
+                btn.disabled = false;
+                btn.textContent = "Send Message";
+            }, 700);
+        }
+    </script>
+
+</body>
+
+</html>

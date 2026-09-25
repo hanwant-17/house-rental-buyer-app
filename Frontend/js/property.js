@@ -514,6 +514,13 @@ if (addPropertyForm) {
         const amenities = document.getElementById("amenities") || { value: "" };
         const description = document.getElementById("propertyDescription") || document.getElementById("description");
 
+        const rulesAgreement = document.getElementById("propertyRulesAgreement");
+        if (rulesAgreement && !rulesAgreement.checked) {
+            alert("⚠️ Please review and accept the Property Listing Rules before submitting.");
+            rulesAgreement.focus();
+            return;
+        }
+
         if (!title.value.trim() || !price.value || !city.value.trim() || !bhk.value) {
             alert("Please fill in all mandatory fields.");
             return;

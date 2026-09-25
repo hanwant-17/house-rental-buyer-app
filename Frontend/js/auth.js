@@ -81,6 +81,13 @@ if (customerRegisterForm) {
             isValid = false;
         }
 
+        const termsAgreement = document.getElementById("customerTermsAgreement");
+        if (termsAgreement && !termsAgreement.checked) {
+            alert("⚠️ Please accept the Customer Terms of Service and Privacy Policy before creating your account.");
+            termsAgreement.focus();
+            return;
+        }
+
         if (!isValid) return;
 
         const submitBtn = customerRegisterForm.querySelector("button[type='submit']");
@@ -164,6 +171,13 @@ if (brokerRegisterForm) {
         if (addressProof && addressProof.files && addressProof.files.length === 0) {
             showError(addressProof, "Please upload your address proof.");
             isValid = false;
+        }
+
+        const termsAgreement = document.getElementById("brokerTermsAgreement");
+        if (termsAgreement && !termsAgreement.checked) {
+            alert("⚠️ Please review and accept the Broker Role & Terms of Service before registering.");
+            termsAgreement.focus();
+            return;
         }
 
         if (!isValid) return;
