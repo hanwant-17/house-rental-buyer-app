@@ -228,27 +228,23 @@
             object-fit: cover;
         }
 
-        .avatar-presets {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-
-        .avatar-preset-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid #cbd5e1;
-            padding: 0;
-            overflow: hidden;
+        .upload-device-btn {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.2s;
         }
 
-        .avatar-preset-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .upload-device-btn:hover {
+            background: #1d4ed8;
         }
 
         .edit-grid {
@@ -453,34 +449,29 @@
 
             <form id="brokerEditForm" onsubmit="handleBrokerUpdate(event)">
 
-                <!-- Compulsory Profile Photo Picker -->
+                <!-- Compulsory Device Photo Upload -->
                 <div class="photo-picker-box">
                     <div class="photo-picker-preview">
-                        <img id="editPhotoPreview" src="https://images.unsplash.com/photo-1560250097-0b93528c311a" alt="Preview">
+                        <img id="editPhotoPreview" src="https://images.unsplash.com/photo-1560250097-0b93528c311a" alt="Broker Preview">
                     </div>
                     <div style="flex:1;">
-                        <label style="font-size:13px; font-weight:700; color:#1e3a8a; display:block; margin-bottom:4px;">
-                            Broker Profile Photo URL <span style="color:#dc2626;">* (Compulsory)</span>
+                        <label style="font-size:13px; font-weight:700; color:#1e3a8a; display:block; margin-bottom:6px;">
+                            Upload Broker Profile Photo from Device <span style="color:#dc2626;">* (Compulsory)</span>
                         </label>
-                        <input type="url" id="editPhotoInput" placeholder="Enter profile photo image URL (https://...)" required style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;" oninput="updatePhotoPreview(this.value)">
+                        
+                        <input type="file" id="editPhotoFileInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="handleBrokerPhotoSelect(event)">
 
-                        <div style="margin-top:8px;">
-                            <span style="font-size:11px; color:#64748b;">Or choose a professional avatar preset:</span>
-                            <div class="avatar-presets">
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1560250097-0b93528c311a')">
-                                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a" alt="B1">
-                                </button>
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2')">
-                                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2" alt="B2">
-                                </button>
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7')">
-                                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" alt="B3">
-                                </button>
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d')">
-                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" alt="B4">
-                                </button>
-                            </div>
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <button type="button" class="upload-device-btn" onclick="document.getElementById('editPhotoFileInput').click()">
+                                📁 Choose Photo from Device
+                            </button>
+                            <span id="brokerFileSelectedLabel" style="font-size:13px; color:#475467; font-weight:500;">
+                                No photo selected yet
+                            </span>
                         </div>
+                        <p style="font-size:11px; color:#64748b; margin-top:6px;">
+                            Select a professional photo from your device (JPG, PNG, WEBP, Max 5MB). Photo is mandatory.
+                        </p>
                     </div>
                 </div>
 
@@ -547,6 +538,7 @@
 
     <script>
         let currentBrokerData = null;
+        let brokerPhotoBase64 = null;
 
         function toggleEditMode(isEditing) {
             const viewSection = document.getElementById("brokerViewSection");
@@ -565,19 +557,29 @@
             }
         }
 
-        function updatePhotoPreview(url) {
-            const preview = document.getElementById("editPhotoPreview");
-            if (preview && url) {
-                preview.src = url;
-            }
-        }
+        function handleBrokerPhotoSelect(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
 
-        function selectPreset(url) {
-            const input = document.getElementById("editPhotoInput");
-            if (input) {
-                input.value = url;
-                updatePhotoPreview(url);
+            if (file.size > 5 * 1024 * 1024) {
+                alert("⚠️ Image file is too large! Please choose an image smaller than 5MB.");
+                event.target.value = "";
+                return;
             }
+
+            const label = document.getElementById("brokerFileSelectedLabel");
+            if (label) {
+                label.textContent = `✓ ${file.name} (${Math.round(file.size / 1024)} KB)`;
+                label.style.color = "#16a34a";
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                brokerPhotoBase64 = e.target.result;
+                const preview = document.getElementById("editPhotoPreview");
+                if (preview) preview.src = brokerPhotoBase64;
+            };
+            reader.readAsDataURL(file);
         }
 
         function populateEditForm() {
@@ -589,9 +591,15 @@
             document.getElementById("editExperience").value = currentBrokerData.experience || "3-5 Years";
             document.getElementById("editBrokerCode").value = currentBrokerData.brokerCode || "BRK-2026-1001";
 
-            const photoUrl = currentBrokerData.profileImage || "https://images.unsplash.com/photo-1560250097-0b93528c311a";
-            document.getElementById("editPhotoInput").value = photoUrl;
-            updatePhotoPreview(photoUrl);
+            brokerPhotoBase64 = currentBrokerData.profileImage || null;
+            if (brokerPhotoBase64) {
+                document.getElementById("editPhotoPreview").src = brokerPhotoBase64;
+                const label = document.getElementById("brokerFileSelectedLabel");
+                if (label) {
+                    label.textContent = "Current profile photo active";
+                    label.style.color = "#475467";
+                }
+            }
         }
 
         async function loadBrokerProfile() {
@@ -650,8 +658,8 @@
                     pendingBanner.style.display = "none";
                 }
 
-                const photoUrl = profile.profileImage || "https://images.unsplash.com/photo-1560250097-0b93528c311a";
-                document.getElementById("viewPhoto").src = photoUrl;
+                brokerPhotoBase64 = profile.profileImage || "https://images.unsplash.com/photo-1560250097-0b93528c311a";
+                document.getElementById("viewPhoto").src = brokerPhotoBase64;
 
                 const navBroker = document.getElementById("navBrokerName");
                 if (navBroker && profile.name) {
@@ -669,12 +677,11 @@
             const agency = document.getElementById("editAgency").value.trim();
             const city = document.getElementById("editCity").value.trim();
             const experience = document.getElementById("editExperience").value;
-            const photoUrl = document.getElementById("editPhotoInput").value.trim();
 
             // Compulsory Profile Photo validation
-            if (!photoUrl) {
-                alert("⚠️ Profile photo is compulsory! Please select an avatar preset or provide a photo URL.");
-                document.getElementById("editPhotoInput").focus();
+            if (!brokerPhotoBase64) {
+                alert("⚠️ Profile photo is compulsory! Please choose a photo from your device.");
+                document.getElementById("editPhotoFileInput").click();
                 return;
             }
 
@@ -698,7 +705,7 @@
                     agencyName: agency,
                     city,
                     experience,
-                    profileImage: photoUrl
+                    profileImage: brokerPhotoBase64
                 });
 
                 alert(

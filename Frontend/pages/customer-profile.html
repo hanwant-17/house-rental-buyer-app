@@ -212,27 +212,23 @@
             object-fit: cover;
         }
 
-        .avatar-presets {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-
-        .avatar-preset-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 2px solid #cbd5e1;
-            padding: 0;
-            overflow: hidden;
+        .upload-device-btn {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.2s;
         }
 
-        .avatar-preset-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .upload-device-btn:hover {
+            background: #1d4ed8;
         }
 
         .form-actions {
@@ -364,34 +360,29 @@
 
             <form id="customerEditForm" onsubmit="handleCustomerUpdate(event)">
 
-                <!-- Compulsory Profile Photo Picker -->
+                <!-- Compulsory Device Photo Upload -->
                 <div class="photo-picker-box">
                     <div class="photo-picker-preview">
-                        <img id="editPhotoPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Preview">
+                        <img id="editPhotoPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Profile Preview">
                     </div>
                     <div style="flex:1;">
-                        <label style="font-size:13px; font-weight:700; color:#1e3a8a; display:block; margin-bottom:4px;">
-                            Profile Photo URL <span style="color:#dc2626;">* (Compulsory)</span>
+                        <label style="font-size:13px; font-weight:700; color:#1e3a8a; display:block; margin-bottom:6px;">
+                            Upload Profile Photo From Device <span style="color:#dc2626;">* (Compulsory)</span>
                         </label>
-                        <input type="url" id="editPhotoInput" placeholder="Enter image URL (https://...)" required style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;" oninput="updatePhotoPreview(this.value)">
                         
-                        <div style="margin-top:8px;">
-                            <span style="font-size:11px; color:#64748b;">Or choose a quick avatar preset:</span>
-                            <div class="avatar-presets">
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde')">
-                                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="A1">
-                                </button>
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1494790108377-be9c29b29330')">
-                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="A2">
-                                </button>
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1570295999919-56ceb5ecca61')">
-                                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61" alt="A3">
-                                </button>
-                                <button type="button" class="avatar-preset-btn" onclick="selectPreset('https://images.unsplash.com/photo-1580489944761-15a19d654956')">
-                                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956" alt="A4">
-                                </button>
-                            </div>
+                        <input type="file" id="editPhotoFileInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="handleCustomerPhotoSelect(event)">
+
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <button type="button" class="upload-device-btn" onclick="document.getElementById('editPhotoFileInput').click()">
+                                📁 Choose Photo from Device
+                            </button>
+                            <span id="customerFileSelectedLabel" style="font-size:13px; color:#475467; font-weight:500;">
+                                No photo selected yet
+                            </span>
                         </div>
+                        <p style="font-size:11px; color:#64748b; margin-top:6px;">
+                            Supported formats: JPG, PNG, WEBP (Max 5MB). Profile photo is mandatory.
+                        </p>
                     </div>
                 </div>
 
@@ -449,6 +440,7 @@
 
     <script>
         let currentProfileData = null;
+        let customerPhotoBase64 = null;
 
         function toggleEditMode(isEditing) {
             const viewSection = document.getElementById("viewModeSection");
@@ -467,19 +459,29 @@
             }
         }
 
-        function updatePhotoPreview(url) {
-            const preview = document.getElementById("editPhotoPreview");
-            if (preview && url) {
-                preview.src = url;
-            }
-        }
+        function handleCustomerPhotoSelect(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
 
-        function selectPreset(url) {
-            const input = document.getElementById("editPhotoInput");
-            if (input) {
-                input.value = url;
-                updatePhotoPreview(url);
+            if (file.size > 5 * 1024 * 1024) {
+                alert("⚠️ Image file is too large! Please choose an image smaller than 5MB.");
+                event.target.value = "";
+                return;
             }
+
+            const label = document.getElementById("customerFileSelectedLabel");
+            if (label) {
+                label.textContent = `✓ ${file.name} (${Math.round(file.size / 1024)} KB)`;
+                label.style.color = "#16a34a";
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                customerPhotoBase64 = e.target.result;
+                const preview = document.getElementById("editPhotoPreview");
+                if (preview) preview.src = customerPhotoBase64;
+            };
+            reader.readAsDataURL(file);
         }
 
         function populateEditForm() {
@@ -490,9 +492,15 @@
             document.getElementById("editCity").value = currentProfileData.preferredCity || currentProfileData.city || "Jodhpur";
             document.getElementById("editPurpose").value = (currentProfileData.preferredPurpose || "RENT").toUpperCase();
             
-            const photoUrl = currentProfileData.profileImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde";
-            document.getElementById("editPhotoInput").value = photoUrl;
-            updatePhotoPreview(photoUrl);
+            customerPhotoBase64 = currentProfileData.profileImage || null;
+            if (customerPhotoBase64) {
+                document.getElementById("editPhotoPreview").src = customerPhotoBase64;
+                const label = document.getElementById("customerFileSelectedLabel");
+                if (label) {
+                    label.textContent = "Current profile photo active";
+                    label.style.color = "#475467";
+                }
+            }
         }
 
         async function loadProfile() {
@@ -521,8 +529,8 @@
                 document.getElementById("viewCity").textContent = profile.preferredCity || "Jodhpur";
                 document.getElementById("viewPurpose").textContent = (profile.preferredPurpose || "RENT") === "BUY" ? "Buying a Property" : "Renting a Property";
                 
-                const photoUrl = profile.profileImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde";
-                document.getElementById("viewPhoto").src = photoUrl;
+                customerPhotoBase64 = profile.profileImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde";
+                document.getElementById("viewPhoto").src = customerPhotoBase64;
 
                 const navUser = document.getElementById("navUserName");
                 if (navUser && profile.name) {
@@ -544,12 +552,11 @@
             const mobile = document.getElementById("editMobile").value.trim();
             const city = document.getElementById("editCity").value.trim();
             const purpose = document.getElementById("editPurpose").value;
-            const photoUrl = document.getElementById("editPhotoInput").value.trim();
 
             // Compulsory Profile Photo validation
-            if (!photoUrl) {
-                alert("⚠️ Profile photo is compulsory! Please select an avatar preset or provide a photo URL.");
-                document.getElementById("editPhotoInput").focus();
+            if (!customerPhotoBase64) {
+                alert("⚠️ Profile photo is compulsory! Please upload an image from your device.");
+                document.getElementById("editPhotoFileInput").click();
                 return;
             }
 
@@ -568,7 +575,7 @@
                     mobile,
                     preferredCity: city,
                     preferredPurpose: purpose,
-                    profileImage: photoUrl
+                    profileImage: customerPhotoBase64
                 });
 
                 alert("✅ Profile updated successfully!");

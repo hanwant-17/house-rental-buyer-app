@@ -41,7 +41,8 @@ public class User {
     @Builder.Default
     private String status = "ACTIVE"; // ACTIVE, PENDING, SUSPENDED
 
-    @Column(name = "profile_image", length = 500)
+    @Lob
+    @Column(name = "profile_image", columnDefinition = "LONGTEXT")
     private String profileImage;
 
     @CreationTimestamp
