@@ -19,7 +19,7 @@
             🏠 HouseHub
         </div>
 
-        <ul class="nav-links">
+        <ul class="nav-links" id="detailsNavLinks">
             <li><a href="../index.html">Home</a></li>
             <li><a href="properties.html">Buy</a></li>
             <li><a href="properties.html">Rent</a></li>
@@ -97,6 +97,31 @@
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/property.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            const nav = document.getElementById("detailsNavLinks");
+            if (user && user.token && nav) {
+                let dashUrl = "customer-dashboard.html";
+                if (user.role === "BROKER") dashUrl = "broker-dashboard.html";
+                else if (user.role === "ADMIN") dashUrl = "admin-dashboard.html";
+
+                nav.innerHTML = `
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="properties.html">Properties</a></li>
+                    <li><a href="${dashUrl}" style="background:#2563eb; color:#fff; padding:6px 14px; border-radius:6px; font-weight:600; text-decoration:none;">Dashboard</a></li>
+                    <li><a href="#" id="navLogoutBtn" style="color:#dc2626; font-weight:600; text-decoration:none;">Logout</a></li>
+                `;
+
+                document.getElementById("navLogoutBtn")?.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    window.api.clearAuth();
+                    window.location.href = "login.html";
+                });
+            }
+        });
+    </script>
 
 </body>
 

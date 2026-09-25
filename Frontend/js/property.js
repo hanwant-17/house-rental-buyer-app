@@ -183,6 +183,11 @@ async function loadPropertyDetails() {
             return;
         }
 
+        const currentUser = window.api ? window.api.getCurrentUser() : null;
+        const userRole = (currentUser && currentUser.role) ? currentUser.role.toUpperCase() : "";
+        const isBroker = userRole === "BROKER";
+        const isAdmin = userRole === "ADMIN";
+
         const brokerUser = (prop.broker && prop.broker.user) ? prop.broker.user : {};
         const brokerName = brokerUser.name || "Verified Broker";
         const brokerCode = prop.broker ? (prop.broker.brokerCode || "BRK-VERIFIED") : "";
@@ -197,8 +202,8 @@ async function loadPropertyDetails() {
 
         propertyDetails.innerHTML = `
             <div class="details-container" style="max-width:1100px; margin:0 auto; padding:40px 20px;">
-                <a href="properties.html" style="color:#1d4ed8; text-decoration:none; font-weight:600; display:inline-block; margin-bottom:20px;">
-                    ← Back to All Properties
+                <a href="${isBroker ? 'broker-dashboard.html' : 'properties.html'}" style="color:#1d4ed8; text-decoration:none; font-weight:600; display:inline-block; margin-bottom:20px;">
+                    ← ${isBroker ? 'Back to Broker Dashboard' : 'Back to All Properties'}
                 </a>
 
                 <div style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #eaecf0; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
@@ -218,9 +223,11 @@ async function loadPropertyDetails() {
                             <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
                                 <div style="font-size:26px; font-weight:bold; color:#1d4ed8;">${priceDisplay}</div>
                                 <span style="font-size:13px; color:#16a34a; font-weight:600;">✓ Verified Listing</span>
+                                ${!isBroker && !isAdmin ? `
                                 <button onclick="toggleWishlist(${prop.propertyId}, this)" style="background:#fff; border:1px solid #f43f5e; color:#f43f5e; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; margin-top:4px;">
                                     ❤️ Add to Wishlist
                                 </button>
+                                ` : ''}
                             </div>
                         </div>
 
@@ -260,6 +267,32 @@ async function loadPropertyDetails() {
                             <strong>Amenities:</strong> ${prop.amenities || "Water, Electricity"}
                         </p>
 
+                        ${isBroker ? `
+                        <!-- Broker Owner Control Panel (RULE 1, 2 & 5) -->
+                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:24px; margin-top:20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                                <div>
+                                    <span style="font-size:11px; background:#16a34a; color:#fff; padding:4px 10px; border-radius:12px; font-weight:bold; letter-spacing:0.5px;">BROKER CONTROL PANEL</span>
+                                    <h4 style="margin:8px 0 4px; font-size:18px; color:#14532d;">Property Management (Owner Actions)</h4>
+                                    <p style="font-size:13px; color:#166534; margin:0;">
+                                        Listing Status: <strong>${prop.propertyStatus || 'AVAILABLE'}</strong> &nbsp;|&nbsp; 
+                                        Admin Verification: <strong>${prop.verificationStatus || 'APPROVED'}</strong>
+                                    </p>
+                                </div>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <a href="property-status.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        ✏️ Update Status
+                                    </a>
+                                    <a href="my-inquiries.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        📋 Client Inquiries & Visits
+                                    </a>
+                                    <a href="chat.html" style="background:#16a34a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        💬 Client Chats
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        ` : `
                         <!-- Broker Contact Box (RULE 3: In-App Chat Only, No Phone Expose) -->
                         <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:25px;">
                             <div>
@@ -312,6 +345,7 @@ async function loadPropertyDetails() {
                                 </form>
                             </div>
                         </div>
+                        `}
                     </div>
                 </div>
             </div>

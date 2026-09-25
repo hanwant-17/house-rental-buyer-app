@@ -58,6 +58,33 @@ select {
     color: #2563eb;
 }
 
+.nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    color: #475467;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.nav-links li a:hover {
+    color: #2563eb;
+}
+
 .navbar nav {
     display: flex;
     gap: 28px;
