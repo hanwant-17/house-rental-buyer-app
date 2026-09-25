@@ -65,8 +65,21 @@
                     <label>Location</label>
                     <input
                         type="text"
-                        placeholder="Enter city or location"
+                        list="homeCitySuggestions"
+                        placeholder="Enter city (e.g. Jodhpur)"
+                        autocomplete="off"
                     >
+                    <datalist id="homeCitySuggestions">
+                        <option value="Jodhpur">
+                        <option value="Jaipur">
+                        <option value="Udaipur">
+                        <option value="Kota">
+                        <option value="Delhi">
+                        <option value="Mumbai">
+                        <option value="Bengaluru">
+                        <option value="Pune">
+                        <option value="Ahmedabad">
+                    </datalist>
                 </div>
 
                 <div class="search-field">

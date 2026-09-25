@@ -287,8 +287,88 @@
                 flex-direction: column;
             }
 
-            .reply-form {
-                flex-direction: column;
+        /* Site Visit Pass Modal & Print Styles */
+        .visit-pass-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .visit-pass-card {
+            background: #ffffff;
+            max-width: 680px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border: 2px solid #0f766e;
+            overflow: hidden;
+            position: relative;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+        .pass-header {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: #ffffff;
+            padding: 22px 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pass-body {
+            padding: 26px;
+        }
+        .pass-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 18px 0;
+        }
+        .pass-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+        .pass-item label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .pass-item .val {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .visit-pass-modal, .visit-pass-modal * {
+                visibility: visible;
+            }
+            .visit-pass-modal {
+                position: absolute;
+                top: 0; left: 0; width: 100%; height: auto;
+                background: none;
+                padding: 0;
+                display: block !important;
+            }
+            .visit-pass-card {
+                box-shadow: none;
+                border: 2px solid #0f766e;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            .pass-actions-bar {
+                display: none !important;
             }
         }
     </style>
@@ -343,6 +423,92 @@
 
     </main>
 
+    <!-- ================= SITE VISIT PASS / SLIP MODAL ================= -->
+    <div id="visitPassModal" class="visit-pass-modal" onclick="if(event.target === this) closeVisitPass()">
+        <div class="visit-pass-card">
+            <!-- Pass Header -->
+            <div class="pass-header">
+                <div>
+                    <span style="font-size:11px; background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:12px; font-weight:700; letter-spacing:0.5px;">
+                        OFFICIAL SITE VISIT CONFIRMATION PASS
+                    </span>
+                    <h2 style="font-size:22px; margin:6px 0 2px; color:#ffffff;">🏠 HouseHub Property Visit Slip</h2>
+                    <p style="font-size:12px; color:#ccfbf1; margin:0;">Show this pass at the property gate and to the verified broker.</p>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-family:monospace; font-size:14px; font-weight:800; background:#ffffff; color:#0f766e; padding:6px 12px; border-radius:6px;" id="passRefCode">
+                        PASS-VIS-101
+                    </div>
+                    <span id="passStatusBadge" style="display:inline-block; margin-top:6px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:#10b981; color:#ffffff;">CONFIRMED</span>
+                </div>
+            </div>
+
+            <!-- Pass Body -->
+            <div class="pass-body">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; border-bottom:1px solid #e2e8f0; padding-bottom:16px;">
+                    <div>
+                        <span style="font-size:12px; color:#64748b; font-weight:600; text-transform:uppercase;">Property To Visit</span>
+                        <h3 id="passPropTitle" style="font-size:18px; color:#0f172a; margin:4px 0 2px;">Property Title</h3>
+                        <p id="passPropAddress" style="font-size:13px; color:#475467; margin:0;">📍 Address, City</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-size:12px; color:#64748b; font-weight:600; text-transform:uppercase;">Price / Rent</span>
+                        <div id="passPropPrice" style="font-size:20px; font-weight:800; color:#0f766e;">₹25,000 / mo</div>
+                    </div>
+                </div>
+
+                <div class="pass-grid">
+                    <div class="pass-item">
+                        <label>Visitor (Customer)</label>
+                        <div class="val" id="passCustomerName">Bhavesh Patel</div>
+                    </div>
+                    <div class="pass-item">
+                        <label>Appointment Date</label>
+                        <div class="val" id="passVisitDate">📅 28-Sep-2026</div>
+                    </div>
+                    <div class="pass-item">
+                        <label>Time Slot</label>
+                        <div class="val" id="passTimeSlot">⏰ 10:00 AM - 12:00 PM</div>
+                    </div>
+                    <div class="pass-item">
+                        <label>Broker & Verification Code</label>
+                        <div class="val" id="passBrokerInfo">Rahul Sharma (BRK-2026-1001)</div>
+                    </div>
+                </div>
+
+                <!-- QR & Safety Checklist Row -->
+                <div style="display:flex; gap:18px; align-items:center; background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; padding:16px; margin:20px 0;">
+                    <!-- QR Mockup -->
+                    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:8px; text-align:center; flex-shrink:0;">
+                        <svg width="65" height="65" viewBox="0 0 24 24" fill="#0f766e">
+                            <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm11-2h2v2h-2v-2zm-3 0h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-4 4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm2 2h2v2h-2v-2z"/>
+                        </svg>
+                        <span style="font-size:9px; font-weight:700; color:#0f766e; display:block; margin-top:2px;">SECURE PASS</span>
+                    </div>
+
+                    <div style="font-size:12px; color:#134e4a; line-height:1.6;">
+                        <strong>⚠️ Important Visit Guidelines:</strong>
+                        <ul style="margin:4px 0 0 16px; padding:0;">
+                            <li>Please reach 10 minutes before your scheduled appointment time.</li>
+                            <li>Match the Broker Code (<strong><span id="passGuidelineBrokerCode">BRK-VERIFIED</span></strong>) with the broker's identity badge.</li>
+                            <li>Carry a valid photo ID card for property security check-in.</li>
+                            <li>Never pay cash tokens on the spot without formal legal documentation.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pass Actions (Hidden in Print) -->
+                <div class="pass-actions-bar" style="display:flex; justify-content:flex-end; gap:10px; padding-top:15px; border-top:1px solid #f1f5f9;">
+                    <button type="button" onclick="window.print()" class="action-btn" style="background:#0f766e; color:#ffffff; padding:10px 20px; font-size:14px; font-weight:700;">
+                        🖨️ Print Pass / Save as PDF
+                    </button>
+                    <button type="button" onclick="closeVisitPass()" class="action-btn cancel-btn" style="padding:10px 18px; font-size:14px; font-weight:600;">
+                        ✖ Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="dashboard-footer">
@@ -498,6 +664,8 @@
             }
         }
 
+        let loadedVisitsMap = {};
+
         // ==========================================
         // 2. SITE VISITS LOADER
         // ==========================================
@@ -515,6 +683,7 @@
 
                 const visits = (response && response.data) ? response.data : [];
                 countBadge.textContent = visits.length;
+                loadedVisitsMap = {};
 
                 if (visits.length === 0) {
                     container.innerHTML = `
@@ -530,6 +699,7 @@
 
                 container.innerHTML = "";
                 visits.forEach(v => {
+                    loadedVisitsMap[v.visitId] = v;
                     const statusClass = (v.status === 'CONFIRMED') ? 'confirmed' : ((v.status === 'CANCELLED') ? 'cancelled' : 'pending');
                     
                     const card = document.createElement("div");
@@ -573,6 +743,9 @@
                                     ✗ Cancel Visit
                                 </button>
                             ` : ''}
+                            <button onclick="openVisitPass(${v.visitId})" class="action-btn" style="background:#0f766e; color:#ffffff;">
+                                🖨️ Visit Pass / Slip
+                            </button>
                             <button onclick="goToChat(${v.propertyId})" class="chat-btn">
                                 💬 Chat with ${user.role === 'BROKER' ? 'Client' : 'Broker'}
                             </button>
@@ -583,14 +756,67 @@
                     `;
                     container.appendChild(card);
                 });
+
+                // Auto-open pass if passed via URL param
+                const urlParams = new URLSearchParams(window.location.search);
+                const autoPassId = urlParams.get("passId");
+                if (autoPassId && loadedVisitsMap[autoPassId]) {
+                    switchTab("visits");
+                    openVisitPass(Number(autoPassId));
+                }
             } catch (err) {
                 container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Failed to load visits: ${err.message}</p>`;
             }
         }
 
         // ==========================================
-        // 3. ACTION HANDLERS
+        // 3. ACTION HANDLERS & VISIT PASS MODAL
         // ==========================================
+        function openVisitPass(visitId) {
+            const v = loadedVisitsMap[visitId];
+            if (!v) {
+                alert("Visit details not found.");
+                return;
+            }
+
+            document.getElementById("passRefCode").textContent = `PASS-VIS-${v.visitId}`;
+            const statusBadge = document.getElementById("passStatusBadge");
+            statusBadge.textContent = v.status || "PENDING";
+            if (v.status === "CONFIRMED") {
+                statusBadge.style.background = "#10b981";
+            } else if (v.status === "CANCELLED") {
+                statusBadge.style.background = "#ef4444";
+            } else {
+                statusBadge.style.background = "#f59e0b";
+            }
+
+            document.getElementById("passPropTitle").textContent = v.propertyTitle || `Property #${v.propertyId}`;
+            document.getElementById("passPropAddress").textContent = v.propertyAddress 
+                ? `📍 ${v.propertyAddress}, ${v.propertyCity || ''}` 
+                : `📍 Property ID: #${v.propertyId}`;
+            
+            if (v.propertyPrice) {
+                const isRent = (v.propertyPurpose || "").toUpperCase() === "RENT";
+                document.getElementById("passPropPrice").textContent = `₹${Number(v.propertyPrice).toLocaleString()}${isRent ? ' / mo' : ''}`;
+            } else {
+                document.getElementById("passPropPrice").textContent = "Price on Request";
+            }
+
+            document.getElementById("passCustomerName").textContent = v.customerName || "Customer";
+            document.getElementById("passVisitDate").textContent = `📅 ${v.visitDate || 'TBD'}`;
+            document.getElementById("passTimeSlot").textContent = `⏰ ${v.timeSlot || 'Flexible'}`;
+            
+            const brokerStr = `${v.brokerName || 'Verified Broker'} (${v.brokerCode || 'BRK-VERIFIED'})`;
+            document.getElementById("passBrokerInfo").textContent = brokerStr;
+            document.getElementById("passGuidelineBrokerCode").textContent = v.brokerCode || 'BRK-VERIFIED';
+
+            document.getElementById("visitPassModal").style.display = "flex";
+        }
+
+        function closeVisitPass() {
+            document.getElementById("visitPassModal").style.display = "none";
+        }
+
         async function handleSendReply(event, inquiryId) {
             event.preventDefault();
             const input = document.getElementById(`replyInput-${inquiryId}`);

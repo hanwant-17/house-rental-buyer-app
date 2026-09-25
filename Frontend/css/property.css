@@ -201,17 +201,8 @@ select {
 
     border-radius: 12px;
 
-    display: grid;
-
-    grid-template-columns:
-        1.5fr
-        1fr
-        1fr
-        0.8fr
-        auto;
-
-    gap: 12px;
-
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) auto;
+    gap: 14px;
     align-items: end;
 
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);

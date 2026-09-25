@@ -583,24 +583,38 @@
 
                 <!-- Images -->
                 <h2 class="section-title">
-                    Property Images
+                    Property Images (Multiple Photos Supported)
                 </h2>
 
-
                 <div class="form-group">
-
                     <label for="propertyImages">
-                        Upload Property Images <span>*</span>
+                        Upload Property Photos From Device <span>* (At least 1 required)</span>
                     </label>
+                    <p style="font-size:13px; color:#64748b; margin-bottom:8px;">
+                        Select multiple photos from your device (Exterior, Hall, Bedroom, Kitchen, Washroom). The 1st photo will be your primary listing cover photo.
+                    </p>
 
-                    <input
-                        type="file"
-                        id="propertyImages"
-                        multiple
-                        accept=".jpg,.jpeg,.png">
+                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+                        <input
+                            type="file"
+                            id="propertyImages"
+                            multiple
+                            accept="image/png, image/jpeg, image/jpg, image/webp"
+                            style="display:none;"
+                            onchange="handlePropertyImagesSelect(event)">
 
-                    <small class="error-message"></small>
+                        <button type="button" onclick="document.getElementById('propertyImages').click()" style="background:#f1f5f9; color:#1e293b; border:2px dashed #94a3b8; padding:12px 20px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                            📷 Choose Photos From Device
+                        </button>
+                        <span id="propertyPhotosCountLabel" style="font-size:13px; color:#64748b;">
+                            No photos selected yet
+                        </span>
+                    </div>
 
+                    <!-- Thumbnail Previews -->
+                    <div id="imagePreviewContainer" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;"></div>
+
+                    <small class="error-message" id="propertyImagesError"></small>
                 </div>
 
 

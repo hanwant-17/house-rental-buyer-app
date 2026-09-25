@@ -62,10 +62,20 @@ public class VisitService {
     }
 
     private VisitDto mapToDto(Visit v) {
+        Property p = v.getProperty();
+        Broker b = (p != null) ? p.getBroker() : null;
+
         return VisitDto.builder()
                 .visitId(v.getVisitId())
-                .propertyId(v.getProperty().getPropertyId())
-                .propertyTitle(v.getProperty().getTitle())
+                .propertyId(p != null ? p.getPropertyId() : null)
+                .propertyTitle(p != null ? p.getTitle() : "Property Listing")
+                .propertyAddress(p != null ? p.getAddress() : "")
+                .propertyCity(p != null ? p.getCity() : "")
+                .propertyPrice(p != null ? p.getPrice() : null)
+                .propertyPurpose(p != null && p.getPurpose() != null ? p.getPurpose().name() : "RENT")
+                .brokerName(b != null && b.getUser() != null ? b.getUser().getName() : "Verified Agent")
+                .brokerAgency(b != null ? b.getAgencyName() : "HouseHub Verified")
+                .brokerCode(b != null ? b.getBrokerCode() : "BRK-VERIFIED")
                 .customerId(v.getCustomer().getUserId())
                 .customerName(v.getCustomer().getName())
                 .visitDate(v.getVisitDate())

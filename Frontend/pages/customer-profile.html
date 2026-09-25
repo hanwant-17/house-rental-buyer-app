@@ -428,6 +428,45 @@
             </form>
         </div>
 
+        <!-- ================= 3. SECURITY & CHANGE PASSWORD ================= -->
+        <div class="profile-card" style="margin-top:25px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #f1f5f9;">
+                <div>
+                    <h3 style="font-size:18px; color:#1e293b; display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                        🔐 Account Security & Password
+                    </h3>
+                    <p style="font-size:13px; color:#64748b; margin:0;">
+                        Ensure your account is using a secure password.
+                    </p>
+                </div>
+            </div>
+
+            <form id="customerPasswordForm" onsubmit="handleCustomerPasswordChange(event)">
+                <div class="edit-form-grid">
+                    <div class="form-group full-width">
+                        <label for="custCurrentPassword">Current Password <span>*</span></label>
+                        <input type="password" id="custCurrentPassword" placeholder="Enter your current password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custNewPassword">New Password <span>*</span></label>
+                        <input type="password" id="custNewPassword" placeholder="At least 6 characters" minlength="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custConfirmNewPassword">Confirm New Password <span>*</span></label>
+                        <input type="password" id="custConfirmNewPassword" placeholder="Re-enter new password" minlength="6" required>
+                    </div>
+
+                    <div class="form-actions" style="margin-top:10px;">
+                        <button type="submit" class="save-btn" id="changePasswordBtn" style="background:#0f172a;">
+                            🔑 Update Password
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
     </main>
 
     <!-- Footer -->
@@ -589,6 +628,49 @@
             } finally {
                 btn.disabled = false;
                 btn.textContent = "💾 Save Profile Changes";
+            }
+        }
+
+        async function handleCustomerPasswordChange(event) {
+            event.preventDefault();
+            const currentPass = document.getElementById("custCurrentPassword").value;
+            const newPass = document.getElementById("custNewPassword").value;
+            const confirmPass = document.getElementById("custConfirmNewPassword").value;
+
+            if (!currentPass || !newPass || !confirmPass) {
+                alert("Please fill in all password fields.");
+                return;
+            }
+
+            if (newPass.length < 6) {
+                alert("New password must be at least 6 characters long.");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                alert("New passwords do not match. Please re-enter.");
+                return;
+            }
+
+            if (currentPass === newPass) {
+                alert("New password cannot be the same as current password.");
+                return;
+            }
+
+            const btn = document.getElementById("changePasswordBtn");
+            const origText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = "Updating Password...";
+
+            try {
+                await window.api.changePassword(currentPass, newPass);
+                alert("✅ Password changed successfully! Please use your new password on your next login.");
+                document.getElementById("customerPasswordForm").reset();
+            } catch (err) {
+                alert("Password change failed: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = origText;
             }
         }
 

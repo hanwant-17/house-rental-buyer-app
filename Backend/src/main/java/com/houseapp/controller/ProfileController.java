@@ -2,6 +2,7 @@ package com.houseapp.controller;
 
 import com.houseapp.dto.ApiResponse;
 import com.houseapp.dto.BrokerProfileUpdateDto;
+import com.houseapp.dto.ChangePasswordDto;
 import com.houseapp.dto.CustomerProfileUpdateDto;
 import com.houseapp.dto.UserProfileDto;
 import com.houseapp.security.UserDetailsImpl;
@@ -46,5 +47,13 @@ public class ProfileController {
                 "Profile updated successfully! NOTE: Your broker account is now PENDING Admin re-verification.",
                 updated
         ));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Valid @RequestBody ChangePasswordDto dto) {
+        profileService.changePassword(userDetails.getId(), dto);
+        return ResponseEntity.ok(ApiResponse.success("Password changed successfully.", null));
     }
 }

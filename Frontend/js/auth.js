@@ -285,3 +285,52 @@ if (logoutButton) {
         window.location.href = "login.html";
     });
 }
+
+// ==========================================
+// 5. UNREAD CHAT NOTIFICATION BADGES
+// ==========================================
+async function updateUnreadChatBadge() {
+    if (!window.api) return;
+    const user = window.api.getCurrentUser();
+    if (!user || !user.token) return;
+
+    try {
+        const res = await window.api.getUnreadChatCount();
+        const count = (res && res.data !== undefined) ? Number(res.data) : 0;
+
+        // Update any explicit badge elements
+        document.querySelectorAll(".unread-chat-badge, .nav-chat-badge, #unreadChatBadge").forEach(badge => {
+            if (count > 0) {
+                badge.textContent = count > 99 ? "99+" : count;
+                badge.style.display = "inline-flex";
+            } else {
+                badge.style.display = "none";
+            }
+        });
+
+        // Automatically attach/update red badge on all links pointing to chat.html
+        document.querySelectorAll("a[href*='chat.html']").forEach(link => {
+            let badge = link.querySelector(".dynamic-chat-pill");
+            if (count > 0) {
+                if (!badge) {
+                    badge = document.createElement("span");
+                    badge.className = "dynamic-chat-pill";
+                    badge.style.cssText = "background:#dc2626; color:#fff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:12px; margin-left:6px; display:inline-block; vertical-align:middle; line-height:1.2;";
+                    link.appendChild(badge);
+                }
+                badge.textContent = count > 99 ? "99+" : count;
+                badge.style.display = "inline-block";
+            } else if (badge) {
+                badge.style.display = "none";
+            }
+        });
+    } catch (e) {
+        // Silently skip if user is not authenticated or offline
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateUnreadChatBadge();
+    // Refresh unread count every 30 seconds
+    setInterval(updateUnreadChatBadge, 30000);
+});

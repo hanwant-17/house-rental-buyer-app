@@ -31,4 +31,13 @@ public class VisitDto {
     private String notes;
     private String status;
     private LocalDateTime createdAt;
+
+    // Visit Pass Slip details
+    private String propertyAddress;
+    private String propertyCity;
+    private Double propertyPrice;
+    private String propertyPurpose;
+    private String brokerName;
+    private String brokerAgency;
+    private String brokerCode;
 }

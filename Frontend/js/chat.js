@@ -120,6 +120,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!isBackgroundPoll) {
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
+
+            // Mark messages as read and update badge
+            window.api.markChatAsRead(chatId).then(() => {
+                if (typeof updateUnreadChatBadge === "function") {
+                    updateUnreadChatBadge();
+                }
+            }).catch(() => {});
         } catch (e) {
             if (!isBackgroundPoll) {
                 console.error("Failed to load chat messages:", e);

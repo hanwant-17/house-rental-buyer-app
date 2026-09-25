@@ -133,6 +133,13 @@ const api = {
         });
     },
 
+    async changePassword(currentPassword, newPassword) {
+        return await this.request("/profile/change-password", {
+            method: "PUT",
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+    },
+
     // ==========================================
     // 🛡️ ADMIN VERIFICATION APIS (RULE 1, 2, 4)
     // ==========================================
@@ -267,6 +274,10 @@ const api = {
 
     async markChatAsRead(chatId) {
         return await this.request(`/chats/${chatId}/read`, { method: "PUT" });
+    },
+
+    async getUnreadChatCount() {
+        return await this.request("/chats/unread-count", { method: "GET" });
     },
 
     // ==========================================

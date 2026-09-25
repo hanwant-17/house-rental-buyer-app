@@ -158,17 +158,37 @@ async function loadPublicProperties() {
 // ==========================================
 // 3. SEARCH & FILTER PROPERTIES
 // ==========================================
+function formatBudgetDisplay(val) {
+    const num = Number(val);
+    if (!num || num >= 10000000) return "Any Price";
+    if (num >= 10000000) return "₹" + (num / 10000000).toFixed(1) + " Cr";
+    if (num >= 100000) return "₹" + (num / 100000).toFixed(1) + " Lakh";
+    if (num >= 1000) return "₹" + (num / 1000).toFixed(0) + "K";
+    return "₹" + num.toLocaleString();
+}
+
+function handlePriceSliderInput(val) {
+    const display = document.getElementById("priceDisplay");
+    if (display) {
+        display.textContent = formatBudgetDisplay(val);
+    }
+}
+
 async function filterProperties() {
     const locationInput = document.getElementById("locationFilter");
     const purposeSelect = document.getElementById("purposeFilter");
     const typeSelect = document.getElementById("typeFilter");
     const bhkSelect = document.getElementById("bhkFilter");
+    const priceRange = document.getElementById("priceRange");
 
     const filters = {};
     if (locationInput && locationInput.value.trim()) filters.city = locationInput.value.trim();
     if (purposeSelect && purposeSelect.value) filters.purpose = purposeSelect.value;
     if (typeSelect && typeSelect.value) filters.propertyType = typeSelect.value;
     if (bhkSelect && bhkSelect.value) filters.bhk = bhkSelect.value;
+    if (priceRange && Number(priceRange.value) < 10000000) {
+        filters.maxPrice = Number(priceRange.value);
+    }
 
     try {
         if (window.api) {
@@ -187,6 +207,11 @@ if (filterButton) {
     filterButton.addEventListener("click", filterProperties);
 }
 
+const priceRangeSlider = document.getElementById("priceRange");
+if (priceRangeSlider) {
+    priceRangeSlider.addEventListener("change", filterProperties);
+}
+
 // View property action
 function viewProperty(id) {
     localStorage.setItem("selectedPropertyId", id);
@@ -197,6 +222,43 @@ function viewProperty(id) {
 // 4. PROPERTY DETAILS PAGE
 // ==========================================
 const propertyDetails = document.getElementById("propertyDetails");
+
+let currentGalleryImages = [];
+let currentGalleryIdx = 0;
+
+function changeCarouselSlide(dir) {
+    if (!currentGalleryImages || currentGalleryImages.length <= 1) return;
+    currentGalleryIdx = (currentGalleryIdx + dir + currentGalleryImages.length) % currentGalleryImages.length;
+    updateCarouselDisplay();
+}
+
+function setCarouselSlide(idx) {
+    if (!currentGalleryImages || idx < 0 || idx >= currentGalleryImages.length) return;
+    currentGalleryIdx = idx;
+    updateCarouselDisplay();
+}
+
+function updateCarouselDisplay() {
+    const imgEl = document.getElementById("carouselMainImg");
+    const countEl = document.getElementById("carouselCounter");
+    if (imgEl && currentGalleryImages[currentGalleryIdx]) {
+        imgEl.style.opacity = "0.3";
+        setTimeout(() => {
+            imgEl.src = currentGalleryImages[currentGalleryIdx];
+            imgEl.style.opacity = "1";
+        }, 120);
+    }
+    if (countEl) {
+        countEl.textContent = `${currentGalleryIdx + 1} / ${currentGalleryImages.length}`;
+    }
+    currentGalleryImages.forEach((_, i) => {
+        const thumb = document.getElementById(`carouselThumb-${i}`);
+        if (thumb) {
+            thumb.style.borderColor = (i === currentGalleryIdx) ? "#2563eb" : "transparent";
+            thumb.style.opacity = (i === currentGalleryIdx) ? "1" : "0.55";
+        }
+    });
+}
 
 async function loadPropertyDetails() {
     if (!propertyDetails) return;
@@ -229,10 +291,16 @@ async function loadPropertyDetails() {
         const price = Number(prop.price || 0).toLocaleString();
         const priceDisplay = purpose === "RENT" ? `₹${price} / month` : `₹${price}`;
 
-        let primaryImage = "../images/home-banner.jpg";
+        let imagesList = [];
         if (prop.images && prop.images.length > 0) {
-            primaryImage = prop.images[0].imageUrl;
+            imagesList = prop.images.map(img => img.imageUrl);
+        } else if (prop.image) {
+            imagesList = [prop.image];
+        } else {
+            imagesList = ["../images/home-banner.jpg"];
         }
+        currentGalleryImages = imagesList;
+        currentGalleryIdx = 0;
 
         propertyDetails.innerHTML = `
             <div class="details-container" style="max-width:1100px; margin:0 auto; padding:40px 20px;">
@@ -241,9 +309,30 @@ async function loadPropertyDetails() {
                 </a>
 
                 <div style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #eaecf0; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
-                    <div style="height:380px; overflow:hidden; background:#111;">
-                        <img src="${primaryImage}" alt="${prop.title}" style="width:100%; height:100%; object-fit:cover;">
+                    <!-- Interactive Photo Carousel -->
+                    <div style="background:#0f172a; position:relative; height:420px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                        <img id="carouselMainImg" src="${imagesList[0]}" alt="${prop.title}" style="max-height:100%; max-width:100%; object-fit:contain; transition:opacity 0.2s ease;">
+
+                        ${imagesList.length > 1 ? `
+                            <button type="button" onclick="changeCarouselSlide(-1)" aria-label="Previous Photo" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:44px; height:44px; border-radius:50%; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:5;">
+                                ❮
+                            </button>
+                            <button type="button" onclick="changeCarouselSlide(1)" aria-label="Next Photo" style="position:absolute; right:16px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:44px; height:44px; border-radius:50%; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:5;">
+                                ❯
+                            </button>
+                            <div style="position:absolute; bottom:14px; right:18px; background:rgba(15,23,42,0.85); color:#fff; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; z-index:5; border:1px solid rgba(255,255,255,0.2);">
+                                📷 <span id="carouselCounter">1 / ${imagesList.length}</span> Photos
+                            </div>
+                        ` : ''}
                     </div>
+
+                    ${imagesList.length > 1 ? `
+                        <div style="display:flex; gap:10px; padding:12px 20px; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto;">
+                            ${imagesList.map((url, i) => `
+                                <img id="carouselThumb-${i}" src="${url}" onclick="setCarouselSlide(${i})" style="width:72px; height:52px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid ${i === 0 ? '#2563eb' : 'transparent'}; opacity:${i === 0 ? '1' : '0.55'}; transition:all 0.2s; flex-shrink:0;">
+                            `).join('')}
+                        </div>
+                    ` : ''}
 
                     <div style="padding:30px;">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
@@ -461,9 +550,16 @@ async function submitVisit(event, propertyId) {
     }
 
     try {
-        await window.api.scheduleVisit(propertyId, visitDate, timeSlot, notes);
-        alert("✅ Site visit scheduled successfully! The broker will confirm your slot. Track it in 'My Inquiries & Visits'.");
-        document.getElementById("visitScheduleForm").reset();
+        const res = await window.api.scheduleVisit(propertyId, visitDate, timeSlot, notes);
+        const newVisit = (res && res.data) ? res.data : null;
+        const passId = newVisit ? newVisit.visitId : "";
+
+        if (confirm("✅ Site visit scheduled successfully!\n\nWould you like to view and print your Site Visit Pass / Slip now?")) {
+            window.location.href = `my-inquiries.html?tab=visits${passId ? '&passId=' + passId : ''}`;
+        } else {
+            alert("Visit request recorded. You can view or print your Visit Pass anytime from 'My Inquiries & Visits'.");
+            document.getElementById("visitScheduleForm").reset();
+        }
     } catch (err) {
         alert("Failed to schedule visit: " + err.message);
     }
@@ -483,8 +579,99 @@ function startChatWithBroker(propertyId) {
 }
 
 // ==========================================
-// 5. BROKER: ADD PROPERTY FORM (RULE 2: STATUS PENDING)
+// 5. BROKER: ADD PROPERTY (MULTIPLE DEVICE PHOTOS SUPPORT)
 // ==========================================
+let uploadedPropertyPhotos = [];
+
+function handlePropertyImagesSelect(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const maxPhotos = 8;
+    if (uploadedPropertyPhotos.length + files.length > maxPhotos) {
+        alert(`You can upload at most ${maxPhotos} photos. Taking first available slots.`);
+    }
+
+    const availableSlots = maxPhotos - uploadedPropertyPhotos.length;
+    const toProcess = Array.from(files).slice(0, availableSlots);
+
+    toProcess.forEach(file => {
+        if (!file.type.startsWith("image/")) {
+            alert(`File "${file.name}" is not an image.`);
+            return;
+        }
+
+        if (file.size > 8 * 1024 * 1024) {
+            alert(`File "${file.name}" is too large (> 8MB). Please choose a smaller image.`);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Compress with canvas to max 1280px resolution for high quality & fast payload
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement("canvas");
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 1280;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+                const base64Data = canvas.toDataURL("image/jpeg", 0.85);
+
+                uploadedPropertyPhotos.push(base64Data);
+                renderPropertyImagePreviews();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    event.target.value = "";
+}
+
+function removePropertyPhoto(idx) {
+    uploadedPropertyPhotos.splice(idx, 1);
+    renderPropertyImagePreviews();
+}
+
+function renderPropertyImagePreviews() {
+    const container = document.getElementById("imagePreviewContainer");
+    const countLabel = document.getElementById("propertyPhotosCountLabel");
+    if (!container) return;
+
+    if (countLabel) {
+        countLabel.textContent = uploadedPropertyPhotos.length > 0 
+            ? `✓ ${uploadedPropertyPhotos.length} photo(s) selected` 
+            : "No photos selected yet";
+        countLabel.style.color = uploadedPropertyPhotos.length > 0 ? "#16a34a" : "#64748b";
+        countLabel.style.fontWeight = uploadedPropertyPhotos.length > 0 ? "600" : "normal";
+    }
+
+    container.innerHTML = "";
+    uploadedPropertyPhotos.forEach((photoBase64, idx) => {
+        const thumb = document.createElement("div");
+        thumb.style.cssText = "position:relative; width:100px; height:80px; border-radius:8px; overflow:hidden; border:2px solid " + (idx === 0 ? "#2563eb" : "#cbd5e1") + "; box-shadow:0 2px 8px rgba(0,0,0,0.1); background:#0f172a;";
+        thumb.innerHTML = `
+            <img src="${photoBase64}" style="width:100%; height:100%; object-fit:cover;">
+            ${idx === 0 ? '<span style="position:absolute; bottom:0; left:0; right:0; background:rgba(37,99,235,0.9); color:#fff; font-size:10px; font-weight:bold; text-align:center; padding:2px;">COVER</span>' : ''}
+            <button type="button" onclick="removePropertyPhoto(${idx})" title="Remove photo" style="position:absolute; top:4px; right:4px; background:rgba(220,38,38,0.9); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; font-weight:bold;">✕</button>
+        `;
+        container.appendChild(thumb);
+    });
+}
+
 const addPropertyForm = document.getElementById("addPropertyForm");
 
 if (addPropertyForm) {
@@ -526,6 +713,12 @@ if (addPropertyForm) {
             return;
         }
 
+        if (!uploadedPropertyPhotos || uploadedPropertyPhotos.length === 0) {
+            alert("⚠️ Please upload at least 1 real property photo from your device.");
+            document.getElementById("propertyImages").focus();
+            return;
+        }
+
         const submitBtn = addPropertyForm.querySelector("button[type='submit']");
         const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
@@ -547,20 +740,19 @@ if (addPropertyForm) {
                 furnishedStatus: furnishedStatus.value || "Semi-Furnished",
                 parking: parking.checked !== undefined ? parking.checked : true,
                 amenities: amenities.value || "Lift, Security, Power Backup",
-                imageUrls: [
-                    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00"
-                ]
+                imageUrls: uploadedPropertyPhotos
             };
 
             await window.api.addProperty(propertyPayload);
 
             alert(
-                "✅ Property submitted successfully!\n\n" +
+                "✅ Property submitted successfully with " + uploadedPropertyPhotos.length + " photo(s)!\n\n" +
                 "Status: PENDING ADMIN VERIFICATION (RULE 2)\n\n" +
-                "Your property details and documents have been sent to Admin for review. Once approved, it will be published LIVE for customers."
+                "Your property details and photos have been sent to Admin for review. Once approved, it will be published LIVE for customers."
             );
 
             addPropertyForm.reset();
+            uploadedPropertyPhotos = [];
             window.location.href = "broker-dashboard.html";
         } catch (error) {
             alert("Failed to submit property: " + error.message);

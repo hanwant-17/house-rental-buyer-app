@@ -127,4 +127,8 @@ public class ChatService {
         }
         chatMessageRepository.saveAll(messages);
     }
+
+    public long getUnreadMessageCount(Long userId) {
+        return chatMessageRepository.countUnreadMessagesForUser(userId);
+    }
 }

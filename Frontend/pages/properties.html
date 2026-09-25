@@ -67,109 +67,88 @@
         <div class="filter-box">
 
             <div class="filter-item">
-
-                <label>Location</label>
-
+                <label>Location / City</label>
                 <input
                     type="text"
                     id="locationFilter"
-                    placeholder="Enter city or location"
+                    list="citySuggestions"
+                    placeholder="Enter city (e.g. Jodhpur)"
+                    autocomplete="off"
                 >
-
+                <datalist id="citySuggestions">
+                    <option value="Jodhpur">
+                    <option value="Jaipur">
+                    <option value="Udaipur">
+                    <option value="Kota">
+                    <option value="Delhi">
+                    <option value="Mumbai">
+                    <option value="Bengaluru">
+                    <option value="Pune">
+                    <option value="Ahmedabad">
+                    <option value="Hyderabad">
+                </datalist>
             </div>
 
-
             <div class="filter-item">
-
                 <label>Purpose</label>
-
                 <select id="purposeFilter">
-
                     <option value="">Buy / Rent</option>
-
-                    <option value="buy">
-                        Buy
-                    </option>
-
-                    <option value="rent">
-                        Rent
-                    </option>
-
+                    <option value="buy">Buy</option>
+                    <option value="rent">Rent</option>
                 </select>
-
             </div>
 
-
             <div class="filter-item">
-
                 <label>Property Type</label>
-
                 <select id="typeFilter">
-
-                    <option value="">
-                        All Types
-                    </option>
-
-                    <option value="house">
-                        House
-                    </option>
-
-                    <option value="flat">
-                        Flat
-                    </option>
-
-                    <option value="villa">
-                        Villa
-                    </option>
-
-                    <option value="apartment">
-                        Apartment
-                    </option>
-
+                    <option value="">All Types</option>
+                    <option value="house">House</option>
+                    <option value="flat">Flat</option>
+                    <option value="villa">Villa</option>
+                    <option value="apartment">Apartment</option>
                 </select>
-
             </div>
-
 
             <div class="filter-item">
-
                 <label>BHK</label>
-
                 <select id="bhkFilter">
-
-                    <option value="">
-                        Any BHK
-                    </option>
-
-                    <option value="1">
-                        1 BHK
-                    </option>
-
-                    <option value="2">
-                        2 BHK
-                    </option>
-
-                    <option value="3">
-                        3 BHK
-                    </option>
-
-                    <option value="4">
-                        4+ BHK
-                    </option>
-
+                    <option value="">Any BHK</option>
+                    <option value="1">1 BHK</option>
+                    <option value="2">2 BHK</option>
+                    <option value="3">3 BHK</option>
+                    <option value="4">4+ BHK</option>
                 </select>
-
             </div>
 
+            <!-- Dynamic Price Range Slider -->
+            <div class="filter-item" style="min-width: 190px;">
+                <label style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Max Budget</span>
+                    <strong id="priceDisplay" style="color:#2563eb; font-size:12px;">Any Price</strong>
+                </label>
+                <input
+                    type="range"
+                    id="priceRange"
+                    min="5000"
+                    max="10000000"
+                    step="5000"
+                    value="10000000"
+                    oninput="handlePriceSliderInput(this.value)"
+                    style="width:100%; height:8px; accent-color:#2563eb; cursor:pointer; margin-top:8px;"
+                >
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-top:2px;">
+                    <span>₹5K</span>
+                    <span>₹50K</span>
+                    <span>₹50L</span>
+                    <span>₹1 Cr+</span>
+                </div>
+            </div>
 
             <button
                 class="filter-button"
                 id="filterButton">
-
                 Search
-
             </button>
-
         </div>
 
 

@@ -3,6 +3,7 @@ package com.houseapp.service;
 import com.houseapp.dto.BrokerProfileUpdateDto;
 import com.houseapp.dto.CustomerProfileUpdateDto;
 import com.houseapp.dto.UserProfileDto;
+import com.houseapp.dto.ChangePasswordDto;
 import com.houseapp.entity.*;
 import com.houseapp.exception.BadRequestException;
 import com.houseapp.exception.ResourceNotFoundException;
@@ -10,6 +11,7 @@ import com.houseapp.repository.BrokerRepository;
 import com.houseapp.repository.CustomerRepository;
 import com.houseapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final BrokerRepository brokerRepository;
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserProfileDto getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
@@ -125,6 +128,23 @@ public class ProfileService {
         brokerRepository.save(broker);
 
         return getUserProfile(userId);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new BadRequestException("Current password is incorrect.");
+        }
+
+        if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) {
+            throw new BadRequestException("New password cannot be the same as current password.");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
     }
 
     private String defaultAvatar(Role role) {
