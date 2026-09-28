@@ -29,10 +29,29 @@
     <div class="nav-buttons">
         <a href="pages/login.html" class="login-btn">Login</a>
 
-        <a href="pages/customer-register.html"
-           class="register-btn">
-            Register
-        </a>
+        <div class="register-dropdown">
+            <a href="pages/customer-register.html" class="register-btn">
+                Register ▾
+            </a>
+            <div class="register-dropdown-content">
+                <div class="register-dropdown-content-inner">
+                    <a href="pages/customer-register.html">
+                        <span class="reg-icon">👤</span>
+                        <div class="reg-text">
+                            <strong>Customer / Tenant</strong>
+                            <span>Find homes for Rent or Buy</span>
+                        </div>
+                    </a>
+                    <a href="pages/broker-register.html">
+                        <span class="reg-icon">🏢</span>
+                        <div class="reg-text">
+                            <strong>Broker / Owner</strong>
+                            <span>List properties & get verified</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
 </header>
@@ -280,6 +299,28 @@
 
     </section>
 
+
+    <!-- ================= BROKER CTA BANNER ================= -->
+    <section class="broker-cta-section" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 50px 7%; color: #fff; margin: 40px 0 0 0;">
+        <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap;">
+            <div>
+                <span style="background: rgba(37,99,235,0.25); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; text-transform: uppercase;">
+                    For Property Owners & Brokers
+                </span>
+                <h2 style="font-size: 28px; margin: 12px 0 8px 0; color: #fff;">
+                    Want to List Your Property on HouseHub?
+                </h2>
+                <p style="color: #94a3b8; font-size: 15px; max-width: 600px; line-height: 1.5;">
+                    Register as a verified broker or property owner. Get verified by our admin team, receive your unique Broker ID, and connect directly with genuine buyers & tenants.
+                </p>
+            </div>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                <a href="pages/broker-register.html" style="background: #2563eb; color: #fff; padding: 13px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;">
+                    🏢 Register as Broker / Owner →
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- ================= FOOTER ================= -->
 

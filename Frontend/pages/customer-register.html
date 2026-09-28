@@ -27,6 +27,7 @@
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="login.html">Login</a></li>
+            <li><a href="broker-register.html" style="color:#15803d; font-weight:700;">Broker Register</a></li>
         </ul>
 
     </nav>
@@ -38,6 +39,16 @@
 
         <div class="auth-container">
 
+            <!-- Role Switcher Tabs -->
+            <div class="auth-role-tabs">
+                <a href="customer-register.html" class="role-tab active">
+                    <span style="font-size:16px;">👤</span> Customer / Tenant
+                </a>
+                <a href="broker-register.html" class="role-tab">
+                    <span style="font-size:16px;">🏢</span> Broker / Owner
+                </a>
+            </div>
+
             <div class="auth-header">
 
                 <h1>Create Account</h1>
@@ -47,6 +58,7 @@
                 </p>
 
             </div>
+
 
 
             <form id="customerRegisterForm">
@@ -234,6 +246,11 @@
 
                 </button>
 
+
+                <div class="role-switch-helper broker-hint">
+                    <span>🏢 Are you a Real Estate Broker or Property Owner?</span>
+                    <a href="broker-register.html">Register as Broker / Owner ➔</a>
+                </div>
 
                 <p class="auth-footer">
 
