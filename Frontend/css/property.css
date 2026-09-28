@@ -133,6 +133,93 @@ select {
     background: #1d4ed8;
 }
 
+/* =========================
+   REGISTER DROPDOWN
+========================= */
+.register-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.register-dropdown .register-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.register-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    padding-top: 8px;
+    min-width: 260px;
+    z-index: 9999;
+}
+
+.register-dropdown-content-inner {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.register-dropdown:hover .register-dropdown-content,
+.register-dropdown:focus-within .register-dropdown-content {
+    display: block !important;
+}
+
+.register-dropdown-content a {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #1e293b !important;
+    border-radius: 8px;
+    transition: background 0.2s;
+    text-align: left;
+    background: transparent !important;
+    margin: 0;
+}
+
+.register-dropdown-content a:hover {
+    background: #eff6ff !important;
+    color: #1d4ed8 !important;
+}
+
+.register-dropdown-content .reg-icon {
+    font-size: 20px;
+    background: #f1f5f9;
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.register-dropdown-content .reg-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-dropdown-content .reg-text strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.register-dropdown-content .reg-text span {
+    font-size: 11px;
+    color: #64748b;
+}
+
+
 
 /* =========================
    PROPERTY HEADER

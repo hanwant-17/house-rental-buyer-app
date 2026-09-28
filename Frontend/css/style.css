@@ -167,7 +167,7 @@ button {
     top: 100%;
     padding-top: 8px;
     min-width: 260px;
-    z-index: 1200;
+    z-index: 9999;
 }
 
 .register-dropdown-content-inner {
@@ -181,7 +181,7 @@ button {
 
 .register-dropdown:hover .register-dropdown-content,
 .register-dropdown:focus-within .register-dropdown-content {
-    display: block;
+    display: block !important;
 }
 
 .register-dropdown-content a {
@@ -190,10 +190,12 @@ button {
     gap: 12px;
     padding: 10px 14px;
     text-decoration: none;
-    color: #1e293b;
+    color: #1e293b !important;
     border-radius: 8px;
     transition: background 0.2s;
     text-align: left;
+    background: transparent !important;
+    margin: 0;
 }
 
 .register-dropdown-content a:hover {
