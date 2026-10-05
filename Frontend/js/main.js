@@ -42,11 +42,27 @@ const searchButton = document.querySelector(".search-btn");
 
 if (searchButton) {
     searchButton.addEventListener("click", function () {
+        const token = localStorage.getItem("jwtToken");
+
+        // Agar user logged in nahi hai to seedha login screen open karein
+        if (!token) {
+            const locationInput = document.querySelector(".search-field input");
+            const purposeSelect = document.querySelector(".search-field select");
+            if (locationInput && locationInput.value.trim()) {
+                localStorage.setItem("searchLocation", locationInput.value.trim());
+            }
+            if (purposeSelect && purposeSelect.value) {
+                localStorage.setItem("searchPurpose", purposeSelect.value);
+            }
+            window.location.href = "pages/login.html";
+            return;
+        }
+
         const locationInput = document.querySelector(".search-field input");
         const purposeSelect = document.querySelector(".search-field select");
 
-        const location = locationInput.value.trim();
-        const purpose = purposeSelect.value;
+        const location = locationInput ? locationInput.value.trim() : "";
+        const purpose = purposeSelect ? purposeSelect.value : "";
 
         // Check location
         if (location === "") {
@@ -69,4 +85,25 @@ if (searchButton) {
         // Open properties page
         window.location.href = "pages/properties.html";
     });
+
+    // Enter key support on location input
+    const locationInput = document.querySelector(".search-field input");
+    if (locationInput) {
+        locationInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                searchButton.click();
+            }
+        });
+    }
 }
+
+// Explore cards check: agar user logged in nahi hai to login screen par bhejein
+document.querySelectorAll(".property-type-content a").forEach(link => {
+    link.addEventListener("click", function (e) {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+            e.preventDefault();
+            window.location.href = "pages/login.html";
+        }
+    });
+});
