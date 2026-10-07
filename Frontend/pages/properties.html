@@ -926,10 +926,12 @@
             <span class="portal-tag" id="portalRoleTag">Marketplace</span>
         </a>
 
-        <!-- Dynamic Role Shortcuts (Strictly NO Home, Buy, Rent, About, Contact) -->
+        <!-- Standard Navigation Links -->
         <nav class="nav-shortcuts" id="navShortcuts">
-            <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
-            <a href="price-analysis.html" class="nav-link">📈 Market Analytics</a>
+            <a href="../index.html" class="nav-link">Home</a>
+            <a href="properties.html" class="nav-link active">Browse Listings</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
         </nav>
 
         <!-- Dynamic User / Auth Area -->
@@ -1161,10 +1163,10 @@
             </div>
 
             <div class="footer-links-group">
-                <a href="properties.html">🏢 Browse Listings</a>
-                <a href="price-analysis.html">📈 Market Analytics</a>
-                <a href="customer-dashboard.html">👤 Customer Portal</a>
-                <a href="broker-register.html">🏢 Broker Onboarding</a>
+                <a href="../index.html">Home</a>
+                <a href="properties.html">Browse Listings</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
             </div>
         </div>
 
@@ -1217,7 +1219,6 @@
                             <a href="properties.html" class="nav-link active">🏢 Properties</a>
                             <a href="approved-brokers.html" class="nav-link">🏢 Brokers</a>
                             <a href="admin-customers.html" class="nav-link">👥 Customers</a>
-                            <a href="price-analysis.html" class="nav-link">📈 Analytics</a>
                         `;
                     }
                 } else if (role.includes("BROKER")) {
@@ -1234,7 +1235,6 @@
                             <a href="my-properties.html" class="nav-link">🏠 My Listings</a>
                             <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
                             <a href="my-inquiries.html" class="nav-link">📅 Leads & Visits</a>
-                            <a href="price-analysis.html" class="nav-link">📈 Market Trends</a>
                         `;
                     }
                 } else {
@@ -1252,7 +1252,6 @@
                             <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
                             <a href="wishlist.html" class="nav-link">❤️ Saved Homes</a>
                             <a href="chat.html" class="nav-link">💬 Inquiries & Chats</a>
-                            <a href="price-analysis.html" class="nav-link">📈 Price Trends</a>
                         `;
                     }
                 }
@@ -1272,14 +1271,16 @@
                     `;
                 }
             } else {
-                // Guest / Not logged in
+                // Guest / Not logged in -> EXACT SAME 4 PUBLIC LINKS
                 if (portalTag) portalTag.textContent = "Marketplace";
-                if (brandLink) brandLink.href = "properties.html";
+                if (brandLink) brandLink.href = "../index.html";
                 if (backBtn) backBtn.style.display = "none";
                 if (navShortcuts) {
                     navShortcuts.innerHTML = `
-                        <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
-                        <a href="price-analysis.html" class="nav-link">📈 Market Analytics</a>
+                        <a href="../index.html" class="nav-link">Home</a>
+                        <a href="properties.html" class="nav-link active">Browse Listings</a>
+                        <a href="about.html" class="nav-link">About Us</a>
+                        <a href="contact.html" class="nav-link">Contact Us</a>
                     `;
                 }
             }

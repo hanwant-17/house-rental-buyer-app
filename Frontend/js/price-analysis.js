@@ -65,87 +65,85 @@ function setupAuthNavbar() {
     const brandLink = document.getElementById("navBrandLink");
     const backBtn = document.getElementById("backToDashboard");
 
-    if (user && user.token) {
-        const isBroker = user.role === "BROKER";
-        const displayName = user.name || (isBroker ? "Broker" : "Customer");
-        const initials = getInitials(displayName);
+    if (!user || !user.token) {
+        alert("Access Restricted: Market Analytics is exclusively accessible from the User Dashboard. Please sign in.");
+        window.location.href = "login.html";
+        return;
+    }
 
-        if (isBroker) {
-            if (portalTag) portalTag.textContent = "Broker Analytics";
-            if (brandLink) brandLink.href = "broker-dashboard.html";
-            if (backBtn) {
-                backBtn.href = "broker-dashboard.html";
-                backBtn.textContent = "← Back to Broker Dashboard";
-            }
-            if (navShortcuts) {
-                navShortcuts.innerHTML = `
-                    <a href="broker-dashboard.html" class="nav-link">📊 Overview</a>
-                    <a href="my-properties.html" class="nav-link">🏠 My Properties</a>
-                    <a href="chat.html" class="nav-link">💬 Client Chats</a>
-                    <a href="my-inquiries.html" class="nav-link">📅 Leads & Visits</a>
-                    <a href="price-analysis.html" class="nav-link active">📈 Analytics</a>
-                `;
-            }
-        } else {
-            if (portalTag) portalTag.textContent = "Customer Intelligence";
-            if (brandLink) brandLink.href = "customer-dashboard.html";
-            if (backBtn) {
-                backBtn.href = "customer-dashboard.html";
-                backBtn.textContent = "← Back to Customer Dashboard";
-            }
-            if (navShortcuts) {
-                navShortcuts.innerHTML = `
-                    <a href="customer-dashboard.html" class="nav-link">📊 Dashboard</a>
-                    <a href="properties.html" class="nav-link">🏢 Browse Listings</a>
-                    <a href="chat.html" class="nav-link">💬 My Chats</a>
-                    <a href="my-inquiries.html" class="nav-link">📅 My Visits</a>
-                    <a href="price-analysis.html" class="nav-link active">📈 Market Trends</a>
-                `;
-            }
-        }
+    const isBroker = user.role === "BROKER";
+    const isAdmin = user.role === "ADMIN";
+    const displayName = user.name || (isAdmin ? "Admin" : (isBroker ? "Broker" : "Customer"));
+    const initials = getInitials(displayName);
 
-        if (navArea) {
-            navArea.innerHTML = `
-                <div class="user-chip">
-                    <div class="user-avatar">${initials}</div>
-                    <div class="user-meta">
-                        <span class="user-name">${displayName}</span>
-                        <span class="user-role-badge">${isBroker ? (user.brokerCode || "BRK-VERIFIED") : "Customer"}</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-nav-logout" id="analyticsNavLogout" title="Sign out">
-                    🚪 Logout
-                </button>
-            `;
-
-            document.getElementById("analyticsNavLogout")?.addEventListener("click", function (e) {
-                e.preventDefault();
-                if (confirm("Are you sure you want to log out?")) {
-                    if (window.api) window.api.clearAuth();
-                    window.location.reload();
-                }
-            });
-        }
-    } else {
-        // Guest / Public User
-        if (portalTag) portalTag.textContent = "Market Intelligence";
-        if (brandLink) brandLink.href = "../index.html";
+    if (isAdmin) {
+        if (portalTag) portalTag.textContent = "Admin Market Intelligence";
+        if (brandLink) brandLink.href = "admin-dashboard.html";
         if (backBtn) {
-            backBtn.href = "../index.html";
-            backBtn.textContent = "← Back to Portal Home";
+            backBtn.href = "admin-dashboard.html";
+            backBtn.textContent = "← Back to Admin Console";
         }
         if (navShortcuts) {
             navShortcuts.innerHTML = `
-                <a href="properties.html" class="nav-link">🏢 Browse Properties</a>
-                <a href="price-analysis.html" class="nav-link active">📈 Market Analytics</a>
+                <a href="admin-dashboard.html" class="nav-link">🛡️ Admin Console</a>
+                <a href="properties.html" class="nav-link">🏢 Properties</a>
+                <a href="approved-brokers.html" class="nav-link">🏢 Brokers</a>
+                <a href="price-analysis.html" class="nav-link active">📈 Analytics</a>
             `;
         }
-        if (navArea) {
-            navArea.innerHTML = `
-                <a href="login.html" class="btn-nav-login">Sign In</a>
-                <a href="customer-register.html" class="btn-nav-register">Register</a>
+    } else if (isBroker) {
+        if (portalTag) portalTag.textContent = "Broker Analytics";
+        if (brandLink) brandLink.href = "broker-dashboard.html";
+        if (backBtn) {
+            backBtn.href = "broker-dashboard.html";
+            backBtn.textContent = "← Back to Broker Dashboard";
+        }
+        if (navShortcuts) {
+            navShortcuts.innerHTML = `
+                <a href="broker-dashboard.html" class="nav-link">📊 Overview</a>
+                <a href="my-properties.html" class="nav-link">🏠 My Properties</a>
+                <a href="chat.html" class="nav-link">💬 Client Chats</a>
+                <a href="my-inquiries.html" class="nav-link">📅 Leads & Visits</a>
+                <a href="price-analysis.html" class="nav-link active">📈 Analytics</a>
             `;
         }
+    } else {
+        if (portalTag) portalTag.textContent = "Customer Intelligence";
+        if (brandLink) brandLink.href = "customer-dashboard.html";
+        if (backBtn) {
+            backBtn.href = "customer-dashboard.html";
+            backBtn.textContent = "← Back to Customer Dashboard";
+        }
+        if (navShortcuts) {
+            navShortcuts.innerHTML = `
+                <a href="customer-dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="properties.html" class="nav-link">🏢 Browse Listings</a>
+                <a href="chat.html" class="nav-link">💬 My Chats</a>
+                <a href="my-inquiries.html" class="nav-link">📅 My Visits</a>
+                <a href="price-analysis.html" class="nav-link active">📈 Market Trends</a>
+            `;
+        }
+    }
+
+    if (navArea) {
+        navArea.innerHTML = `
+            <div class="user-chip">
+                <div class="user-avatar">${initials}</div>
+                <div class="user-meta">
+                    <span class="user-name">${displayName}</span>
+                    <span class="user-role-badge">${isAdmin ? "ADMIN" : (isBroker ? (user.brokerCode || "BROKER") : "CUSTOMER")}</span>
+                </div>
+            </div>
+            <button type="button" class="btn-nav-logout" id="analyticsNavLogout" title="Sign out">
+                🚪 Logout
+            </button>
+        `;
+
+        document.getElementById("analyticsNavLogout")?.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.api) window.api.clearAuth();
+            window.location.href = "login.html";
+        });
     }
 }
 
