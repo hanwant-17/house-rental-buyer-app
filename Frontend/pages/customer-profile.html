@@ -1,83 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Customer Profile - HouseHub</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+
     <style>
-        .profile-page {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --emerald: #10b981;
+            --emerald-light: #ecfdf5;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
         }
 
-        .profile-heading {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAVBAR */
+        .customer-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span { color: var(--primary); }
+
+        .portal-tag {
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #a7f3d0;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        /* PAGE WORKSPACE */
+        .profile-page {
+            max-width: 900px;
+            margin: 30px auto 60px;
+            padding: 0 4%;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .profile-heading-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 16px;
         }
 
-        .profile-heading h1 {
-            font-size: 28px;
-            color: #1e293b;
-            margin-bottom: 5px;
+        .profile-heading-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
         }
 
-        .profile-heading p {
-            color: #64748b;
+        .profile-heading-card p {
             font-size: 14px;
+            color: var(--slate-500);
+            margin: 0;
         }
 
         .edit-toggle-btn {
-            background: #2563eb;
+            background: var(--primary);
             color: #ffffff;
             border: none;
             padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .edit-toggle-btn:hover {
-            background: #1d4ed8;
+            background: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
 
         .profile-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--slate-200);
             border-radius: 16px;
-            padding: 35px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
+            padding: 30px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
         }
 
-        /* View Mode Layout */
+        /* VIEW MODE HERO */
         .profile-hero {
             display: flex;
             align-items: center;
-            gap: 25px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid #f1f5f9;
-            margin-bottom: 30px;
+            gap: 22px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--slate-100);
+            margin-bottom: 24px;
         }
 
         .profile-photo-wrapper {
             position: relative;
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid #2563eb;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+            border: 3px solid #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
             flex-shrink: 0;
             background: #f8fafc;
         }
@@ -89,57 +262,59 @@
         }
 
         .profile-hero-info h2 {
-            font-size: 24px;
-            color: #0f172a;
-            margin-bottom: 6px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
         }
 
         .profile-hero-info p {
-            color: #64748b;
+            color: var(--slate-500);
             font-size: 14px;
             margin-bottom: 8px;
         }
 
         .user-tag {
             display: inline-block;
-            background: #eff6ff;
-            color: #2563eb;
-            padding: 4px 12px;
+            background: #ecfdf5;
+            color: #047857;
+            padding: 3px 10px;
             border-radius: 12px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            border: 1px solid #a7f3d0;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 22px;
+            gap: 16px;
         }
 
         .info-cell {
             background: #f8fafc;
-            border: 1px solid #f1f5f9;
-            border-radius: 10px;
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
             padding: 16px;
         }
 
         .info-cell label {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 600;
+            font-size: 11px;
+            color: var(--slate-500);
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .info-cell .value {
             font-size: 15px;
-            font-weight: 600;
-            color: #1e293b;
+            font-weight: 700;
+            color: var(--slate-900);
         }
 
-        /* Edit Mode Form */
+        /* EDIT FORM */
         #editModeSection {
             display: none;
         }
@@ -161,47 +336,50 @@
 
         .form-group label {
             font-size: 13px;
-            font-weight: 600;
-            color: #344054;
+            font-weight: 700;
+            color: var(--slate-700);
             margin-bottom: 6px;
         }
 
         .form-group input, .form-group select {
             padding: 11px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
             font-size: 14px;
             outline: none;
+            background: #ffffff;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
         .form-group input:focus, .form-group select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
         .form-group input:disabled {
-            background: #f1f5f9;
-            color: #94a3b8;
+            background: var(--slate-100);
+            color: var(--slate-500);
             cursor: not-allowed;
         }
 
         .photo-picker-box {
             background: #eff6ff;
             border: 1px dashed #93c5fd;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 18px;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
         }
 
         .photo-picker-preview {
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
             overflow: hidden;
-            border: 2px solid #2563eb;
+            border: 2px solid var(--primary);
             flex-shrink: 0;
             background: #fff;
         }
@@ -213,22 +391,22 @@
         }
 
         .upload-device-btn {
-            background: #2563eb;
+            background: var(--primary);
             color: #ffffff;
             border: none;
             padding: 9px 18px;
             border-radius: 8px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .upload-device-btn:hover {
-            background: #1d4ed8;
+            background: var(--primary-hover);
         }
 
         .form-actions {
@@ -239,25 +417,45 @@
         }
 
         .save-btn {
-            background: #2563eb;
+            background: var(--primary);
             color: #ffffff;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 11px 24px;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background: var(--primary-hover);
         }
 
         .cancel-btn {
-            background: #f1f5f9;
-            color: #475467;
-            border: 1px solid #cbd5e1;
-            padding: 12px 24px;
-            border-radius: 8px;
+            background: #ffffff;
+            color: var(--slate-700);
+            border: 1px solid var(--slate-300);
+            padding: 11px 24px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background: var(--slate-50);
+        }
+
+        /* FOOTER */
+        .dashboard-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 24px 4%;
+            text-align: center;
+            font-size: 13px;
+            color: var(--slate-500);
         }
 
         @media (max-width: 650px) {
@@ -274,34 +472,52 @@
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
-        <div class="logo">🏠 HouseHub</div>
-        <div class="user-area">
-            <span id="navUserName">Customer</span>
-            <button id="logoutButton">Logout</button>
+    <!-- NAVBAR -->
+    <header class="customer-nav">
+        <a href="customer-dashboard.html" class="nav-brand">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="portal-tag">Customer Portal</span>
+        </a>
+
+        <nav class="nav-shortcuts">
+            <a href="customer-dashboard.html" class="nav-link">📊 Overview</a>
+            <a href="properties.html" class="nav-link">🏢 Browse Homes</a>
+            <a href="wishlist.html" class="nav-link">❤️ Wishlist</a>
+            <a href="chat.html" class="nav-link">💬 My Chats</a>
+            <a href="my-inquiries.html" class="nav-link">📅 My Visits</a>
+        </nav>
+
+        <div class="nav-user-area">
+            <div class="user-chip">
+                <div class="user-avatar" id="navAvatar">US</div>
+                <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span style="font-size:13px; font-weight:700;" id="navUserName">Customer</span>
+                    <span style="font-size:11px; font-weight:700; color:#059669;">Verified Customer</span>
+                </div>
+            </div>
+            <button class="btn-nav-logout" id="logoutButton">🚪 Logout</button>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content -->
+
+    <!-- MAIN CONTENT -->
     <main class="profile-page">
+        <a href="customer-dashboard.html" class="back-link">← Back to Customer Dashboard</a>
 
-        <div class="profile-heading">
+        <div class="profile-heading-card">
             <div>
-                <a href="customer-dashboard.html" style="color:#2563eb; text-decoration:none; font-weight:600; font-size:13px; display:inline-block; margin-bottom:8px;">
-                    ← Back to Dashboard
-                </a>
-                <h1>👤 My Profile</h1>
-                <p>View your profile details or toggle Edit mode to make updates.</p>
+                <h1>👤 My Customer Profile</h1>
+                <p>Manage your identity, rental preferences, and account credentials.</p>
             </div>
 
-            <!-- View / Edit Toggle Button -->
             <button id="toggleEditBtn" class="edit-toggle-btn" onclick="toggleEditMode(true)">
                 ✏️ Edit Profile
             </button>
         </div>
 
-        <!-- ================= 1. VIEW MODE CARD (DEFAULT) ================= -->
+        <!-- 1. VIEW MODE CARD -->
         <div class="profile-card" id="viewModeSection">
             <div class="profile-hero">
                 <div class="profile-photo-wrapper">
@@ -310,13 +526,13 @@
                 <div class="profile-hero-info">
                     <h2 id="viewName">Loading Name...</h2>
                     <p id="viewEmail">loading@househub.com</p>
-                    <span class="user-tag">✓ Verified Customer</span>
+                    <span class="user-tag">✓ Verified Customer Account</span>
                 </div>
             </div>
 
             <div class="info-grid">
                 <div class="info-cell">
-                    <label>Full Name</label>
+                    <label>Full Legal Name</label>
                     <div class="value" id="viewFullName">-</div>
                 </div>
 
@@ -331,7 +547,7 @@
                 </div>
 
                 <div class="info-cell">
-                    <label>Current City</label>
+                    <label>Preferred City</label>
                     <div class="value" id="viewCity">-</div>
                 </div>
 
@@ -342,58 +558,49 @@
 
                 <div class="info-cell">
                     <label>Account Status</label>
-                    <div class="value" style="color:#16a34a;">● Active</div>
+                    <div class="value" style="color:#059669;">● Verified & Active</div>
                 </div>
-            </div>
-
-            <div style="margin-top:25px; padding:12px 16px; background:#f8fafc; border-radius:8px; font-size:13px; color:#64748b; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
-                <span>🔒 This is your private customer profile. To update your info or photo, click "Edit Profile" above.</span>
             </div>
         </div>
 
-        <!-- ================= 2. EDIT MODE FORM (SHOWN ON TOGGLE) ================= -->
+        <!-- 2. EDIT MODE FORM -->
         <div class="profile-card" id="editModeSection">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #f1f5f9;">
-                <h3 style="font-size:18px; color:#1e293b;">✏️ Edit Customer Profile</h3>
-                <span style="font-size:12px; color:#dc2626; font-weight:600;">* Profile photo is compulsory</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid var(--slate-100);">
+                <h3 style="font-size:18px; font-weight:800; color:var(--slate-900);">✏️ Edit Profile & Preferences</h3>
+                <span style="font-size:12px; color:#dc2626; font-weight:700;">* Compulsory fields</span>
             </div>
 
             <form id="customerEditForm" onsubmit="handleCustomerUpdate(event)">
-
-                <!-- Compulsory Device Photo Upload -->
                 <div class="photo-picker-box">
                     <div class="photo-picker-preview">
                         <img id="editPhotoPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Profile Preview">
                     </div>
                     <div style="flex:1;">
                         <label style="font-size:13px; font-weight:700; color:#1e3a8a; display:block; margin-bottom:6px;">
-                            Upload Profile Photo From Device <span style="color:#dc2626;">* (Compulsory)</span>
+                            Profile Photo <span style="color:#dc2626;">*</span>
                         </label>
                         
                         <input type="file" id="editPhotoFileInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="handleCustomerPhotoSelect(event)">
 
                         <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                             <button type="button" class="upload-device-btn" onclick="document.getElementById('editPhotoFileInput').click()">
-                                📁 Choose Photo from Device
+                                📁 Choose Photo From Device
                             </button>
                             <span id="customerFileSelectedLabel" style="font-size:13px; color:#475467; font-weight:500;">
-                                No photo selected yet
+                                Current photo active
                             </span>
                         </div>
-                        <p style="font-size:11px; color:#64748b; margin-top:6px;">
-                            Supported formats: JPG, PNG, WEBP (Max 5MB). Profile photo is mandatory.
-                        </p>
                     </div>
                 </div>
 
                 <div class="edit-form-grid">
                     <div class="form-group">
-                        <label for="editName">Full Name <span>*</span></label>
+                        <label for="editName">Full Name *</label>
                         <input type="text" id="editName" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="editMobile">Mobile Number <span>*</span></label>
+                        <label for="editMobile">Mobile Number *</label>
                         <input type="tel" id="editMobile" maxlength="10" required>
                     </div>
 
@@ -403,7 +610,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="editCity">City <span>*</span></label>
+                        <label for="editCity">Preferred City *</label>
                         <input type="text" id="editCity" required>
                     </div>
 
@@ -424,37 +631,34 @@
                         </button>
                     </div>
                 </div>
-
             </form>
         </div>
 
-        <!-- ================= 3. SECURITY & CHANGE PASSWORD ================= -->
-        <div class="profile-card" style="margin-top:25px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #f1f5f9;">
-                <div>
-                    <h3 style="font-size:18px; color:#1e293b; display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                        🔐 Account Security & Password
-                    </h3>
-                    <p style="font-size:13px; color:#64748b; margin:0;">
-                        Ensure your account is using a secure password.
-                    </p>
-                </div>
+        <!-- 3. SECURITY & CHANGE PASSWORD -->
+        <div class="profile-card">
+            <div style="margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--slate-100);">
+                <h3 style="font-size:18px; font-weight:800; color:var(--slate-900); margin-bottom:4px;">
+                    🔐 Account Security & Password
+                </h3>
+                <p style="font-size:13px; color:var(--slate-500); margin:0;">
+                    Update your password to keep your HouseHub customer account safe.
+                </p>
             </div>
 
             <form id="customerPasswordForm" onsubmit="handleCustomerPasswordChange(event)">
                 <div class="edit-form-grid">
                     <div class="form-group full-width">
-                        <label for="custCurrentPassword">Current Password <span>*</span></label>
+                        <label for="custCurrentPassword">Current Password *</label>
                         <input type="password" id="custCurrentPassword" placeholder="Enter your current password" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="custNewPassword">New Password <span>*</span></label>
+                        <label for="custNewPassword">New Password *</label>
                         <input type="password" id="custNewPassword" placeholder="At least 6 characters" minlength="6" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="custConfirmNewPassword">Confirm New Password <span>*</span></label>
+                        <label for="custConfirmNewPassword">Confirm New Password *</label>
                         <input type="password" id="custConfirmNewPassword" placeholder="Re-enter new password" minlength="6" required>
                     </div>
 
@@ -469,10 +673,12 @@
 
     </main>
 
-    <!-- Footer -->
+
+    <!-- FOOTER -->
     <footer class="dashboard-footer">
-        <p>© 2026 HouseHub. All Rights Reserved.</p>
+        © 2026 HouseHub Customer Experience Portal. All Rights Reserved.
     </footer>
+
 
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
@@ -480,6 +686,13 @@
     <script>
         let currentProfileData = null;
         let customerPhotoBase64 = null;
+
+        function getInitials(name) {
+            if (!name) return "US";
+            const parts = name.trim().split(" ");
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
 
         function toggleEditMode(isEditing) {
             const viewSection = document.getElementById("viewModeSection");
@@ -511,7 +724,7 @@
             const label = document.getElementById("customerFileSelectedLabel");
             if (label) {
                 label.textContent = `✓ ${file.name} (${Math.round(file.size / 1024)} KB)`;
-                label.style.color = "#16a34a";
+                label.style.color = "#047857";
             }
 
             const reader = new FileReader();
@@ -554,34 +767,42 @@
                 return;
             }
 
+            // Logout listener
+            document.getElementById("logoutButton")?.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.href = "login.html";
+                }
+            });
+
             try {
                 const response = await window.api.getMyProfile();
                 const profile = response.data;
                 currentProfileData = profile;
 
-                // View Mode
-                document.getElementById("viewName").textContent = profile.name || "Customer";
-                document.getElementById("viewFullName").textContent = profile.name || "-";
-                document.getElementById("viewEmail").textContent = profile.email || "-";
-                document.getElementById("viewFullEmail").textContent = profile.email || "-";
-                document.getElementById("viewMobile").textContent = profile.mobile || "-";
+                const displayName = profile.name || user.name || "Customer";
+                document.getElementById("viewName").textContent = displayName;
+                document.getElementById("viewFullName").textContent = displayName;
+                document.getElementById("viewEmail").textContent = profile.email || user.email || "-";
+                document.getElementById("viewFullEmail").textContent = profile.email || user.email || "-";
+                document.getElementById("viewMobile").textContent = profile.mobile || user.mobile || "-";
                 document.getElementById("viewCity").textContent = profile.preferredCity || "Jodhpur";
                 document.getElementById("viewPurpose").textContent = (profile.preferredPurpose || "RENT") === "BUY" ? "Buying a Property" : "Renting a Property";
                 
                 customerPhotoBase64 = profile.profileImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde";
                 document.getElementById("viewPhoto").src = customerPhotoBase64;
 
-                const navUser = document.getElementById("navUserName");
-                if (navUser && profile.name) {
-                    navUser.textContent = `Welcome, ${profile.name}`;
-                }
+                document.getElementById("navUserName").textContent = displayName;
+                document.getElementById("navAvatar").textContent = getInitials(displayName);
             } catch (err) {
                 console.error("Failed to load profile:", err);
-                // Fallback to local user
-                document.getElementById("viewName").textContent = user.name || "Customer";
-                document.getElementById("viewFullName").textContent = user.name || "-";
+                const displayName = user.name || "Customer";
+                document.getElementById("viewName").textContent = displayName;
+                document.getElementById("viewFullName").textContent = displayName;
                 document.getElementById("viewEmail").textContent = user.email || "-";
                 document.getElementById("viewFullEmail").textContent = user.email || "-";
+                document.getElementById("navUserName").textContent = displayName;
+                document.getElementById("navAvatar").textContent = getInitials(displayName);
             }
         }
 
@@ -592,9 +813,8 @@
             const city = document.getElementById("editCity").value.trim();
             const purpose = document.getElementById("editPurpose").value;
 
-            // Compulsory Profile Photo validation
             if (!customerPhotoBase64) {
-                alert("⚠️ Profile photo is compulsory! Please upload an image from your device.");
+                alert("⚠️ Profile photo is compulsory! Please choose a photo from your device.");
                 document.getElementById("editPhotoFileInput").click();
                 return;
             }
@@ -664,7 +884,7 @@
 
             try {
                 await window.api.changePassword(currentPass, newPass);
-                alert("✅ Password changed successfully! Please use your new password on your next login.");
+                alert("✅ Password changed successfully! Please use your new password next time you log in.");
                 document.getElementById("customerPasswordForm").reset();
             } catch (err) {
                 alert("Password change failed: " + err.message);
@@ -676,5 +896,6 @@
 
         document.addEventListener("DOMContentLoaded", loadProfile);
     </script>
+
 </body>
 </html>

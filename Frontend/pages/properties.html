@@ -5,31 +5,936 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Properties - HouseHub</title>
+    <title>Explore Verified Properties - HouseHub</title>
 
     <link rel="stylesheet" href="../css/property.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --primary-50: #f0f7ff;
+            --success: #16a34a;
+            --emerald: #059669;
+            --emerald-light: #ecfdf5;
+            --amber: #f59e0b;
+            --amber-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --purple: #8b5cf6;
+            --purple-light: #f5f3ff;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================= MODERN TOP NAVBAR ================= */
+        .properties-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            color: var(--primary);
+        }
+
+        .portal-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #bae6fd;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+        }
+
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .user-role-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-500);
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--slate-100);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        .btn-nav-login {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-nav-login:hover {
+            background: var(--primary-hover);
+        }
+
+        .register-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .register-btn {
+            background: #ffffff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-700);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .register-btn:hover {
+            background: var(--slate-100);
+            border-color: var(--slate-400);
+        }
+
+        .register-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            padding-top: 8px;
+            min-width: 270px;
+            z-index: 9999;
+        }
+
+        .register-dropdown:hover .register-dropdown-content,
+        .register-dropdown:focus-within .register-dropdown-content {
+            display: block;
+        }
+
+        .register-dropdown-content-inner {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--slate-200);
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .register-dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: var(--slate-800);
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .register-dropdown-content a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .register-dropdown-content .reg-icon {
+            font-size: 18px;
+            background: var(--slate-100);
+            padding: 6px 9px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-dropdown-content .reg-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-dropdown-content .reg-text strong {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .register-dropdown-content .reg-text span {
+            font-size: 11.5px;
+            color: var(--slate-500);
+        }
+
+        /* ================= HERO BANNER ================= */
+        .properties-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            color: #ffffff;
+            padding: 44px 4% 68px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .properties-hero::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -60px;
+            width: 440px;
+            height: 440px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--slate-400);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 16px;
+            transition: color 0.2s;
+        }
+
+        .hero-back-link:hover {
+            color: #ffffff;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #93c5fd;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(8px);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+            display: inline-block;
+        }
+
+        .hero-inner h1 {
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-inner p {
+            font-size: 15px;
+            color: var(--slate-300);
+            max-width: 680px;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+
+        .purpose-tabs-row {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .purpose-tab {
+            background: transparent;
+            border: none;
+            color: var(--slate-300);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .purpose-tab:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .purpose-tab.active {
+            background: #ffffff;
+            color: var(--slate-900);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ================= MAIN PROPERTY SECTION & FILTER ================= */
+        .property-section {
+            max-width: 1280px;
+            margin: -36px auto 60px;
+            padding: 0 4%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .filter-box {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 22px 26px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 32px;
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr 1fr 1.3fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-item label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--slate-700);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-item input[type="text"],
+        .filter-item select {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            font-size: 13.5px;
+            color: var(--slate-800);
+            background: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .filter-item select {
+            cursor: pointer;
+        }
+
+        .filter-item input:focus,
+        .filter-item select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-button {
+            height: 44px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+        }
+
+        .filter-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .filter-reset-btn {
+            height: 44px;
+            padding: 0 14px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            background: #ffffff;
+            color: var(--slate-600);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-reset-btn:hover {
+            background: var(--slate-100);
+            color: var(--slate-900);
+            border-color: var(--slate-400);
+        }
+
+        /* ================= RESULT TOOLBAR ================= */
+        .result-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--slate-200);
+        }
+
+        .result-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .result-heading h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            letter-spacing: -0.3px;
+        }
+
+        #propertyCount {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12.5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .result-meta-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-select {
+            height: 38px;
+            padding: 0 12px;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-700);
+            background: #ffffff;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .sort-select:focus {
+            border-color: var(--primary);
+        }
+
+        /* ================= PROPERTY CARDS GRID ================= */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .property-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.10);
+            border-color: var(--slate-300);
+        }
+
+        .property-card-image {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .property-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .property-card:hover .property-card-image img {
+            transform: scale(1.06);
+        }
+
+        .property-purpose {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: #059669;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        .property-purpose.buy {
+            background: #2563eb;
+        }
+
+        .card-wishlist-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-wishlist-btn:hover {
+            transform: scale(1.12);
+            background: #ffffff;
+        }
+
+        .card-wishlist-btn.active {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        .property-card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .property-card-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 6px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .property-location {
+            color: var(--slate-500);
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .property-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 10px;
+            padding: 12px 0;
+            border-top: 1px solid var(--slate-100);
+            border-bottom: 1px solid var(--slate-100);
+            margin-bottom: 18px;
+        }
+
+        .property-info span {
+            background: #f8fafc;
+            border: 1px solid var(--slate-200);
+            color: var(--slate-700);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .property-card-bottom {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .property-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            letter-spacing: -0.3px;
+        }
+
+        .view-button {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        /* ================= EMPTY RESULT MESSAGE ================= */
+        .no-properties {
+            text-align: center;
+            padding: 60px 24px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px dashed var(--slate-300);
+            grid-column: 1 / -1;
+        }
+
+        .no-properties-icon {
+            font-size: 46px;
+            margin-bottom: 12px;
+        }
+
+        .no-properties h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+        }
+
+        .no-properties p {
+            color: var(--slate-500);
+            font-size: 14px;
+            max-width: 440px;
+            margin: 0 auto 20px;
+        }
+
+        .btn-reset-empty {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset-empty:hover {
+            background: var(--primary-hover);
+        }
+
+        /* ================= MINIMALIST SAAS FOOTER ================= */
+        .properties-footer {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 50px 4% 28px;
+            border-top: 1px solid var(--slate-800);
+        }
+
+        .footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-brand h3 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .footer-brand h3 span {
+            color: #60a5fa;
+        }
+
+        .footer-brand p {
+            color: var(--slate-400);
+            font-size: 13.5px;
+            max-width: 440px;
+        }
+
+        .footer-links-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links-group a {
+            color: var(--slate-300);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-links-group a:hover {
+            color: #ffffff;
+        }
+
+        .copyright {
+            max-width: 1280px;
+            margin: 24px auto 0;
+            text-align: center;
+            color: var(--slate-500);
+            font-size: 13px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 1100px) {
+            .filter-box {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .filter-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .properties-nav {
+                padding: 0 16px;
+            }
+
+            .nav-shortcuts {
+                display: none;
+            }
+
+            .filter-box {
+                grid-template-columns: 1fr;
+                padding: 18px;
+            }
+
+            .hero-inner h1 {
+                font-size: 28px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     <!-- ================= NAVBAR ================= -->
+    <header class="properties-nav">
 
-    <header class="navbar">
+        <a href="properties.html" class="nav-brand" id="navBrandLink">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="portal-tag" id="portalRoleTag">Marketplace</span>
+        </a>
 
-        <div class="logo">
-            House<span>Hub</span>
-        </div>
-
-        <nav>
-            <a href="../index.html">Home</a>
-            <a href="properties.html?purpose=BUY" id="navBuy">Buy</a>
-            <a href="properties.html?purpose=RENT" id="navRent">Rent</a>
-            <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
+        <!-- Dynamic Role Shortcuts (Strictly NO Home, Buy, Rent, About, Contact) -->
+        <nav class="nav-shortcuts" id="navShortcuts">
+            <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
+            <a href="price-analysis.html" class="nav-link">📈 Market Analytics</a>
         </nav>
 
-        <div class="nav-buttons">
-            <a href="login.html" class="login-btn">Login</a>
+        <!-- Dynamic User / Auth Area -->
+        <div class="nav-user-area" id="navAuthArea">
+            <a href="login.html" class="btn-nav-login">Sign In</a>
 
             <div class="register-dropdown">
                 <a href="customer-register.html" class="register-btn">
@@ -40,8 +945,8 @@
                         <a href="customer-register.html">
                             <span class="reg-icon">👤</span>
                             <div class="reg-text">
-                                <strong>Customer / Tenant</strong>
-                                <span>Find homes for Rent or Buy</span>
+                                <strong>Customer / Buyer</strong>
+                                <span>Find homes for rent or purchase</span>
                             </div>
                         </a>
                         <a href="broker-register.html">
@@ -59,34 +964,54 @@
     </header>
 
 
-    <!-- ================= PAGE HEADER ================= -->
+    <!-- ================= HERO SECTION ================= -->
+    <section class="properties-hero">
 
-    <section class="property-header">
+        <div class="hero-inner">
+            <a href="#" id="backToDashboard" class="hero-back-link" style="display: none;">
+                ← Back to Dashboard
+            </a>
 
-        <div class="header-content">
+            <div>
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span>
+                    Verified Platform Listings • Zero Fake Posts • Direct Connect
+                </div>
 
-            <p>EXPLORE PROPERTIES</p>
+                <div class="header-content">
+                    <p style="display: none;">EXPLORE PROPERTIES</p>
+                    <h1 id="heroTitle">Find Your Ideal Property</h1>
+                    <span id="heroSubtitle" style="display: none;"></span>
+                    <p id="heroDescription">
+                        Search verified residential apartments, independent floors, and villas available for purchase or rental across premier urban localities.
+                    </p>
+                </div>
+            </div>
 
-            <h1>Find Your Perfect Property</h1>
-
-            <span>
-                Search verified homes and flats available
-                for rent or purchase.
-            </span>
-
+            <!-- Quick Purpose Switcher Tabs -->
+            <div class="purpose-tabs-row">
+                <button type="button" class="purpose-tab active" id="tabPurposeAll" data-purpose="" onclick="selectPurposeTab('', this)">
+                    📋 All Listings
+                </button>
+                <button type="button" class="purpose-tab" id="tabPurposeBuy" data-purpose="buy" onclick="selectPurposeTab('buy', this)">
+                    🏡 For Sale
+                </button>
+                <button type="button" class="purpose-tab" id="tabPurposeRent" data-purpose="rent" onclick="selectPurposeTab('rent', this)">
+                    🔑 For Rent
+                </button>
+            </div>
         </div>
 
     </section>
 
 
-    <!-- ================= SEARCH & FILTER ================= -->
-
-    <section class="property-section">
+    <!-- ================= MAIN PROPERTY SECTION & FILTER ================= -->
+    <main class="property-section">
 
         <div class="filter-box">
 
             <div class="filter-item">
-                <label>Location / City</label>
+                <label>📍 City / Locality</label>
                 <input
                     type="text"
                     id="locationFilter"
@@ -109,27 +1034,27 @@
             </div>
 
             <div class="filter-item">
-                <label>Purpose</label>
-                <select id="purposeFilter">
-                    <option value="">Buy / Rent</option>
-                    <option value="buy">Buy</option>
-                    <option value="rent">Rent</option>
+                <label>🏷️ Purpose</label>
+                <select id="purposeFilter" onchange="syncPurposeTabFromSelect(this.value)">
+                    <option value="">All (Buy & Rent)</option>
+                    <option value="buy">For Sale</option>
+                    <option value="rent">For Rent</option>
                 </select>
             </div>
 
             <div class="filter-item">
-                <label>Property Type</label>
+                <label>🏢 Property Type</label>
                 <select id="typeFilter">
                     <option value="">All Types</option>
-                    <option value="house">House</option>
-                    <option value="flat">Flat</option>
-                    <option value="villa">Villa</option>
-                    <option value="apartment">Apartment</option>
+                    <option value="house">Independent House</option>
+                    <option value="flat">Apartment / Flat</option>
+                    <option value="villa">Luxury Villa</option>
+                    <option value="apartment">Multi-Story Apartment</option>
                 </select>
             </div>
 
             <div class="filter-item">
-                <label>BHK</label>
+                <label>🛏️ BHK Bedrooms</label>
                 <select id="bhkFilter">
                     <option value="">Any BHK</option>
                     <option value="1">1 BHK</option>
@@ -141,9 +1066,9 @@
 
             <!-- Dynamic Price Range Slider -->
             <div class="filter-item" style="min-width: 190px;">
-                <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Max Budget</span>
-                    <strong id="priceDisplay" style="color:#2563eb; font-size:12px;">Any Price</strong>
+                <label>
+                    <span>💰 Max Budget</span>
+                    <strong id="priceDisplay" style="color:var(--primary); font-size:12px;">Any Price</strong>
                 </label>
                 <input
                     type="range"
@@ -155,7 +1080,7 @@
                     oninput="handlePriceSliderInput(this.value)"
                     style="width:100%; height:8px; accent-color:#2563eb; cursor:pointer; margin-top:8px;"
                 >
-                <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-top:2px;">
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--slate-500); margin-top:4px;">
                     <span>₹5K</span>
                     <span>₹50K</span>
                     <span>₹50L</span>
@@ -163,143 +1088,316 @@
                 </div>
             </div>
 
-            <button
-                class="filter-button"
-                id="filterButton">
-                Search
-            </button>
+            <div class="filter-actions">
+                <button
+                    class="filter-button"
+                    id="filterButton">
+                    🔍 Search
+                </button>
+                <button
+                    type="button"
+                    class="filter-reset-btn"
+                    title="Reset all filters"
+                    onclick="resetAllFilters()">
+                    🔄
+                </button>
+            </div>
+
         </div>
 
 
-        <!-- ================= PROPERTY RESULT ================= -->
-
+        <!-- ================= PROPERTY RESULT TOOLBAR ================= -->
         <div class="result-heading">
 
-            <h2>Available Properties</h2>
+            <div class="result-meta-left">
+                <h2>Available Verified Properties</h2>
+                <span id="propertyCount">Loading...</span>
+            </div>
 
-            <span id="propertyCount">
-                Properties
-            </span>
+            <div class="result-meta-right">
+                <select id="sortProperties" class="sort-select" onchange="handlePropertySort(this.value)">
+                    <option value="default">Sort: Default</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="bhk-desc">Rooms: Most BHK</option>
+                </select>
+            </div>
 
         </div>
 
 
-        <!--
-            IMPORTANT:
-
-            Currently property cards are only
-            temporary frontend data.
-
-            Later these cards will be generated
-            automatically from the backend API.
-        -->
-
+        <!-- ================= PROPERTY GRID ================= -->
         <div
             class="property-grid"
             id="propertyGrid">
-
-            <!-- Property cards will appear here -->
-
+            <!-- Property cards will appear here dynamically via property.js -->
         </div>
 
 
-        <!-- EMPTY RESULT MESSAGE -->
-
+        <!-- ================= EMPTY RESULT MESSAGE ================= -->
         <div
             class="no-properties"
             id="noProperties"
             style="display: none;">
-
+            <div class="no-properties-icon">🏡</div>
             <h3>No Properties Found</h3>
-
             <p>
-                Try changing your search or filter.
+                We couldn't find any properties matching your current filters. Try searching a different city or clearing your filters.
             </p>
-
+            <button type="button" class="btn-reset-empty" onclick="resetAllFilters()">
+                View All Available Properties
+            </button>
         </div>
 
-    </section>
+    </main>
 
 
-    <!-- ================= FOOTER ================= -->
-
-    <footer>
-
-        <div class="footer-content">
-
-            <div>
-
-                <h2>
-                    House<span>Hub</span>
-                </h2>
-
+    <!-- ================= MINIMALIST SAAS FOOTER ================= -->
+    <footer class="properties-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h3>🏠 House<span>Hub</span> Marketplace</h3>
                 <p>
-                    Find your perfect home for rent
-                    or purchase.
+                    Verified property listings, transparent market price benchmarks, and seamless connections between buyers, tenants, and approved brokers.
                 </p>
-
             </div>
 
-
-            <div>
-
-                <h3>Quick Links</h3>
-
-                <a href="../index.html">
-                    Home
-                </a>
-
-                <a href="properties.html">
-                    Properties
-                </a>
-
-                <a href="about.html">
-                    About Us
-                </a>
-
-                <a href="contact.html">
-                    Contact Us
-                </a>
-
-                <a href="login.html">
-                    Login
-                </a>
-
+            <div class="footer-links-group">
+                <a href="properties.html">🏢 Browse Listings</a>
+                <a href="price-analysis.html">📈 Market Analytics</a>
+                <a href="customer-dashboard.html">👤 Customer Portal</a>
+                <a href="broker-register.html">🏢 Broker Onboarding</a>
             </div>
-
-
-            <div>
-
-                <h3>Users</h3>
-
-                <a href="customer-register.html">
-                    Customer
-                </a>
-
-                <a href="broker-register.html">
-                    Broker / Owner
-                </a>
-
-            </div>
-
         </div>
-
 
         <div class="copyright">
-
-            © 2026 House Rental & Buyer App.
-            All Rights Reserved.
-
+            © 2026 HouseHub Real Estate Platform. All Rights Reserved.
         </div>
-
     </footer>
 
 
-    <!-- JAVASCRIPT -->
-
+    <!-- JAVASCRIPT LIBS -->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/property.js"></script>
+
+    <!-- INLINE PAGE CONTROLLER -->
+    <script>
+        // Init avatar initials
+        function getInitials(name) {
+            if (!name) return "US";
+            const parts = name.trim().split(" ");
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        // Setup Role-Aware Navbar (Strictly NO Home, Buy, Rent, About, Contact)
+        function setupPropertiesNavbar() {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            const navArea = document.getElementById("navAuthArea");
+            const navShortcuts = document.getElementById("navShortcuts");
+            const portalTag = document.getElementById("portalRoleTag");
+            const brandLink = document.getElementById("navBrandLink");
+            const backBtn = document.getElementById("backToDashboard");
+
+            if (user && user.token) {
+                const role = (user.role || "").toUpperCase();
+                const displayName = user.name || (role.includes("BROKER") ? "Broker" : role.includes("ADMIN") ? "Administrator" : "Customer");
+                const initials = getInitials(displayName);
+
+                if (role.includes("ADMIN")) {
+                    if (portalTag) portalTag.textContent = "Admin Console";
+                    if (brandLink) brandLink.href = "admin-dashboard.html";
+                    if (backBtn) {
+                        backBtn.href = "admin-dashboard.html";
+                        backBtn.textContent = "← Back to Admin Console";
+                        backBtn.style.display = "inline-flex";
+                    }
+                    if (navShortcuts) {
+                        navShortcuts.innerHTML = `
+                            <a href="admin-dashboard.html" class="nav-link">🛡️ Admin Console</a>
+                            <a href="properties.html" class="nav-link active">🏢 Properties</a>
+                            <a href="approved-brokers.html" class="nav-link">🏢 Brokers</a>
+                            <a href="admin-customers.html" class="nav-link">👥 Customers</a>
+                            <a href="price-analysis.html" class="nav-link">📈 Analytics</a>
+                        `;
+                    }
+                } else if (role.includes("BROKER")) {
+                    if (portalTag) portalTag.textContent = "Broker Portal";
+                    if (brandLink) brandLink.href = "broker-dashboard.html";
+                    if (backBtn) {
+                        backBtn.href = "broker-dashboard.html";
+                        backBtn.textContent = "← Back to Broker Dashboard";
+                        backBtn.style.display = "inline-flex";
+                    }
+                    if (navShortcuts) {
+                        navShortcuts.innerHTML = `
+                            <a href="broker-dashboard.html" class="nav-link">📊 Broker Portal</a>
+                            <a href="my-properties.html" class="nav-link">🏠 My Listings</a>
+                            <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
+                            <a href="my-inquiries.html" class="nav-link">📅 Leads & Visits</a>
+                            <a href="price-analysis.html" class="nav-link">📈 Market Trends</a>
+                        `;
+                    }
+                } else {
+                    // Customer
+                    if (portalTag) portalTag.textContent = "Customer Portal";
+                    if (brandLink) brandLink.href = "customer-dashboard.html";
+                    if (backBtn) {
+                        backBtn.href = "customer-dashboard.html";
+                        backBtn.textContent = "← Back to Customer Dashboard";
+                        backBtn.style.display = "inline-flex";
+                    }
+                    if (navShortcuts) {
+                        navShortcuts.innerHTML = `
+                            <a href="customer-dashboard.html" class="nav-link">📊 Dashboard</a>
+                            <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
+                            <a href="wishlist.html" class="nav-link">❤️ Saved Homes</a>
+                            <a href="chat.html" class="nav-link">💬 Inquiries & Chats</a>
+                            <a href="price-analysis.html" class="nav-link">📈 Price Trends</a>
+                        `;
+                    }
+                }
+
+                // Render Logged-in User Chip
+                if (navArea) {
+                    const profileLink = role.includes("CUSTOMER") ? "customer-profile.html" : "#";
+                    navArea.innerHTML = `
+                        <a href="${profileLink}" class="user-chip" title="View Profile">
+                            <div class="user-avatar">${initials}</div>
+                            <div class="user-meta">
+                                <span class="user-name">${displayName}</span>
+                                <span class="user-role-badge">${role}</span>
+                            </div>
+                        </a>
+                        <button type="button" class="btn-nav-logout" onclick="handleNavbarLogout()">Sign Out</button>
+                    `;
+                }
+            } else {
+                // Guest / Not logged in
+                if (portalTag) portalTag.textContent = "Marketplace";
+                if (brandLink) brandLink.href = "properties.html";
+                if (backBtn) backBtn.style.display = "none";
+                if (navShortcuts) {
+                    navShortcuts.innerHTML = `
+                        <a href="properties.html" class="nav-link active">🏢 Browse Listings</a>
+                        <a href="price-analysis.html" class="nav-link">📈 Market Analytics</a>
+                    `;
+                }
+            }
+        }
+
+        function handleNavbarLogout() {
+            if (window.api) {
+                window.api.clearAuth();
+            }
+            window.location.href = "login.html";
+        }
+
+        // Quick Purpose Switcher Tabs
+        function selectPurposeTab(purposeVal, btnEl) {
+            const selectEl = document.getElementById("purposeFilter");
+            if (selectEl) {
+                selectEl.value = purposeVal;
+            }
+            document.querySelectorAll(".purpose-tab").forEach(tab => tab.classList.remove("active"));
+            if (btnEl) btnEl.classList.add("active");
+
+            // Update hero text dynamically
+            const heroDesc = document.getElementById("heroDescription");
+            if (heroDesc) {
+                if (purposeVal === "buy") {
+                    heroDesc.textContent = "Explore verified houses, luxury villas, and independent floors available for immediate sale & purchase.";
+                } else if (purposeVal === "rent") {
+                    heroDesc.textContent = "Explore verified apartments and spacious homes available for flexible monthly rental.";
+                } else {
+                    heroDesc.textContent = "Search verified residential apartments, independent floors, and villas available for purchase or rental across premier urban localities.";
+                }
+            }
+
+            if (typeof filterProperties === "function") {
+                filterProperties();
+            }
+        }
+
+        function syncPurposeTabFromSelect(val) {
+            document.querySelectorAll(".purpose-tab").forEach(tab => {
+                if (tab.dataset.purpose === (val || "")) {
+                    tab.classList.add("active");
+                } else {
+                    tab.classList.remove("active");
+                }
+            });
+        }
+
+        // Reset All Filters
+        function resetAllFilters() {
+            const loc = document.getElementById("locationFilter");
+            const pur = document.getElementById("purposeFilter");
+            const typ = document.getElementById("typeFilter");
+            const bhk = document.getElementById("bhkFilter");
+            const rng = document.getElementById("priceRange");
+
+            if (loc) loc.value = "";
+            if (pur) pur.value = "";
+            if (typ) typ.value = "";
+            if (bhk) bhk.value = "";
+            if (rng) {
+                rng.value = 10000000;
+                if (typeof handlePriceSliderInput === "function") {
+                    handlePriceSliderInput(10000000);
+                }
+            }
+
+            document.querySelectorAll(".purpose-tab").forEach(tab => {
+                if (tab.dataset.purpose === "") tab.classList.add("active");
+                else tab.classList.remove("active");
+            });
+
+            const heroDesc = document.getElementById("heroDescription");
+            if (heroDesc) {
+                heroDesc.textContent = "Search verified residential apartments, independent floors, and villas available for purchase or rental across premier urban localities.";
+            }
+
+            if (typeof filterProperties === "function") {
+                filterProperties();
+            }
+        }
+
+        // Client-side Sort
+        function handlePropertySort(sortType) {
+            if (!window.currentLoadedProperties || !window.currentLoadedProperties.length) return;
+            let list = [...window.currentLoadedProperties];
+
+            if (sortType === "price-asc") {
+                list.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+            } else if (sortType === "price-desc") {
+                list.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+            } else if (sortType === "bhk-desc") {
+                list.sort((a, b) => Number(b.bhk || 0) - Number(a.bhk || 0));
+            }
+
+            if (typeof displayProperties === "function") {
+                displayProperties(list);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            setupPropertiesNavbar();
+
+            // Check URL param ?purpose=
+            const urlParams = new URLSearchParams(window.location.search);
+            const p = urlParams.get("purpose");
+            if (p) {
+                const cleanP = p.toLowerCase();
+                const matchedTab = document.querySelector(`.purpose-tab[data-purpose="${cleanP}"]`);
+                if (matchedTab) {
+                    document.querySelectorAll(".purpose-tab").forEach(t => t.classList.remove("active"));
+                    matchedTab.classList.add("active");
+                }
+            }
+        });
+    </script>
 
 </body>
 

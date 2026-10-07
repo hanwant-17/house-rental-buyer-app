@@ -7,11 +7,75 @@ const propertyGrid = document.getElementById("propertyGrid");
 const propertyCount = document.getElementById("propertyCount");
 const noProperties = document.getElementById("noProperties");
 
+// Global Wishlist Cache for instantaneous heart status
+let customerWishlistIds = new Set();
+
+async function syncCustomerWishlistState() {
+    if (!window.api) return;
+    const user = window.api.getCurrentUser();
+    if (user && user.role === "CUSTOMER") {
+        try {
+            const res = await window.api.getWishlist();
+            if (res && res.data) {
+                customerWishlistIds = new Set(res.data.map(p => p.propertyId || p.id));
+                customerWishlistIds.forEach(id => {
+                    const btn = document.getElementById(`wishlistBtn_${id}`);
+                    if (btn) {
+                        btn.textContent = "❤️";
+                        btn.classList.add("active");
+                    }
+                });
+            }
+        } catch (e) {
+            // Silently ignore
+        }
+    }
+}
+
+async function toggleWishlistQuick(event, propertyId) {
+    if (event) event.stopPropagation();
+    const user = window.api ? window.api.getCurrentUser() : null;
+    if (!user || !user.token) {
+        if (confirm("Please sign in to save properties to your Wishlist. Proceed to login?")) {
+            window.location.href = "login.html";
+        }
+        return;
+    }
+    if (user.role !== "CUSTOMER") {
+        alert("Wishlist is available for Customer accounts.");
+        return;
+    }
+
+    const btn = document.getElementById(`wishlistBtn_${propertyId}`);
+    try {
+        if (customerWishlistIds.has(propertyId)) {
+            await window.api.removeFromWishlist(propertyId);
+            customerWishlistIds.delete(propertyId);
+            if (btn) {
+                btn.textContent = "🤍";
+                btn.classList.remove("active");
+            }
+        } else {
+            await window.api.addToWishlist(propertyId);
+            customerWishlistIds.add(propertyId);
+            if (btn) {
+                btn.textContent = "❤️";
+                btn.classList.add("active");
+            }
+        }
+    } catch (err) {
+        alert("Wishlist update failed: " + err.message);
+    }
+}
+
 // ==========================================
 // 1. RENDER PROPERTY CARDS
 // ==========================================
 function displayProperties(propertyList) {
     if (!propertyGrid) return;
+
+    // Cache currently rendered list for fast client-side sorting
+    window.currentLoadedProperties = propertyList || [];
 
     propertyGrid.innerHTML = "";
 
@@ -45,21 +109,26 @@ function displayProperties(propertyList) {
             imageUrl = property.image;
         }
 
+        const isFavorited = customerWishlistIds.has(id);
+
         const card = document.createElement("div");
         card.className = "property-card";
         card.innerHTML = `
             <div class="property-card-image">
-                <img src="${imageUrl}" alt="${title}">
+                <img src="${imageUrl}" alt="${title}" onerror="this.src='../images/flat-banner.jpg'">
                 <span class="property-purpose ${purpose === 'BUY' ? 'buy' : ''}">
                     ${purpose === 'BUY' ? 'For Sale' : 'For Rent'}
                 </span>
+                <button type="button" class="card-wishlist-btn ${isFavorited ? 'active' : ''}" onclick="toggleWishlistQuick(event, ${id})" id="wishlistBtn_${id}" title="Save to Wishlist">
+                    ${isFavorited ? '❤️' : '🤍'}
+                </button>
             </div>
 
             <div class="property-card-content">
                 <h3>${title}</h3>
                 <p class="property-location">📍 ${locationStr}</p>
 
-                <div class="property-info" style="display:flex; flex-wrap:wrap; gap:8px 12px;">
+                <div class="property-info" style="display:flex; flex-wrap:wrap; gap:8px 10px;">
                     <span>🛏️ ${property.rooms || bhk} Rooms</span>
                     <span>🚿 ${bathrooms} Bath</span>
                     <span>🏢 ${property.floorNo || 'Ground Flr'}</span>
@@ -69,7 +138,7 @@ function displayProperties(propertyList) {
                 <div class="property-card-bottom">
                     <div class="property-price">${priceDisplay}</div>
                     <button class="view-button" onclick="viewProperty(${id})">
-                        View Details
+                        View Details →
                     </button>
                 </div>
             </div>
@@ -77,6 +146,9 @@ function displayProperties(propertyList) {
 
         propertyGrid.appendChild(card);
     });
+
+    // Check customer wishlist state asynchronously
+    syncCustomerWishlistState();
 }
 
 // ==========================================
@@ -89,14 +161,19 @@ async function loadPublicProperties() {
     const urlParams = new URLSearchParams(window.location.search);
     const urlPurpose = urlParams.get("purpose");
 
-    const headerTitle = document.querySelector(".header-content h1");
+    const headerTitle = document.querySelector(".header-content h1") || document.getElementById("heroTitle");
     const headerCategory = document.querySelector(".header-content p");
-    const headerSpan = document.querySelector(".header-content span");
+    const headerSpan = document.querySelector(".header-content span") || document.getElementById("heroDescription");
     const purposeSelect = document.getElementById("purposeFilter");
 
     // Dynamic navbar active state
     const navBuy = document.getElementById("navBuy") || document.querySelector("a[href*='purpose=BUY']");
     const navRent = document.getElementById("navRent") || document.querySelector("a[href*='purpose=RENT']");
+
+    // Dynamic purpose tabs
+    const tabAll = document.getElementById("tabPurposeAll");
+    const tabBuy = document.getElementById("tabPurposeBuy");
+    const tabRent = document.getElementById("tabPurposeRent");
 
     if (urlPurpose) {
         const cleanPurpose = urlPurpose.toUpperCase();
@@ -105,12 +182,18 @@ async function loadPublicProperties() {
         if (cleanPurpose === "BUY") {
             if (navBuy) navBuy.classList.add("active");
             if (navRent) navRent.classList.remove("active");
+            if (tabBuy) tabBuy.classList.add("active");
+            if (tabAll) tabAll.classList.remove("active");
+            if (tabRent) tabRent.classList.remove("active");
             if (headerCategory) headerCategory.textContent = "PROPERTIES FOR SALE";
             if (headerTitle) headerTitle.textContent = "Buy Your Dream Home";
             if (headerSpan) headerSpan.textContent = "Explore verified houses, villas, and apartments available for immediate purchase.";
         } else if (cleanPurpose === "RENT") {
             if (navRent) navRent.classList.add("active");
             if (navBuy) navBuy.classList.remove("active");
+            if (tabRent) tabRent.classList.add("active");
+            if (tabAll) tabAll.classList.remove("active");
+            if (tabBuy) tabBuy.classList.remove("active");
             if (headerCategory) headerCategory.textContent = "PROPERTIES FOR RENT";
             if (headerTitle) headerTitle.textContent = "Rent Your Ideal Space";
             if (headerSpan) headerSpan.textContent = "Explore verified apartments and houses available for monthly rental.";
