@@ -101,7 +101,7 @@
     <script src="../js/property.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        function updateDetailsNav() {
             const user = window.api ? window.api.getCurrentUser() : null;
             const nav = document.getElementById("detailsNavLinks");
             if (user && user.token && nav) {
@@ -122,7 +122,12 @@
                     window.location.href = "login.html";
                 });
             }
-        });
+        }
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", updateDetailsNav);
+        } else {
+            updateDetailsNav();
+        }
     </script>
 
 </body>

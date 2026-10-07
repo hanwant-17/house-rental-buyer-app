@@ -670,9 +670,9 @@ async function openChatPropertyModal(propertyId) {
                 <button onclick="closeChatPropertyModal()" style="padding:8px 16px; background:#e2e8f0; color:#334155; border:none; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; transition:background 0.2s;">
                     ✕ Close
                 </button>
-                <button type="button" onclick="openFullPropertyPage(${prop.propertyId || prop.id || propertyId})" style="padding:9px 20px; background:#2563eb; color:#fff; border:none; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background 0.2s;">
+                <a href="property-details.html?id=${prop.propertyId || prop.id || propertyId}&from=chat" onclick="openFullPropertyPage(event, ${prop.propertyId || prop.id || propertyId})" style="padding:9px 20px; background:#2563eb; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background 0.2s; box-shadow:0 2px 6px rgba(37,99,235,0.25);">
                     View Full Property Page ↗
-                </button>
+                </a>
             </div>
         `;
     } catch (err) {
@@ -685,19 +685,18 @@ async function openChatPropertyModal(propertyId) {
     }
 }
 
-function openFullPropertyPage(propId) {
-    const id = propId || (activeChatData && activeChatData.property ? (activeChatData.property.propertyId || activeChatData.property.id) : null);
+window.openFullPropertyPage = function(event, propId) {
+    if (event) {
+        event.preventDefault();
+    }
+    const id = propId || (activeChatData && activeChatData.property ? (activeChatData.property.propertyId || activeChatData.property.id) : null) || localStorage.getItem("selectedPropertyId");
     if (!id) {
         alert("Property details could not be found.");
         return;
     }
     localStorage.setItem("selectedPropertyId", id);
-    const targetUrl = `property-details.html?id=${id}`;
-    const newWin = window.open(targetUrl, "_blank");
-    if (!newWin || newWin.closed || typeof newWin.closed === "undefined") {
-        window.location.href = targetUrl;
-    }
-}
+    window.location.href = `property-details.html?id=${id}&from=chat`;
+};
 
 function closeChatPropertyModal() {
     const modalOverlay = document.getElementById("chatPropertyModal");

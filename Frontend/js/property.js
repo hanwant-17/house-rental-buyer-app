@@ -262,29 +262,33 @@ function updateCarouselDisplay() {
 }
 
 async function loadPropertyDetails() {
-    if (!propertyDetails) return;
+    const propertyDetailsEl = document.getElementById("propertyDetails");
+    if (!propertyDetailsEl) return;
 
     // Check URL parameters first (?id=...), then fallback to localStorage
     const urlParams = new URLSearchParams(window.location.search);
     let selectedId = urlParams.get("id");
-    if (!selectedId) {
+    if (!selectedId || selectedId === "undefined" || selectedId === "null" || selectedId === "NaN") {
         selectedId = localStorage.getItem("selectedPropertyId");
+        if (selectedId === "undefined" || selectedId === "null" || selectedId === "NaN") {
+            selectedId = null;
+        }
     } else {
         localStorage.setItem("selectedPropertyId", selectedId);
     }
 
     if (!selectedId) {
-        propertyDetails.innerHTML = `<p style="padding:40px; text-align:center;">No property selected. <a href="properties.html">Back to properties</a></p>`;
+        propertyDetailsEl.innerHTML = `<p style="padding:40px; text-align:center;">No property selected. <a href="properties.html">Back to properties</a></p>`;
         return;
     }
 
     try {
-        propertyDetails.innerHTML = `<p style="padding:40px; text-align:center; color:#667085;">Loading property specifications...</p>`;
+        propertyDetailsEl.innerHTML = `<p style="padding:40px; text-align:center; color:#667085;">Loading property specifications...</p>`;
         const response = await window.api.getPropertyById(selectedId);
         const prop = response.data;
 
         if (!prop) {
-            propertyDetails.innerHTML = `<p style="padding:40px; text-align:center;">Property details not found.</p>`;
+            propertyDetailsEl.innerHTML = `<p style="padding:40px; text-align:center;">Property details not found.</p>`;
             return;
         }
 
@@ -293,9 +297,10 @@ async function loadPropertyDetails() {
         const isBroker = userRole === "BROKER";
         const isAdmin = userRole === "ADMIN";
 
+        const urlFrom = urlParams.get("from");
         let backLinkHref = "properties.html";
         let backLinkText = "Back to All Properties";
-        if (document.referrer && document.referrer.includes("chat.html")) {
+        if (urlFrom === "chat" || (document.referrer && document.referrer.includes("chat.html"))) {
             backLinkHref = "chat.html";
             backLinkText = "Back to Chat";
         } else if (isBroker) {
@@ -324,7 +329,7 @@ async function loadPropertyDetails() {
         currentGalleryImages = imagesList;
         currentGalleryIdx = 0;
 
-        propertyDetails.innerHTML = `
+        propertyDetailsEl.innerHTML = `
             <div class="details-container" style="max-width:1100px; margin:0 auto; padding:40px 20px;">
                 <a href="${backLinkHref}" style="color:#1d4ed8; text-decoration:none; font-weight:600; display:inline-block; margin-bottom:20px;">
                     ← ${backLinkText}
@@ -561,13 +566,13 @@ async function loadPropertyDetails() {
                                 </form>
                             </div>
                         </div>
-                        `}
+                        `)}
                     </div>
                 </div>
             </div>
         `;
     } catch (err) {
-        propertyDetails.innerHTML = `<p style="padding:40px; text-align:center; color:#b91c1c;">Error loading details: ${err.message}</p>`;
+        propertyDetailsEl.innerHTML = `<p style="padding:40px; text-align:center; color:#b91c1c;">Error loading details: ${err.message}</p>`;
     }
 }
 
@@ -874,11 +879,17 @@ if (addPropertyForm) {
 }
 
 // Initial triggers
-document.addEventListener("DOMContentLoaded", function () {
-    if (propertyGrid) {
+function initPropertyModule() {
+    if (document.getElementById("propertyGrid")) {
         loadPublicProperties();
     }
-    if (propertyDetails) {
+    if (document.getElementById("propertyDetails")) {
         loadPropertyDetails();
     }
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPropertyModule);
+} else {
+    initPropertyModule();
+}
