@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("homeLogoutBtn")?.addEventListener("click", function (e) {
             e.preventDefault();
             localStorage.clear();
+            sessionStorage.clear();
             window.location.reload();
         });
     }

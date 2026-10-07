@@ -1,68 +1,723 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>House Rental & Buyer App</title>
+    <title>HouseHub - Find Verified Homes, Flats & Properties for Rent & Sale</title>
 
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --emerald: #059669;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 5%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .navbar nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navbar nav a {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .navbar nav a:hover,
+        .navbar nav a.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .login-btn {
+            color: var(--slate-700);
+            padding: 8px 16px;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            color: var(--primary);
+            background: var(--slate-100);
+        }
+
+        .register-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .register-btn {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+        }
+
+        .register-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .register-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            padding-top: 8px;
+            min-width: 270px;
+            z-index: 9999;
+        }
+
+        .register-dropdown:hover .register-dropdown-content {
+            display: block;
+        }
+
+        .register-dropdown-content-inner {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--slate-200);
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .register-dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: var(--slate-800);
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .register-dropdown-content a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .reg-icon {
+            font-size: 18px;
+            background: var(--slate-100);
+            padding: 6px 9px;
+            border-radius: 8px;
+        }
+
+        .reg-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reg-text strong {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .reg-text span {
+            font-size: 11.5px;
+            color: var(--slate-500);
+        }
+
+        /* ================= HERO SECTION ================= */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            color: #ffffff;
+            padding: 80px 5% 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -60px;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #93c5fd;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+        }
+
+        .hero h1 {
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 14px;
+            letter-spacing: -0.8px;
+        }
+
+        .hero h1 span {
+            color: #60a5fa;
+        }
+
+        .hero-text {
+            font-size: 16.5px;
+            color: var(--slate-300);
+            max-width: 650px;
+            margin: 0 auto 36px;
+            line-height: 1.6;
+        }
+
+        /* Floating Search Card */
+        .search-box {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 16px 20px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 780px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .search-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-field label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .search-field input,
+        .search-field select {
+            width: 100%;
+            height: 42px;
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--slate-800);
+            outline: none;
+            background: #ffffff;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .search-field input:focus,
+        .search-field select:focus {
+            border-color: var(--primary);
+        }
+
+        .search-btn {
+            height: 44px;
+            padding: 0 26px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ================= PROPERTY TYPES ================= */
+        .property-types-section {
+            padding: 80px 5% 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-heading p {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .section-heading h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-heading span {
+            color: var(--slate-500);
+            font-size: 15px;
+        }
+
+        .property-type-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .property-type-card {
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+            transition: all 0.3s;
+        }
+
+        .property-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+        }
+
+        .property-type-image {
+            position: relative;
+            height: 260px;
+            overflow: hidden;
+        }
+
+        .property-type-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .property-type-card:hover .property-type-image img {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.2) 60%, transparent 100%);
+        }
+
+        .property-type-content {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            color: #ffffff;
+        }
+
+        .property-type-content h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .property-type-content p {
+            font-size: 14px;
+            color: var(--slate-300);
+            margin-bottom: 14px;
+        }
+
+        .property-type-content a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            color: var(--slate-900);
+            padding: 8px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .property-type-content a:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* ================= HOW IT WORKS ================= */
+        .how-section {
+            background: var(--slate-50);
+            padding: 80px 5%;
+            border-top: 1px solid var(--slate-200);
+            border-bottom: 1px solid var(--slate-200);
+        }
+
+        .steps-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .step {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px 24px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            position: relative;
+            transition: all 0.25s;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.09);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        .step h3 {
+            font-size: 17.5px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 13.5px;
+            color: var(--slate-600);
+            line-height: 1.6;
+        }
+
+        /* ================= BROKER CTA ================= */
+        .broker-cta-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 60px 5%;
+            color: #ffffff;
+        }
+
+        .broker-cta-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .broker-cta-badge {
+            background: rgba(37, 99, 235, 0.25);
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .broker-cta-inner h2 {
+            font-size: 28px;
+            margin: 12px 0 8px 0;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .broker-cta-inner p {
+            color: var(--slate-300);
+            font-size: 15px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .btn-broker-cta {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 13px 26px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14.5px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-broker-cta:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 60px 5% 30px;
+            border-top: 1px solid var(--slate-800);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .footer-content h2 span {
+            color: #60a5fa;
+        }
+
+        .footer-content p {
+            color: var(--slate-400);
+            font-size: 14px;
+            max-width: 380px;
+            line-height: 1.6;
+        }
+
+        .footer-content h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-content a {
+            color: var(--slate-300);
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-content a:hover {
+            color: #ffffff;
+        }
+
+        .copyright {
+            max-width: 1200px;
+            margin: 24px auto 0;
+            text-align: center;
+            color: var(--slate-500);
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+            .navbar nav {
+                display: none;
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .property-type-container {
+                grid-template-columns: 1fr;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
+    <!-- ================= NAVBAR ================= -->
     <header class="navbar">
 
-    <div class="logo">
-        House<span>Hub</span>
-    </div>
+        <a href="index.html" class="logo">
+            🏠 House<span>Hub</span>
+        </a>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="pages/about.html">About</a>
-        <a href="pages/contact.html">Contact</a>
-    </nav>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="pages/properties.html">Browse Listings</a>
+            <a href="pages/about.html">About</a>
+            <a href="pages/contact.html">Contact</a>
+        </nav>
 
-    <div class="nav-buttons">
-        <a href="pages/login.html" class="login-btn">Login</a>
+        <div class="nav-buttons">
+            <a href="pages/login.html" class="login-btn">Login</a>
 
-        <div class="register-dropdown">
-            <a href="pages/customer-register.html" class="register-btn">
-                Register ▾
-            </a>
-            <div class="register-dropdown-content">
-                <div class="register-dropdown-content-inner">
-                    <a href="pages/customer-register.html">
-                        <span class="reg-icon">👤</span>
-                        <div class="reg-text">
-                            <strong>Customer / Tenant</strong>
-                            <span>Find homes for Rent or Buy</span>
-                        </div>
-                    </a>
-                    <a href="pages/broker-register.html">
-                        <span class="reg-icon">🏢</span>
-                        <div class="reg-text">
-                            <strong>Broker / Owner</strong>
-                            <span>List properties & get verified</span>
-                        </div>
-                    </a>
+            <div class="register-dropdown">
+                <a href="pages/customer-register.html" class="register-btn">
+                    Register ▾
+                </a>
+                <div class="register-dropdown-content">
+                    <div class="register-dropdown-content-inner">
+                        <a href="pages/customer-register.html">
+                            <span class="reg-icon">👤</span>
+                            <div class="reg-text">
+                                <strong>Customer / Tenant</strong>
+                                <span>Find homes for Rent or Buy</span>
+                            </div>
+                        </a>
+                        <a href="pages/broker-register.html">
+                            <span class="reg-icon">🏢</span>
+                            <div class="reg-text">
+                                <strong>Broker / Owner</strong>
+                                <span>List properties & get verified</span>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</header>
-
+    </header>
 
     <!-- ================= HERO SECTION ================= -->
-
     <section class="hero">
 
         <div class="hero-content">
 
-            <p class="small-title">
-                FIND YOUR PERFECT HOME
-            </p>
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                Verified Platform Listings • Zero Fake Posts • Direct Connect
+            </div>
 
             <h1>
                 Find a place you'll
@@ -70,16 +725,14 @@
             </h1>
 
             <p class="hero-text">
-                Search houses, flats and other properties
-                for rent or purchase from one place.
+                Search verified residential houses, apartments, and luxury villas for rent or purchase with transparent market benchmarks.
             </p>
 
-            <!-- SEARCH BOX -->
-
+            <!-- SEARCH BOX (PRESERVES EXACT CLASSES FOR main.js) -->
             <div class="search-box">
 
                 <div class="search-field">
-                    <label>Location</label>
+                    <label>Location / City</label>
                     <input
                         type="text"
                         list="homeCitySuggestions"
@@ -101,16 +754,15 @@
 
                 <div class="search-field">
                     <label>Purpose</label>
-
                     <select>
-                        <option value="">Select</option>
+                        <option value="">All Purposes</option>
                         <option value="rent">Rent</option>
                         <option value="buy">Buy</option>
                     </select>
                 </div>
 
                 <button class="search-btn">
-                    Search Property
+                    🔍 Search Property
                 </button>
 
             </div>
@@ -119,200 +771,123 @@
 
     </section>
 
-
-    <!-- ================= FEATURED PROPERTIES ================= -->
-
     <!-- ================= PROPERTY TYPES ================= -->
-
-<section class="property-types-section">
-
-    <div class="section-heading">
-
-        <p>FIND YOUR NEXT HOME</p>
-
-        <h2>Homes & Flats for You</h2>
-
-        <span>
-            Find verified homes and flats available for
-            rent and purchase.
-        </span>
-
-    </div>
-
-
-    <div class="property-type-container">
-
-        <!-- HOME -->
-
-        <div class="property-type-card">
-
-            <div class="property-type-image">
-
-                <img
-                    src="images\home-banner.jpg"
-                    alt="Homes for Rent and Sale"
-                >
-
-                <div class="image-overlay"></div>
-
-                <div class="property-type-content">
-
-                    <h3>Homes</h3>
-
-                    <p>
-                        Find comfortable homes for
-                        rent and purchase.
-                    </p>
-
-                    <a href="pages/properties.html">
-                        Explore Homes →
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- FLAT -->
-
-        <div class="property-type-card">
-
-            <div class="property-type-image">
-
-                <img
-                    src="images\flat-banner.jpg"
-                    alt="Flats for Rent and Sale"
-                >
-
-                <div class="image-overlay"></div>
-
-                <div class="property-type-content">
-
-                    <h3>Flats</h3>
-
-                    <p>
-                        Discover flats available for
-                        rent and purchase.
-                    </p>
-
-                    <a href="pages/properties.html">
-                        Explore Flats →
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-    <!-- ================= HOW IT WORKS ================= -->
-
-    <section class="how-section">
+    <section class="property-types-section">
 
         <div class="section-heading">
-
-            <p>SIMPLE PROCESS</p>
-
-            <h2>
-                How It Works
-            </h2>
-
+            <p>FIND YOUR NEXT HOME</p>
+            <h2>Verified Homes & Flats for You</h2>
+            <span>
+                Handpicked, administrator-verified properties available for immediate rent and purchase.
+            </span>
         </div>
 
+        <div class="property-type-container">
 
-        <div class="steps-container">
-
-            <div class="step">
-
-                <div class="step-number">
-                    01
+            <!-- HOME -->
+            <div class="property-type-card">
+                <div class="property-type-image">
+                    <img
+                        src="images/home-banner.jpg"
+                        alt="Homes for Rent and Sale"
+                    >
+                    <div class="image-overlay"></div>
+                    <div class="property-type-content">
+                        <h3>Independent Homes</h3>
+                        <p>
+                            Find comfortable, spacious independent houses & villas with verified titles.
+                        </p>
+                        <a href="pages/properties.html">
+                            Explore Homes →
+                        </a>
+                    </div>
                 </div>
-
-                <h3>Search Property</h3>
-
-                <p>
-                    Search houses and flats according
-                    to your location and requirements.
-                </p>
-
             </div>
 
-
-            <div class="step">
-
-                <div class="step-number">
-                    02
+            <!-- FLAT -->
+            <div class="property-type-card">
+                <div class="property-type-image">
+                    <img
+                        src="images/flat-banner.jpg"
+                        alt="Flats for Rent and Sale"
+                    >
+                    <div class="image-overlay"></div>
+                    <div class="property-type-content">
+                        <h3>Modern Apartments & Flats</h3>
+                        <p>
+                            Discover contemporary residential flats with modern amenities and elevator access.
+                        </p>
+                        <a href="pages/properties.html">
+                            Explore Flats →
+                        </a>
+                    </div>
                 </div>
-
-                <h3>View Details</h3>
-
-                <p>
-                    Check property images, price,
-                    location, BHK and amenities.
-                </p>
-
-            </div>
-
-
-            <div class="step">
-
-                <div class="step-number">
-                    03
-                </div>
-
-                <h3>Chat with Broker</h3>
-
-                <p>
-                    Communicate with the broker through
-                    secure in-app chat.
-                </p>
-
-            </div>
-
-
-            <div class="step">
-
-                <div class="step-number">
-                    04
-                </div>
-
-                <h3>Rent or Buy</h3>
-
-                <p>
-                    Schedule a visit and proceed with
-                    the rental or purchase process.
-                </p>
-
             </div>
 
         </div>
 
     </section>
 
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="how-section">
 
-    <!-- ================= BROKER CTA BANNER ================= -->
-    <section class="broker-cta-section" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 50px 7%; color: #fff; margin: 40px 0 0 0;">
-        <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap;">
-            <div>
-                <span style="background: rgba(37,99,235,0.25); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; text-transform: uppercase;">
-                    For Property Owners & Brokers
-                </span>
-                <h2 style="font-size: 28px; margin: 12px 0 8px 0; color: #fff;">
-                    Want to List Your Property on HouseHub?
-                </h2>
-                <p style="color: #94a3b8; font-size: 15px; max-width: 600px; line-height: 1.5;">
-                    Register as a verified broker or property owner. Get verified by our admin team, receive your unique Broker ID, and connect directly with genuine buyers & tenants.
+        <div class="section-heading">
+            <p>TRANSPARENT WORKFLOW</p>
+            <h2>How HouseHub Works</h2>
+        </div>
+
+        <div class="steps-container">
+
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>Search Property</h3>
+                <p>
+                    Browse verified houses and apartments matching your preferred locality, BHK, and budget.
                 </p>
             </div>
-            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-                <a href="pages/broker-register.html" style="background: #2563eb; color: #fff; padding: 13px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;">
+
+            <div class="step">
+                <div class="step-number">02</div>
+                <h3>Inspect Details</h3>
+                <p>
+                    Check genuine real-world photos, verified owner details, and detailed room specifications.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">03</div>
+                <h3>Chat with Broker</h3>
+                <p>
+                    Communicate directly with the approved broker through our private in-app chat console.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">04</div>
+                <h3>Visit & Finalize</h3>
+                <p>
+                    Book a physical site visit, verify the premises, and finalize your rental or purchase safely.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= BROKER CTA BANNER ================= -->
+    <section class="broker-cta-section">
+        <div class="broker-cta-inner">
+            <div>
+                <span class="broker-cta-badge">
+                    For Property Owners & Brokers
+                </span>
+                <h2>Want to List Your Property on HouseHub?</h2>
+                <p>
+                    Register as a verified broker or property owner. Get verified by our admin compliance team, receive your unique Broker ID, and connect directly with genuine buyers & tenants.
+                </p>
+            </div>
+            <div>
+                <a href="pages/broker-register.html" class="btn-broker-cta">
                     🏢 Register as Broker / Owner →
                 </a>
             </div>
@@ -320,51 +895,36 @@
     </section>
 
     <!-- ================= FOOTER ================= -->
-
     <footer>
 
         <div class="footer-content">
 
             <div>
                 <h2>House<span>Hub</span></h2>
-
                 <p>
-                    Find your perfect home for rent
-                    or purchase.
+                    Empowering buyers, tenants, and brokers with safe, verified real estate solutions and fair pricing benchmarks.
                 </p>
             </div>
 
             <div>
                 <h3>Quick Links</h3>
-
                 <a href="index.html">Home</a>
-                <a href="pages/properties.html">Properties</a>
+                <a href="pages/properties.html">Browse Listings</a>
                 <a href="pages/about.html">About Us</a>
                 <a href="pages/contact.html">Contact Us</a>
-                <a href="pages/login.html">Login</a>
             </div>
 
             <div>
-                <h3>Users</h3>
-
-                <a href="pages/customer-register.html">
-                    Customer
-                </a>
-
-                <a href="pages/broker-register.html">
-                    Broker / Owner
-                </a>
-
+                <h3>Portals</h3>
+                <a href="pages/customer-register.html">Customer Registration</a>
+                <a href="pages/broker-register.html">Broker Registration</a>
+                <a href="pages/login.html">Sign In</a>
             </div>
 
         </div>
 
-
         <div class="copyright">
-
-            © 2026 House Rental & Buyer App.
-            All Rights Reserved.
-
+            © 2026 HouseHub Real Estate Platform. All Rights Reserved.
         </div>
 
     </footer>
@@ -372,4 +932,5 @@
     <script src="js/main.js"></script>
 
 </body>
+
 </html>

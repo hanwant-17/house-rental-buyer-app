@@ -4,282 +4,588 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Customer Registration - HouseHub</title>
 
-    <link rel="stylesheet" href="../css/auth.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 5%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        /* ================= AUTH SECTION ================= */
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 44px 20px 60px;
+            background: radial-gradient(circle at 50% 15%, rgba(37, 99, 235, 0.05) 0%, transparent 60%);
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 22px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+            width: 100%;
+            max-width: 540px;
+            padding: 38px 36px;
+            position: relative;
+        }
+
+        /* Role Switcher Tabs */
+        .role-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--slate-100);
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+            margin-bottom: 26px;
+        }
+
+        .role-tab {
+            padding: 9px 14px;
+            text-align: center;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--slate-600);
+            text-decoration: none;
+            border-radius: 9px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .role-tab.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .auth-header p {
+            color: var(--slate-500);
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-700);
+            margin-bottom: 6px;
+        }
+
+        .form-group label span {
+            color: var(--danger);
+        }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            font-size: 14px;
+            color: var(--slate-400);
+            pointer-events: none;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 44px;
+            padding: 0 14px 0 36px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            font-size: 13.5px;
+            color: var(--slate-800);
+            background: #ffffff;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group select {
+            padding-left: 12px;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 11.5px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: block;
+            min-height: 15px;
+        }
+
+        /* Terms Box */
+        .terms-box {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 10px 0 20px;
+        }
+
+        .terms-box h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-800);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .terms-box ul {
+            font-size: 12px;
+            color: var(--slate-600);
+            line-height: 1.5;
+            padding-left: 18px;
+            margin-bottom: 12px;
+        }
+
+        .terms-agreement-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--slate-200);
+        }
+
+        .terms-agreement-row input {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .terms-agreement-row label {
+            font-size: 12px;
+            color: var(--slate-800);
+            font-weight: 600;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .btn-register-submit {
+            width: 100%;
+            height: 48px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-register-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+
+        .auth-footer-prompt {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: var(--slate-500);
+        }
+
+        .auth-footer-prompt a {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-footer-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= FOOTER ================= */
+        .footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 20px;
+            text-align: center;
+            color: var(--slate-500);
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .navbar .nav-links {
+                display: none;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .auth-card {
+                padding: 26px 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     <!-- NAVBAR -->
-
-    <nav class="navbar">
-
-        <div class="logo">
-            🏠 HouseHub
-        </div>
+    <header class="navbar">
+        <a href="../index.html" class="logo">
+            🏠 House<span>Hub</span>
+        </a>
 
         <ul class="nav-links">
             <li><a href="../index.html">Home</a></li>
+            <li><a href="properties.html">Browse Listings</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="broker-register.html" style="color:#15803d; font-weight:700;">Broker Register</a></li>
+            <li><a href="login.html" style="color:var(--primary);">Sign In</a></li>
         </ul>
+    </header>
 
-    </nav>
+    <!-- AUTH SECTION -->
+    <main class="auth-wrapper">
 
-
-    <!-- REGISTRATION -->
-
-    <section class="auth-section">
-
-        <div class="auth-container">
+        <div class="auth-card">
 
             <!-- Role Switcher Tabs -->
-            <div class="auth-role-tabs">
+            <div class="role-tabs">
                 <a href="customer-register.html" class="role-tab active">
-                    <span style="font-size:16px;">👤</span> Customer / Tenant
+                    👤 Customer / Tenant
                 </a>
                 <a href="broker-register.html" class="role-tab">
-                    <span style="font-size:16px;">🏢</span> Broker / Owner
+                    🏢 Broker / Owner
                 </a>
             </div>
 
             <div class="auth-header">
-
-                <h1>Create Account</h1>
-
-                <p>
-                    Register as a Customer / Tenant
-                </p>
-
+                <h1>Create Customer Account</h1>
+                <p>Register to search, shortlist, and visit homes directly</p>
             </div>
 
+            <!-- AUTOCOMPLETE COMPLETELY OFF TO PREVENT BROWSER EMAIL AUTOFILL -->
+            <form id="customerRegisterForm" autocomplete="off" onsubmit="return false;">
 
+                <!-- FAKE DUMMY INPUT TO TRAP BROWSER AUTOFILL ENGINES -->
+                <input type="text" style="display:none;" tabindex="-1">
+                <input type="email" style="display:none;" tabindex="-1">
 
-            <form id="customerRegisterForm">
+                <div class="form-row">
+                    <!-- FULL NAME -->
+                    <div class="form-group">
+                        <label for="name">Full Name <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input
+                                type="text"
+                                id="name"
+                                name="customer_fullname"
+                                placeholder="e.g. Rahul Sharma"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+                        <small class="error-message"></small>
+                    </div>
 
-                <!-- FULL NAME -->
-
-                <div class="form-group">
-
-                    <label for="name">
-                        Full Name <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Enter your full name"
-                        required
-                    >
-
-                    <small class="error-message"></small>
-
+                    <!-- MOBILE -->
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon">📱</span>
+                            <input
+                                type="tel"
+                                id="mobile"
+                                name="customer_mobile"
+                                placeholder="10 digit mobile"
+                                maxlength="10"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+                        <small class="error-message"></small>
+                    </div>
                 </div>
 
-
-                <!-- MOBILE -->
-
+                <!-- EMAIL (PROTECTED WITH READONLY-ONFOCUS TO DEFEAT CHROME AUTOFILL) -->
                 <div class="form-group">
-
-                    <label for="mobile">
-                        Mobile Number <span>*</span>
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="mobile"
-                        name="mobile"
-                        placeholder="Enter 10 digit mobile number"
-                        maxlength="10"
-                        required
-                    >
-
+                    <label for="email">Email Address <span>*</span></label>
+                    <div class="input-wrap">
+                        <span class="input-icon">✉️</span>
+                        <input
+                            type="email"
+                            id="email"
+                            name="reg_customer_email_custom"
+                            placeholder="Enter your email (e.g. rahul@example.com)"
+                            autocomplete="off"
+                            readonly
+                            onfocus="this.removeAttribute('readonly');"
+                            onblur="if(!this.value) this.setAttribute('readonly', 'readonly');"
+                            required
+                        >
+                    </div>
                     <small class="error-message"></small>
-
                 </div>
 
+                <div class="form-row">
+                    <!-- PASSWORD -->
+                    <div class="form-group">
+                        <label for="password">Password <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🔒</span>
+                            <input
+                                type="password"
+                                id="password"
+                                name="customer_reg_pass"
+                                placeholder="At least 6 characters"
+                                autocomplete="new-password"
+                                readonly
+                                onfocus="this.removeAttribute('readonly');"
+                                required
+                            >
+                        </div>
+                        <small class="error-message"></small>
+                    </div>
 
-                <!-- EMAIL -->
-
-                <div class="form-group">
-
-                    <label for="email">
-                        Email Address <span>*</span>
-                    </label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        required
-                    >
-
-                    <small class="error-message"></small>
-
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🔒</span>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="customer_reg_confirm_pass"
+                                placeholder="Confirm password"
+                                autocomplete="new-password"
+                                readonly
+                                onfocus="this.removeAttribute('readonly');"
+                                required
+                            >
+                        </div>
+                        <small class="error-message"></small>
+                    </div>
                 </div>
 
+                <div class="form-row">
+                    <!-- CITY -->
+                    <div class="form-group">
+                        <label for="city">Preferred City <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon">📍</span>
+                            <input
+                                type="text"
+                                id="city"
+                                name="customer_city"
+                                placeholder="e.g. Jodhpur, Jaipur"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+                        <small class="error-message"></small>
+                    </div>
 
-                <!-- PASSWORD -->
-
-                <div class="form-group">
-
-                    <label for="password">
-                        Password <span>*</span>
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Create password"
-                        required
-                    >
-
-                    <small class="error-message"></small>
-
+                    <!-- USER TYPE -->
+                    <div class="form-group">
+                        <label for="userType">Primary Interest <span>*</span></label>
+                        <select id="userType" name="userType" required>
+                            <option value="">Select purpose</option>
+                            <option value="rent">Rent a Property</option>
+                            <option value="buy">Buy a Property</option>
+                        </select>
+                        <small class="error-message"></small>
+                    </div>
                 </div>
 
-
-                <!-- CONFIRM PASSWORD -->
-
-                <div class="form-group">
-
-                    <label for="confirmPassword">
-                        Confirm Password <span>*</span>
-                    </label>
-
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        placeholder="Confirm your password"
-                        required
-                    >
-
-                    <small class="error-message"></small>
-
-                </div>
-
-
-                <!-- CITY -->
-
-                <div class="form-group">
-
-                    <label for="city">
-                        City <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        placeholder="Enter your city"
-                        required
-                    >
-
-                    <small class="error-message"></small>
-
-                </div>
-
-
-                <!-- USER TYPE -->
-
-                <div class="form-group">
-
-                    <label for="userType">
-                        I am looking to <span>*</span>
-                    </label>
-
-                    <select id="userType" name="userType" required>
-
-                        <option value="">
-                            Select purpose
-                        </option>
-
-                        <option value="rent">
-                            Rent a Property
-                        </option>
-
-                        <option value="buy">
-                            Buy a Property
-                        </option>
-
-                    </select>
-
-                    <small class="error-message"></small>
-
-                </div>
-
-
-                <!-- Customer Terms and Conditions Box -->
-                <div class="customer-terms-box" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin:16px 0; text-align:left;">
-                    <h4 style="font-size:14px; color:#1e293b; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-                        📜 Customer Terms & Conditions (ग्राहक नियम व शर्तें)
-                    </h4>
-                    <ul style="font-size:12px; color:#475467; line-height:1.6; padding-left:18px; margin-bottom:10px;">
-                        <li>You agree to provide true and accurate contact information.</li>
-                        <li>You agree to use In-App Chat and Site Visit scheduling respectfully and legitimately.</li>
-                        <li>Your data is protected under HouseHub's Privacy Policy and will not be sold to third-party telemarketers.</li>
+                <!-- Terms & Conditions -->
+                <div class="terms-box">
+                    <h4>📜 Customer Terms & Privacy Notice</h4>
+                    <ul>
+                        <li>Your personal details are confidential and never shared with telemarketers.</li>
+                        <li>Communicate directly with verified brokers via encrypted in-app messaging.</li>
                     </ul>
-
-                    <div style="display:flex; align-items:flex-start; gap:8px; padding-top:8px; border-top:1px solid #e2e8f0;">
-                        <input type="checkbox" id="customerTermsAgreement" required style="width:16px; height:16px; margin-top:2px; cursor:pointer;">
-                        <label for="customerTermsAgreement" style="font-size:12px; color:#1e293b; font-weight:600; cursor:pointer;">
-                            I agree to the HouseHub Customer Terms of Service and Privacy Policy. <span style="color:#dc2626;">*</span>
+                    <div class="terms-agreement-row">
+                        <input type="checkbox" id="customerTermsAgreement" required>
+                        <label for="customerTermsAgreement">
+                            I accept the HouseHub Customer Terms of Service and Privacy Policy. <span style="color:var(--danger)">*</span>
                         </label>
                     </div>
                 </div>
 
                 <button
                     type="submit"
-                    class="auth-button">
-
-                    Create Account
-
+                    class="btn-register-submit"
+                    id="customerSubmitBtn">
+                    Create Customer Account →
                 </button>
 
-
-                <div class="role-switch-helper broker-hint">
-                    <span>🏢 Are you a Real Estate Broker or Property Owner?</span>
-                    <a href="broker-register.html">Register as Broker / Owner ➔</a>
-                </div>
-
-                <p class="auth-footer">
-
-                    Already have an account?
-
-                    <a href="login.html">
-                        Login
-                    </a>
-
+                <p class="auth-footer-prompt">
+                    Already have an account? <a href="login.html">Sign In</a>
                 </p>
 
             </form>
 
         </div>
 
-    </section>
-
+    </main>
 
     <!-- FOOTER -->
-
     <footer class="footer">
-
-        <p>
-            © 2026 HouseHub. All Rights Reserved.
-        </p>
-
+        <p>© 2026 HouseHub Real Estate Platform. All Rights Reserved.</p>
     </footer>
 
-
+    <!-- JAVASCRIPT -->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
+
+    <!-- STRICT AUTOFILL PURGER SCRIPT -->
+    <script>
+        function purgeEmailAutofill() {
+            const email = document.getElementById("email");
+            if (email) {
+                // If the user hasn't explicitly clicked and typed yet, purge any browser autofill
+                if (document.activeElement !== email) {
+                    email.value = "";
+                }
+            }
+        }
+
+        window.addEventListener("pageshow", purgeEmailAutofill);
+        document.addEventListener("DOMContentLoaded", function () {
+            purgeEmailAutofill();
+            setTimeout(purgeEmailAutofill, 50);
+            setTimeout(purgeEmailAutofill, 150);
+            setTimeout(purgeEmailAutofill, 400);
+
+            // Re-bind form submit
+            const form = document.getElementById("customerRegisterForm");
+            if (form) {
+                form.onsubmit = null; // Let auth.js handle submission
+            }
+        });
+    </script>
 
 </body>
 

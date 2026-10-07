@@ -43,6 +43,9 @@ const api = {
         localStorage.removeItem("brokerCode");
         localStorage.removeItem("selectedPropertyId");
         localStorage.removeItem("currentChatId");
+        if (typeof sessionStorage !== "undefined") {
+            sessionStorage.clear();
+        }
     },
 
     // Core Fetch Wrapper

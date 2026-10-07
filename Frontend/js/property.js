@@ -412,245 +412,282 @@ async function loadPropertyDetails() {
         currentGalleryImages = imagesList;
         currentGalleryIdx = 0;
 
+        const rawAmenities = prop.amenities ? prop.amenities.split(',') : ['24/7 Water Supply', 'Electricity Backup', 'Security / CCTV', 'Covered Parking'];
+        const amenitiesChips = rawAmenities
+            .map(a => a.trim())
+            .filter(Boolean)
+            .map(a => `<span class="amenity-chip">✓ ${a}</span>`)
+            .join(' ');
+
+        const todayDate = new Date().toISOString().split('T')[0];
+
         propertyDetailsEl.innerHTML = `
-            <div class="details-container" style="max-width:1100px; margin:0 auto; padding:40px 20px;">
-                <a href="${backLinkHref}" style="color:#1d4ed8; text-decoration:none; font-weight:600; display:inline-block; margin-bottom:20px;">
+            <div class="details-topbar">
+                <a href="${backLinkHref}" class="btn-back-pill">
                     ← ${backLinkText}
                 </a>
+                <div class="topbar-meta">
+                    <span class="id-badge">Listing ID #${prop.propertyId}</span>
+                    <span class="verified-pill">✓ Verified Platform Listing</span>
+                </div>
+            </div>
 
-                <div style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #eaecf0; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
-                    <!-- Interactive Photo Carousel -->
-                    <div style="background:#0f172a; position:relative; height:420px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
-                        <img id="carouselMainImg" src="${imagesList[0]}" alt="${prop.title}" style="max-height:100%; max-width:100%; object-fit:contain; transition:opacity 0.2s ease;">
-
-                        ${imagesList.length > 1 ? `
-                            <button type="button" onclick="changeCarouselSlide(-1)" aria-label="Previous Photo" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:44px; height:44px; border-radius:50%; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:5;">
-                                ❮
-                            </button>
-                            <button type="button" onclick="changeCarouselSlide(1)" aria-label="Next Photo" style="position:absolute; right:16px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:44px; height:44px; border-radius:50%; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:5;">
-                                ❯
-                            </button>
-                            <div style="position:absolute; bottom:14px; right:18px; background:rgba(15,23,42,0.85); color:#fff; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; z-index:5; border:1px solid rgba(255,255,255,0.2);">
-                                📷 <span id="carouselCounter">1 / ${imagesList.length}</span> Photos
-                            </div>
-                        ` : ''}
-                    </div>
+            <div class="property-main-card">
+                <!-- Interactive Photo Showcase Carousel -->
+                <div class="carousel-stage">
+                    <span class="carousel-purpose-badge">FOR ${purpose}</span>
+                    <img id="carouselMainImg" src="${imagesList[0]}" alt="${prop.title}">
 
                     ${imagesList.length > 1 ? `
-                        <div style="display:flex; gap:10px; padding:12px 20px; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto;">
-                            ${imagesList.map((url, i) => `
-                                <img id="carouselThumb-${i}" src="${url}" onclick="setCarouselSlide(${i})" style="width:72px; height:52px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid ${i === 0 ? '#2563eb' : 'transparent'}; opacity:${i === 0 ? '1' : '0.55'}; transition:all 0.2s; flex-shrink:0;">
-                            `).join('')}
+                        <button type="button" class="carousel-nav-btn prev" onclick="changeCarouselSlide(-1)" aria-label="Previous Photo">
+                            ❮
+                        </button>
+                        <button type="button" class="carousel-nav-btn next" onclick="changeCarouselSlide(1)" aria-label="Next Photo">
+                            ❯
+                        </button>
+                        <div class="carousel-counter-badge">
+                            📷 <span id="carouselCounter">1 / ${imagesList.length}</span> Photos
                         </div>
                     ` : ''}
+                </div>
 
-                    <div style="padding:30px;">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
-                            <div>
-                                <span style="background:#eff6ff; color:#1d4ed8; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; text-transform:uppercase;">
+                ${imagesList.length > 1 ? `
+                    <div class="carousel-thumbs-bar">
+                        ${imagesList.map((url, i) => `
+                            <img id="carouselThumb-${i}" src="${url}" class="carousel-thumb-item ${i === 0 ? 'active' : ''}" onclick="setCarouselSlide(${i})" alt="Thumbnail ${i + 1}">
+                        `).join('')}
+                    </div>
+                ` : ''}
+
+                <div class="details-body">
+                    <div class="details-header-row">
+                        <div class="title-area">
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+                                <span style="background:var(--primary-light, #eff6ff); color:var(--primary, #2563eb); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:800; text-transform:uppercase;">
                                     For ${purpose}
                                 </span>
-                                <h1 style="font-size:26px; margin:10px 0 5px;">${prop.title}</h1>
-                                <p style="color:#667085; font-size:15px;">📍 ${prop.address}, ${prop.city}, ${prop.state || ''}</p>
+                                <span class="verified-pill">✓ Verified Listing</span>
                             </div>
-                            <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                                <div style="font-size:26px; font-weight:bold; color:#1d4ed8;">${priceDisplay}</div>
-                                <span style="font-size:13px; color:#16a34a; font-weight:600;">✓ Verified Listing</span>
+                            <h1>${prop.title}</h1>
+                            <div class="location-line">
+                                <span>📍</span>
+                                <span>${prop.address}, ${prop.city}${prop.state ? ', ' + prop.state : ''}</span>
+                            </div>
+                        </div>
+
+                        <div class="pricing-area">
+                            <div class="price-text">${priceDisplay}</div>
+                            <div class="actions-btn-group">
                                 ${!isBroker && !isAdmin ? `
-                                <button onclick="toggleWishlist(${prop.propertyId}, this)" style="background:#fff; border:1px solid #f43f5e; color:#f43f5e; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; margin-top:4px;">
+                                <button type="button" class="btn-wishlist" onclick="toggleWishlist(${prop.propertyId}, this)">
                                     ❤️ Add to Wishlist
                                 </button>
                                 ` : ''}
+                                <button type="button" class="btn-share" onclick="window.copyPropertyLink ? window.copyPropertyLink() : copyPropertyLink()">
+                                    🔗 Share Listing
+                                </button>
                             </div>
                         </div>
+                    </div>
 
-                        <hr style="border:none; border-top:1px solid #eaecf0; margin:20px 0;">
-
-                        <h3 style="margin-bottom:15px;">Property Specifications & Layout</h3>
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:25px;">
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">ROOMS / BEDROOMS</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🛏️ ${prop.rooms || prop.bhk} Rooms (${prop.bhk} BHK)</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">BATHROOMS</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🚿 ${prop.bathrooms || 1} Baths</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">KITCHEN</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🍳 ${prop.kitchen || 'Modular Kitchen'}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">FLOOR NUMBER</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🏢 ${prop.floorNo ? prop.floorNo + (prop.totalFloors ? ' (of ' + prop.totalFloors + ')' : '') : 'Ground Floor'}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">HALL / LIVING AREA</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🛋️ ${prop.hall || '1 Living Hall'}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">BALCONIES</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🌅 ${prop.balconies !== undefined && prop.balconies !== null ? prop.balconies + ' Balcony' : '1 Balcony'}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">SUPER BUILT-UP AREA</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">📐 ${prop.areaSqft || "N/A"} sq.ft</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">FURNISHED STATUS</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🛋️ ${prop.furnishedStatus || "Semi-Furnished"}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">PARKING</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🚗 ${prop.parking ? "Available" : "No"}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">FACING DIRECTION</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🧭 ${prop.facing || "East Facing"}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">PROPERTY AGE</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">⏳ ${prop.propertyAge || "New Construction"}</div>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
-                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">PROPERTY TYPE</span>
-                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🏷️ ${prop.propertyType}</div>
-                            </div>
+                    <h3 class="section-subhead"><span>🏢</span> Property Specifications & Layout</h3>
+                    <div class="specs-grid">
+                        <div class="spec-card">
+                            <span class="spec-label">ROOMS / BEDROOMS</span>
+                            <div class="spec-val">🛏️ ${prop.rooms || prop.bhk} Rooms (${prop.bhk} BHK)</div>
                         </div>
-
-                        <h3 style="margin-bottom:10px;">Description & Amenities</h3>
-                        <p style="color:#475467; line-height:1.7; margin-bottom:15px;">${prop.description || "No detailed description provided."}</p>
-                        <p style="font-size:14px; color:#667085; margin-bottom:30px;">
-                            <strong>Amenities:</strong> ${prop.amenities || "Water, Electricity"}
-                        </p>
-
-                        ${isBroker ? `
-                        <!-- Broker Owner Control Panel (RULE 1, 2 & 5) -->
-                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:24px; margin-top:20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-                                <div>
-                                    <span style="font-size:11px; background:#16a34a; color:#fff; padding:4px 10px; border-radius:12px; font-weight:bold; letter-spacing:0.5px;">BROKER CONTROL PANEL</span>
-                                    <h4 style="margin:8px 0 4px; font-size:18px; color:#14532d;">Property Management (Owner Actions)</h4>
-                                    <p style="font-size:13px; color:#166534; margin:0;">
-                                        Listing Status: <strong>${prop.propertyStatus || 'AVAILABLE'}</strong> &nbsp;|&nbsp; 
-                                        Admin Verification: <strong>${prop.verificationStatus || 'APPROVED'}</strong>
-                                    </p>
-                                </div>
-                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                    <a href="my-properties.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                        🏠 Manage in My Properties
-                                    </a>
-                                    <a href="my-inquiries.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                        📋 Client Inquiries & Visits
-                                    </a>
-                                    <a href="chat.html" style="background:#16a34a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                        💬 Client Chats
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="spec-card">
+                            <span class="spec-label">BATHROOMS</span>
+                            <div class="spec-val">🚿 ${prop.bathrooms || 1} Baths</div>
                         </div>
-                        ` : (isAdmin ? `
-                        <!-- Admin Dossier & Audit Panel -->
-                        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:24px; margin-top:20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:18px;">
-                                <div>
-                                    <span style="font-size:11px; background:#1e293b; color:#fff; padding:4px 10px; border-radius:12px; font-weight:bold; letter-spacing:0.5px;">ADMIN AUDIT PANEL</span>
-                                    <h4 style="margin:8px 0 4px; font-size:19px; color:#0f172a;">Official Listing & Verification Details</h4>
-                                    <p style="font-size:13px; color:#475467; margin:0;">
-                                        Verification Status: <strong style="color:#16a34a;">${prop.verificationStatus || 'APPROVED'}</strong> &nbsp;|&nbsp; 
-                                        Listing Status: <strong style="color:#2563eb;">${prop.propertyStatus || 'AVAILABLE'}</strong>
-                                    </p>
-                                </div>
-                                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                                    <span style="font-size:12px; color:#16a34a; background:#ecfdf5; border:1px solid #a7f3d0; padding:6px 14px; border-radius:8px; font-weight:600;">
-                                        ✓ Approved By Admin
-                                    </span>
-                                    ${prop.approvedAt ? `<span style="font-size:12px; color:#64748b; background:#fff; border:1px solid #e2e8f0; padding:6px 12px; border-radius:8px;">${new Date(prop.approvedAt).toLocaleDateString()}</span>` : ''}
-                                </div>
-                            </div>
-
-                            <!-- Submitting Broker Dossier -->
-                            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
-                                    <h5 style="margin:0; font-size:15px; color:#1e293b;">🏢 Submitting Broker Dossier</h5>
-                                    <span style="font-size:12px; font-family:monospace; font-weight:700; background:#eff6ff; color:#1d4ed8; padding:3px 10px; border-radius:6px; border:1px solid #bfdbfe;">
-                                        ${brokerCode}
-                                    </span>
-                                </div>
-                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; font-size:13px;">
-                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Broker Name</span><strong style="color:#0f172a; font-size:14px;">${brokerName}</strong></div>
-                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Agency Name</span><strong style="color:#0f172a; font-size:14px;">${prop.broker?.agencyName || 'Independent Broker'}</strong></div>
-                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Registered Email</span><strong style="color:#0f172a; font-size:14px; word-break:break-all;">✉️ ${brokerUser.email || 'N/A'}</strong></div>
-                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Phone Number</span><strong style="color:#0f172a; font-size:14px;">📞 ${brokerUser.mobile || 'N/A'}</strong></div>
-                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Operating City</span><strong style="color:#0f172a; font-size:14px;">📍 ${prop.broker?.city || prop.city}</strong></div>
-                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Experience</span><strong style="color:#0f172a; font-size:14px;">⏳ ${prop.broker?.experience || 'Experienced'}</strong></div>
-                                </div>
-                            </div>
-
-                            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
-                                <a href="approved-properties.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                    ← Back to Approved Properties
-                                </a>
-                                <a href="property-verification.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                    Review Pending Properties →
-                                </a>
-                            </div>
+                        <div class="spec-card">
+                            <span class="spec-label">KITCHEN TYPE</span>
+                            <div class="spec-val">🍳 ${prop.kitchen || 'Modular Kitchen'}</div>
                         </div>
-                        ` : `
-                        <!-- Broker Contact Box (RULE 3: In-App Chat Only, No Phone Expose) -->
-                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:25px;">
+                        <div class="spec-card">
+                            <span class="spec-label">FLOOR NUMBER</span>
+                            <div class="spec-val">🏢 ${prop.floorNo ? prop.floorNo + (prop.totalFloors ? ' (of ' + prop.totalFloors + ')' : '') : 'Ground Floor'}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">LIVING AREA</span>
+                            <div class="spec-val">🛋️ ${prop.hall || '1 Living Hall'}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">BALCONIES</span>
+                            <div class="spec-val">🌅 ${prop.balconies !== undefined && prop.balconies !== null ? prop.balconies + ' Balcony' : '1 Balcony'}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">SUPER BUILT-UP AREA</span>
+                            <div class="spec-val">📐 ${prop.areaSqft || "N/A"} sq.ft</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">FURNISHED STATUS</span>
+                            <div class="spec-val">🛋️ ${prop.furnishedStatus || "Semi-Furnished"}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">PARKING SPACE</span>
+                            <div class="spec-val">🚗 ${prop.parking ? "Dedicated Parking" : "Street Parking"}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">FACING DIRECTION</span>
+                            <div class="spec-val">🧭 ${prop.facing || "East Facing"}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">PROPERTY AGE</span>
+                            <div class="spec-val">⏳ ${prop.propertyAge || "New Construction"}</div>
+                        </div>
+                        <div class="spec-card">
+                            <span class="spec-label">PROPERTY TYPE</span>
+                            <div class="spec-val">🏷️ ${prop.propertyType || "Residential Flat"}</div>
+                        </div>
+                    </div>
+
+                    <div class="desc-block">
+                        <h3 class="section-subhead"><span>📝</span> Overview & Detailed Description</h3>
+                        <p class="desc-text">${prop.description || "No detailed description provided by the broker."}</p>
+                        
+                        <h3 class="section-subhead" style="font-size:16px; margin-top:20px;"><span>✨</span> Key Amenities & Utilities</h3>
+                        <div class="amenities-wrap">
+                            ${amenitiesChips}
+                        </div>
+                    </div>
+
+                    ${isBroker ? `
+                    <!-- Broker Owner Control Panel -->
+                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:24px; margin-top:24px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
                             <div>
-                                <div style="font-size:13px; color:#166534; font-weight:600;">LISTED BY VERIFIED BROKER</div>
-                                <h4 style="margin:4px 0; font-size:18px;">${brokerName} (${brokerCode})</h4>
-                                <p style="font-size:13px; color:#166534;">🔒 Personal contact details protected. Chat securely through HouseHub.</p>
+                                <span style="font-size:11px; background:#16a34a; color:#fff; padding:4px 10px; border-radius:12px; font-weight:bold; letter-spacing:0.5px;">BROKER CONTROL PANEL</span>
+                                <h4 style="margin:8px 0 4px; font-size:18px; color:#14532d;">Property Management (Owner Actions)</h4>
+                                <p style="font-size:13px; color:#166534; margin:0;">
+                                    Listing Status: <strong>${prop.propertyStatus || 'AVAILABLE'}</strong> &nbsp;|&nbsp; 
+                                    Admin Verification: <strong>${prop.verificationStatus || 'APPROVED'}</strong>
+                                </p>
                             </div>
-                            <button onclick="startChatWithBroker(${prop.propertyId})" style="background:#16a34a; color:#fff; border:none; padding:12px 24px; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">
-                                💬 In-App Chat with Broker
-                            </button>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                <a href="my-properties.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                    🏠 Manage in My Properties
+                                </a>
+                                <a href="my-inquiries.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                    📋 Client Inquiries & Visits
+                                </a>
+                                <a href="chat.html" style="background:#16a34a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                    💬 Client Chats
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    ` : (isAdmin ? `
+                    <!-- Admin Dossier & Audit Panel -->
+                    <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:24px; margin-top:24px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:18px;">
+                            <div>
+                                <span style="font-size:11px; background:#1e293b; color:#fff; padding:4px 10px; border-radius:12px; font-weight:bold; letter-spacing:0.5px;">ADMIN AUDIT PANEL</span>
+                                <h4 style="margin:8px 0 4px; font-size:19px; color:#0f172a;">Official Listing & Verification Details</h4>
+                                <p style="font-size:13px; color:#475467; margin:0;">
+                                    Verification Status: <strong style="color:#16a34a;">${prop.verificationStatus || 'APPROVED'}</strong> &nbsp;|&nbsp; 
+                                    Listing Status: <strong style="color:#2563eb;">${prop.propertyStatus || 'AVAILABLE'}</strong>
+                                </p>
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                <span style="font-size:12px; color:#16a34a; background:#ecfdf5; border:1px solid #a7f3d0; padding:6px 14px; border-radius:8px; font-weight:600;">
+                                    ✓ Approved By Admin
+                                </span>
+                                ${prop.approvedAt ? `<span style="font-size:12px; color:#64748b; background:#fff; border:1px solid #e2e8f0; padding:6px 12px; border-radius:8px;">${new Date(prop.approvedAt).toLocaleDateString()}</span>` : ''}
+                            </div>
                         </div>
 
-                        <!-- Customer Actions: Inquiry & Visit Scheduling Grid -->
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; margin-top:20px;">
-                            <!-- Send Quick Inquiry -->
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
-                                <h4 style="margin-bottom:6px; font-size:17px; color:#1e293b;">📩 Send an Inquiry</h4>
-                                <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Have questions about price or agreement? Ask the broker directly.</p>
+                        <!-- Submitting Broker Dossier -->
+                        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+                                <h5 style="margin:0; font-size:15px; color:#1e293b;">🏢 Submitting Broker Dossier</h5>
+                                <span style="font-size:12px; font-family:monospace; font-weight:700; background:#eff6ff; color:#1d4ed8; padding:3px 10px; border-radius:6px; border:1px solid #bfdbfe;">
+                                    ${brokerCode}
+                                </span>
+                            </div>
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; font-size:13px;">
+                                <div><span style="color:#64748b; display:block; margin-bottom:2px;">Broker Name</span><strong style="color:#0f172a; font-size:14px;">${brokerName}</strong></div>
+                                <div><span style="color:#64748b; display:block; margin-bottom:2px;">Agency Name</span><strong style="color:#0f172a; font-size:14px;">${prop.broker?.agencyName || 'Independent Broker'}</strong></div>
+                                <div><span style="color:#64748b; display:block; margin-bottom:2px;">Registered Email</span><strong style="color:#0f172a; font-size:14px; word-break:break-all;">✉️ ${brokerUser.email || 'N/A'}</strong></div>
+                                <div><span style="color:#64748b; display:block; margin-bottom:2px;">Phone Number</span><strong style="color:#0f172a; font-size:14px;">📞 ${brokerUser.mobile || 'N/A'}</strong></div>
+                                <div><span style="color:#64748b; display:block; margin-bottom:2px;">Operating City</span><strong style="color:#0f172a; font-size:14px;">📍 ${prop.broker?.city || prop.city}</strong></div>
+                                <div><span style="color:#64748b; display:block; margin-bottom:2px;">Experience</span><strong style="color:#0f172a; font-size:14px;">⏳ ${prop.broker?.experience || 'Experienced'}</strong></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+                            <a href="approved-properties.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                ← Back to Approved Properties
+                            </a>
+                            <a href="property-verification.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                Review Pending Properties →
+                            </a>
+                        </div>
+                    </div>
+                    ` : `
+                    <!-- Listed by Verified Broker Trust Card -->
+                    <div class="broker-trust-card">
+                        <div class="broker-info-block">
+                            <div class="broker-avatar">🏢</div>
+                            <div class="broker-meta">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:11px; background:#16a34a; color:#ffffff; padding:3px 9px; border-radius:12px; font-weight:800; letter-spacing:0.5px;">VERIFIED BROKER</span>
+                                    <span style="font-size:11.5px; font-family:monospace; background:rgba(22,163,74,0.15); color:#166534; padding:2px 8px; border-radius:6px; font-weight:700;">${brokerCode}</span>
+                                </div>
+                                <h4>${brokerName} ${prop.broker?.agencyName ? '• ' + prop.broker.agencyName : ''}</h4>
+                                <p>🔒 Direct in-app messaging enabled. Personal contact details protected for mutual privacy.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-broker-chat" onclick="startChatWithBroker(${prop.propertyId})">
+                            💬 In-App Chat with Broker
+                        </button>
+                    </div>
+
+                    <!-- Customer Actions: Inquiry & Visit Scheduling Grid -->
+                    <div class="actions-dual-grid">
+                        <!-- Send Quick Inquiry -->
+                        <div class="action-card">
+                            <div>
+                                <h4><span>📩</span> Send Direct Inquiry</h4>
+                                <p>Have questions about price, rent agreement or move-in timeline? Contact the broker directly.</p>
                                 <form onsubmit="submitInquiry(event, ${prop.propertyId})">
-                                    <textarea id="inquiryMessageInput" placeholder="Hi, I am interested in this property. Is the rent negotiable?" required rows="3" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; margin-bottom:10px; resize:vertical; outline:none; box-sizing:border-box;"></textarea>
-                                    <button type="submit" style="background:#2563eb; color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
-                                        Send Inquiry
+                                    <textarea id="inquiryMessageInput" class="form-control-textarea" placeholder="Hi, I am interested in this property. Is the rent negotiable and when can I inspect?" required rows="4"></textarea>
+                                    <button type="submit" class="btn-submit-action">
+                                        Send Inquiry Now →
                                     </button>
                                 </form>
                             </div>
+                        </div>
 
-                            <!-- Schedule Site Visit -->
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
-                                <h4 style="margin-bottom:6px; font-size:17px; color:#1e293b;">📅 Schedule a Site Visit</h4>
-                                <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Pick a convenient date and time to physically inspect the property.</p>
+                        <!-- Schedule Site Visit -->
+                        <div class="action-card">
+                            <div>
+                                <h4><span>📅</span> Schedule a Site Visit</h4>
+                                <p>Pick a date and convenient time window to inspect the property in person.</p>
                                 <form id="visitScheduleForm" onsubmit="submitVisit(event, ${prop.propertyId})">
-                                    <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-                                        <div style="flex:1; min-width:140px;">
-                                            <label style="font-size:12px; color:#64748b; display:block; margin-bottom:4px;">Visit Date</label>
-                                            <input type="date" id="visitDateInput" required style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; box-sizing:border-box;">
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                        <div>
+                                            <label style="font-size:11.5px; font-weight:700; color:var(--slate-500, #64748b); display:block; margin-bottom:4px; text-transform:uppercase;">Visit Date</label>
+                                            <input type="date" id="visitDateInput" class="form-control-input" required min="${todayDate}">
                                         </div>
-                                        <div style="flex:1; min-width:140px;">
-                                            <label style="font-size:12px; color:#64748b; display:block; margin-bottom:4px;">Time Slot</label>
-                                            <select id="visitTimeSlot" required style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; box-sizing:border-box;">
+                                        <div>
+                                            <label style="font-size:11.5px; font-weight:700; color:var(--slate-500, #64748b); display:block; margin-bottom:4px; text-transform:uppercase;">Time Slot</label>
+                                            <select id="visitTimeSlot" class="form-control-select" required>
                                                 <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
                                                 <option value="02:00 PM - 04:00 PM">02:00 PM - 04:00 PM</option>
                                                 <option value="05:00 PM - 07:00 PM">05:00 PM - 07:00 PM</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <input type="text" id="visitNotesInput" placeholder="Optional notes (e.g. Coming with family)" style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; margin-bottom:10px; box-sizing:border-box;">
-                                    <button type="submit" style="background:#0f172a; color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
-                                        Schedule Visit
+                                    <input type="text" id="visitNotesInput" class="form-control-input" placeholder="Optional notes (e.g. Coming with family on weekend)">
+                                    <button type="submit" class="btn-submit-action dark">
+                                        Confirm Site Visit Request
                                     </button>
                                 </form>
                             </div>
                         </div>
-                        `)}
                     </div>
+                    `)}
                 </div>
             </div>
         `;

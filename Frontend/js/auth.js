@@ -288,6 +288,7 @@ if (logoutButton) {
         if (window.api) {
             window.api.clearAuth();
         }
+        sessionStorage.clear();
         window.location.href = "login.html";
     });
 }
@@ -339,4 +340,12 @@ document.addEventListener("DOMContentLoaded", function () {
     updateUnreadChatBadge();
     // Refresh unread count every 30 seconds
     setInterval(updateUnreadChatBadge, 30000);
+
+    // Safeguard: Clear lingering login input credentials
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPassword = document.getElementById("loginPassword");
+    if (loginEmail && loginPassword) {
+        loginEmail.value = "";
+        loginPassword.value = "";
+    }
 });
