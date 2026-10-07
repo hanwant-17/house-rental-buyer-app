@@ -2,6 +2,7 @@ package com.houseapp.controller;
 
 import com.houseapp.dto.ApiResponse;
 import com.houseapp.dto.ChatMessageDto;
+import com.houseapp.dto.ChatSummaryDto;
 import com.houseapp.entity.Chat;
 import com.houseapp.entity.Role;
 import com.houseapp.security.UserDetailsImpl;
@@ -36,13 +37,13 @@ public class ChatController {
         );
     }
 
-    // CUSTOMER & BROKER: Get all active chats for logged-in user
+    // CUSTOMER & BROKER: Get all active chats as list for logged-in user
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Chat>>> getUserChats(
+    public ResponseEntity<ApiResponse<List<ChatSummaryDto>>> getUserChats(
             @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
         String roleStr = userPrincipal.getAuthorities().iterator().next().getAuthority();
         Role role = Role.valueOf(roleStr);
-        List<Chat> chats = chatService.getUserChats(userPrincipal.getId(), role);
+        List<ChatSummaryDto> chats = chatService.getUserChatSummaries(userPrincipal.getId(), role);
         return ResponseEntity.ok(ApiResponse.success("User chats fetched successfully.", chats));
     }
 
@@ -80,5 +81,14 @@ public class ChatController {
             @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
         long count = chatService.getUnreadMessageCount(userPrincipal.getId());
         return ResponseEntity.ok(ApiResponse.success("Unread message count fetched.", count));
+    }
+
+    // PARTICIPANTS: Clear all messages in chat
+    @DeleteMapping("/{chatId}/messages")
+    public ResponseEntity<ApiResponse<Void>> clearChatMessages(
+            @PathVariable Long chatId,
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        chatService.clearChatMessages(chatId, userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Chat messages cleared successfully.", null));
     }
 }

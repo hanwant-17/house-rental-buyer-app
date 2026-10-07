@@ -228,7 +228,6 @@ if (loginForm) {
 
         const email = document.getElementById("loginEmail");
         const password = document.getElementById("loginPassword");
-        const role = document.getElementById("loginRole");
 
         let isValid = true;
 
@@ -253,15 +252,22 @@ if (loginForm) {
             const response = await window.api.login(email.value.trim(), password.value);
             const user = response.data;
 
-            // Route based on actual role returned by backend
+            // Route automatically based on user's actual role from database
             const userRole = (user.role || "").toUpperCase();
 
-            if (userRole === "ADMIN") {
+            if (userRole.includes("ADMIN")) {
                 window.location.href = "admin-dashboard.html";
-            } else if (userRole === "BROKER") {
+            } else if (userRole.includes("BROKER")) {
                 window.location.href = "broker-dashboard.html";
             } else {
-                window.location.href = "customer-dashboard.html";
+                // Customer routing: agar user home page search se aaya hai to properties page par bhejein
+                const pendingLocation = localStorage.getItem("searchLocation");
+                const pendingPurpose = localStorage.getItem("searchPurpose");
+                if (pendingLocation || pendingPurpose) {
+                    window.location.href = "properties.html";
+                } else {
+                    window.location.href = "customer-dashboard.html";
+                }
             }
         } catch (error) {
             alert("Login Failed: " + error.message);

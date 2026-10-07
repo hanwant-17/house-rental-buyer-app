@@ -59,9 +59,10 @@ function displayProperties(propertyList) {
                 <h3>${title}</h3>
                 <p class="property-location">📍 ${locationStr}</p>
 
-                <div class="property-info">
-                    <span>🛏 ${bhk} BHK</span>
+                <div class="property-info" style="display:flex; flex-wrap:wrap; gap:8px 12px;">
+                    <span>🛏️ ${property.rooms || bhk} Rooms</span>
                     <span>🚿 ${bathrooms} Bath</span>
+                    <span>🏢 ${property.floorNo || 'Ground Flr'}</span>
                     <span>📐 ${area}</span>
                 </div>
 
@@ -263,7 +264,15 @@ function updateCarouselDisplay() {
 async function loadPropertyDetails() {
     if (!propertyDetails) return;
 
-    const selectedId = localStorage.getItem("selectedPropertyId");
+    // Check URL parameters first (?id=...), then fallback to localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    let selectedId = urlParams.get("id");
+    if (!selectedId) {
+        selectedId = localStorage.getItem("selectedPropertyId");
+    } else {
+        localStorage.setItem("selectedPropertyId", selectedId);
+    }
+
     if (!selectedId) {
         propertyDetails.innerHTML = `<p style="padding:40px; text-align:center;">No property selected. <a href="properties.html">Back to properties</a></p>`;
         return;
@@ -283,6 +292,19 @@ async function loadPropertyDetails() {
         const userRole = (currentUser && currentUser.role) ? currentUser.role.toUpperCase() : "";
         const isBroker = userRole === "BROKER";
         const isAdmin = userRole === "ADMIN";
+
+        let backLinkHref = "properties.html";
+        let backLinkText = "Back to All Properties";
+        if (document.referrer && document.referrer.includes("chat.html")) {
+            backLinkHref = "chat.html";
+            backLinkText = "Back to Chat";
+        } else if (isBroker) {
+            backLinkHref = "broker-dashboard.html";
+            backLinkText = "Back to Broker Dashboard";
+        } else if (isAdmin) {
+            backLinkHref = "approved-properties.html";
+            backLinkText = "Back to Approved Properties";
+        }
 
         const brokerUser = (prop.broker && prop.broker.user) ? prop.broker.user : {};
         const brokerName = brokerUser.name || "Verified Broker";
@@ -304,8 +326,8 @@ async function loadPropertyDetails() {
 
         propertyDetails.innerHTML = `
             <div class="details-container" style="max-width:1100px; margin:0 auto; padding:40px 20px;">
-                <a href="${isBroker ? 'broker-dashboard.html' : 'properties.html'}" style="color:#1d4ed8; text-decoration:none; font-weight:600; display:inline-block; margin-bottom:20px;">
-                    ← ${isBroker ? 'Back to Broker Dashboard' : 'Back to All Properties'}
+                <a href="${backLinkHref}" style="color:#1d4ed8; text-decoration:none; font-weight:600; display:inline-block; margin-bottom:20px;">
+                    ← ${backLinkText}
                 </a>
 
                 <div style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #eaecf0; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
@@ -356,31 +378,55 @@ async function loadPropertyDetails() {
 
                         <hr style="border:none; border-top:1px solid #eaecf0; margin:20px 0;">
 
-                        <h3 style="margin-bottom:15px;">Property Specifications</h3>
+                        <h3 style="margin-bottom:15px;">Property Specifications & Layout</h3>
                         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:25px;">
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px;">
-                                <span style="color:#667085; font-size:12px;">BHK</span>
-                                <div style="font-size:16px; font-weight:bold;">${prop.bhk} BHK</div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">ROOMS / BEDROOMS</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🛏️ ${prop.rooms || prop.bhk} Rooms (${prop.bhk} BHK)</div>
                             </div>
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px;">
-                                <span style="color:#667085; font-size:12px;">Bathrooms</span>
-                                <div style="font-size:16px; font-weight:bold;">${prop.bathrooms || 1} Baths</div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">BATHROOMS</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🚿 ${prop.bathrooms || 1} Baths</div>
                             </div>
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px;">
-                                <span style="color:#667085; font-size:12px;">Area</span>
-                                <div style="font-size:16px; font-weight:bold;">${prop.areaSqft || "N/A"} sq.ft</div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">KITCHEN</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🍳 ${prop.kitchen || 'Modular Kitchen'}</div>
                             </div>
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px;">
-                                <span style="color:#667085; font-size:12px;">Furnished Status</span>
-                                <div style="font-size:16px; font-weight:bold;">${prop.furnishedStatus || "Unfurnished"}</div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">FLOOR NUMBER</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🏢 ${prop.floorNo ? prop.floorNo + (prop.totalFloors ? ' (of ' + prop.totalFloors + ')' : '') : 'Ground Floor'}</div>
                             </div>
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px;">
-                                <span style="color:#667085; font-size:12px;">Parking</span>
-                                <div style="font-size:16px; font-weight:bold;">${prop.parking ? "Available" : "No"}</div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">HALL / LIVING AREA</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🛋️ ${prop.hall || '1 Living Hall'}</div>
                             </div>
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px;">
-                                <span style="color:#667085; font-size:12px;">Property Type</span>
-                                <div style="font-size:16px; font-weight:bold;">${prop.propertyType}</div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">BALCONIES</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🌅 ${prop.balconies !== undefined && prop.balconies !== null ? prop.balconies + ' Balcony' : '1 Balcony'}</div>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">SUPER BUILT-UP AREA</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">📐 ${prop.areaSqft || "N/A"} sq.ft</div>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">FURNISHED STATUS</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🛋️ ${prop.furnishedStatus || "Semi-Furnished"}</div>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">PARKING</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🚗 ${prop.parking ? "Available" : "No"}</div>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">FACING DIRECTION</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🧭 ${prop.facing || "East Facing"}</div>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">PROPERTY AGE</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">⏳ ${prop.propertyAge || "New Construction"}</div>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:10px;">
+                                <span style="color:#667085; font-size:12px; display:block; margin-bottom:3px;">PROPERTY TYPE</span>
+                                <div style="font-size:16px; font-weight:bold; color:#0f172a;">🏷️ ${prop.propertyType}</div>
                             </div>
                         </div>
 
@@ -403,8 +449,8 @@ async function loadPropertyDetails() {
                                     </p>
                                 </div>
                                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                    <a href="property-status.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                        ✏️ Update Status
+                                    <a href="my-properties.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                        🏠 Manage in My Properties
                                     </a>
                                     <a href="my-inquiries.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
                                         📋 Client Inquiries & Visits
@@ -413,6 +459,53 @@ async function loadPropertyDetails() {
                                         💬 Client Chats
                                     </a>
                                 </div>
+                            </div>
+                        </div>
+                        ` : (isAdmin ? `
+                        <!-- Admin Dossier & Audit Panel -->
+                        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:24px; margin-top:20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:18px;">
+                                <div>
+                                    <span style="font-size:11px; background:#1e293b; color:#fff; padding:4px 10px; border-radius:12px; font-weight:bold; letter-spacing:0.5px;">ADMIN AUDIT PANEL</span>
+                                    <h4 style="margin:8px 0 4px; font-size:19px; color:#0f172a;">Official Listing & Verification Details</h4>
+                                    <p style="font-size:13px; color:#475467; margin:0;">
+                                        Verification Status: <strong style="color:#16a34a;">${prop.verificationStatus || 'APPROVED'}</strong> &nbsp;|&nbsp; 
+                                        Listing Status: <strong style="color:#2563eb;">${prop.propertyStatus || 'AVAILABLE'}</strong>
+                                    </p>
+                                </div>
+                                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                    <span style="font-size:12px; color:#16a34a; background:#ecfdf5; border:1px solid #a7f3d0; padding:6px 14px; border-radius:8px; font-weight:600;">
+                                        ✓ Approved By Admin
+                                    </span>
+                                    ${prop.approvedAt ? `<span style="font-size:12px; color:#64748b; background:#fff; border:1px solid #e2e8f0; padding:6px 12px; border-radius:8px;">${new Date(prop.approvedAt).toLocaleDateString()}</span>` : ''}
+                                </div>
+                            </div>
+
+                            <!-- Submitting Broker Dossier -->
+                            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+                                    <h5 style="margin:0; font-size:15px; color:#1e293b;">🏢 Submitting Broker Dossier</h5>
+                                    <span style="font-size:12px; font-family:monospace; font-weight:700; background:#eff6ff; color:#1d4ed8; padding:3px 10px; border-radius:6px; border:1px solid #bfdbfe;">
+                                        ${brokerCode}
+                                    </span>
+                                </div>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; font-size:13px;">
+                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Broker Name</span><strong style="color:#0f172a; font-size:14px;">${brokerName}</strong></div>
+                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Agency Name</span><strong style="color:#0f172a; font-size:14px;">${prop.broker?.agencyName || 'Independent Broker'}</strong></div>
+                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Registered Email</span><strong style="color:#0f172a; font-size:14px; word-break:break-all;">✉️ ${brokerUser.email || 'N/A'}</strong></div>
+                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Phone Number</span><strong style="color:#0f172a; font-size:14px;">📞 ${brokerUser.mobile || 'N/A'}</strong></div>
+                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Operating City</span><strong style="color:#0f172a; font-size:14px;">📍 ${prop.broker?.city || prop.city}</strong></div>
+                                    <div><span style="color:#64748b; display:block; margin-bottom:2px;">Experience</span><strong style="color:#0f172a; font-size:14px;">⏳ ${prop.broker?.experience || 'Experienced'}</strong></div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+                                <a href="approved-properties.html" style="background:#2563eb; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                    ← Back to Approved Properties
+                                </a>
+                                <a href="property-verification.html" style="background:#0f172a; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                    Review Pending Properties →
+                                </a>
                             </div>
                         </div>
                         ` : `
@@ -694,7 +787,15 @@ if (addPropertyForm) {
         const city = document.getElementById("propertyCity") || document.getElementById("city");
         const state = document.getElementById("propertyState") || document.getElementById("state");
         const bhk = document.getElementById("propertyBhk") || document.getElementById("bhk");
+        const rooms = document.getElementById("rooms");
         const bathrooms = document.getElementById("bathrooms") || { value: 1 };
+        const kitchen = document.getElementById("kitchen");
+        const hall = document.getElementById("hall");
+        const floor = document.getElementById("floor");
+        const totalFloors = document.getElementById("totalFloors");
+        const balconies = document.getElementById("balconies");
+        const facing = document.getElementById("facing");
+        const propertyAge = document.getElementById("propertyAge");
         const area = document.getElementById("propertyArea") || document.getElementById("area");
         const furnishedStatus = document.getElementById("furnishedStatus") || { value: "Semi-Furnished" };
         const parking = document.getElementById("parking") || { checked: true };
@@ -725,6 +826,7 @@ if (addPropertyForm) {
         submitBtn.textContent = "Submitting for Admin Verification...";
 
         try {
+            const bhkCount = parseInt(bhk.value) || 2;
             const propertyPayload = {
                 title: title.value.trim(),
                 description: description ? description.value.trim() : "",
@@ -734,11 +836,19 @@ if (addPropertyForm) {
                 address: address ? address.value.trim() : "Main Road",
                 city: city.value.trim(),
                 state: state ? state.value.trim() : "Rajasthan",
-                bhk: parseInt(bhk.value) || 2,
+                bhk: bhkCount,
+                rooms: (rooms && rooms.value) ? parseInt(rooms.value) : bhkCount,
                 bathrooms: parseInt(bathrooms.value) || 1,
+                kitchen: (kitchen && kitchen.value) ? kitchen.value : "Modular Kitchen",
+                hall: (hall && hall.value) ? hall.value : "1 Living Hall",
+                floorNo: (floor && floor.value.trim()) ? floor.value.trim() : "Ground Floor",
+                totalFloors: (totalFloors && totalFloors.value) ? parseInt(totalFloors.value) : null,
+                balconies: (balconies && balconies.value) ? parseInt(balconies.value) : 1,
+                facing: (facing && facing.value) ? facing.value : "East Facing",
+                propertyAge: (propertyAge && propertyAge.value) ? propertyAge.value : "New Construction",
                 areaSqft: area ? parseFloat(area.value) || 1000 : 1000,
-                furnishedStatus: furnishedStatus.value || "Semi-Furnished",
-                parking: parking.checked !== undefined ? parking.checked : true,
+                furnishedStatus: (furnishedStatus.value === "fully" ? "Furnished" : (furnishedStatus.value === "unfurnished" ? "Unfurnished" : "Semi-Furnished")),
+                parking: parking.value !== undefined ? (parking.value === "available" || parking.checked) : true,
                 amenities: amenities.value || "Lift, Security, Power Backup",
                 imageUrls: uploadedPropertyPhotos
             };

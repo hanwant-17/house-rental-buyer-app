@@ -13,12 +13,24 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
 
     List<Property> findByVerificationStatus(VerificationStatus verificationStatus);
 
+    List<Property> findByVerificationStatusAndIsDeletedFalse(VerificationStatus verificationStatus);
+
     List<Property> findByVerificationStatusAndPropertyStatus(
+            VerificationStatus verificationStatus, PropertyStatus propertyStatus);
+
+    List<Property> findByVerificationStatusAndPropertyStatusAndIsDeletedFalse(
             VerificationStatus verificationStatus, PropertyStatus propertyStatus);
 
     List<Property> findByBroker_BrokerId(Long brokerId);
 
+    List<Property> findByBroker_BrokerIdAndIsDeletedFalse(Long brokerId);
+
+    List<Property> findByBroker_BrokerIdAndIsDeletedTrue(Long brokerId);
+
+    List<Property> findByIsDeletedTrueAndDeletedAtBefore(java.time.LocalDateTime cutoff);
+
     @Query("SELECT p FROM Property p WHERE p.verificationStatus = 'APPROVED' " +
+           "AND (p.isDeleted = false OR p.isDeleted IS NULL) " +
            "AND (:city IS NULL OR LOWER(p.city) LIKE LOWER(CONCAT('%', :city, '%'))) " +
            "AND (:purpose IS NULL OR p.purpose = :purpose) " +
            "AND (:propertyType IS NULL OR p.propertyType = :propertyType) " +

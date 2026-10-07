@@ -1,6 +1,7 @@
 package com.houseapp.service;
 
 import com.houseapp.dto.ChatMessageDto;
+import com.houseapp.dto.ChatSummaryDto;
 import com.houseapp.entity.*;
 import com.houseapp.exception.BadRequestException;
 import com.houseapp.exception.ResourceNotFoundException;
@@ -9,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +45,43 @@ public class ChatService {
                             .build();
                     return chatRepository.save(newChat);
                 });
+    }
+
+    public List<ChatSummaryDto> getUserChatSummaries(Long userId, Role role) {
+        List<Chat> chats;
+        if (role == Role.ROLE_CUSTOMER) {
+            chats = chatRepository.findByCustomer_UserId(userId);
+        } else if (role == Role.ROLE_BROKER) {
+            chats = chatRepository.findByBroker_User_UserId(userId);
+        } else {
+            chats = chatRepository.findAll();
+        }
+
+        return chats.stream().map(chat -> {
+            Optional<ChatMessage> lastMsgOpt = chatMessageRepository.findTopByChat_ChatIdOrderBySentAtDesc(chat.getChatId());
+            long unread = chatMessageRepository.countByChat_ChatIdAndIsReadFalseAndSender_UserIdNot(chat.getChatId(), userId);
+
+            String lastMsgText = lastMsgOpt.map(ChatMessage::getMessage).orElse("No messages yet");
+            LocalDateTime lastMsgTime = lastMsgOpt.map(ChatMessage::getSentAt).orElse(chat.getCreatedAt());
+            String senderName = lastMsgOpt.map(m -> m.getSender().getName()).orElse("");
+
+            return ChatSummaryDto.builder()
+                    .chatId(chat.getChatId())
+                    .customer(chat.getCustomer())
+                    .broker(chat.getBroker())
+                    .property(chat.getProperty())
+                    .lastMessage(lastMsgText)
+                    .lastMessageTime(lastMsgTime)
+                    .lastMessageSenderName(senderName)
+                    .unreadCount(unread)
+                    .createdAt(chat.getCreatedAt())
+                    .build();
+        }).sorted((c1, c2) -> {
+            if (c1.getLastMessageTime() == null && c2.getLastMessageTime() == null) return 0;
+            if (c1.getLastMessageTime() == null) return 1;
+            if (c2.getLastMessageTime() == null) return -1;
+            return c2.getLastMessageTime().compareTo(c1.getLastMessageTime());
+        }).collect(Collectors.toList());
     }
 
     public List<Chat> getUserChats(Long userId, Role role) {
@@ -130,5 +170,21 @@ public class ChatService {
 
     public long getUnreadMessageCount(Long userId) {
         return chatMessageRepository.countUnreadMessagesForUser(userId);
+    }
+
+    @Transactional
+    public void clearChatMessages(Long chatId, Long requestingUserId) {
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chat room not found with ID: " + chatId));
+
+        boolean isCustomer = chat.getCustomer().getUserId().equals(requestingUserId);
+        boolean isBroker = chat.getBroker().getUser().getUserId().equals(requestingUserId);
+
+        if (!isCustomer && !isBroker) {
+            throw new BadRequestException("Unauthorized access to this chat room.");
+        }
+
+        List<ChatMessage> messages = chatMessageRepository.findByChat_ChatIdOrderBySentAtAsc(chatId);
+        chatMessageRepository.deleteAll(messages);
     }
 }

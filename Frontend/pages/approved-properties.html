@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Properties - HouseHub Admin</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .page-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .stats-badge {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .nav-tab {
+            padding: 9px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab.active {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+        }
+
+        .nav-tab.inactive {
+            background: #f1f5f9;
+            color: #475467;
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-tab.inactive:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* Filters Bar */
+        .filter-bar {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .search-box input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .search-box .icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            color: #334155;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #2563eb;
+        }
+
+        /* Property Cards Grid */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+
+        .property-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .property-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .property-card:hover .card-img-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .badge-purpose {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-rent {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .badge-buy {
+            background: #7c3aed;
+            color: #ffffff;
+        }
+
+        .badge-status {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-rented {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .status-sold {
+            background: #f5f3ff;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1d4ed8;
+        }
+
+        .price-period {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: normal;
+        }
+
+        .prop-type-badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475467;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .property-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+
+        .property-location {
+            color: #64748b;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 14px;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .spec-item .spec-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .spec-item .spec-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .broker-section {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 14px;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .broker-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .broker-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .broker-agency {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .broker-code-tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            padding: 4px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .card-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-view {
+            flex: 1;
+            text-align: center;
+            background: #2563eb;
+            color: #ffffff;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-view:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-view-alt {
+            background: #f1f5f9;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-view-alt:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-container {
+            background: #ffffff;
+            border-radius: 18px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            animation: modalFadeIn 0.25s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 26px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .modal-close-btn {
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-body {
+            padding: 26px;
+        }
+
+        .modal-footer {
+            padding: 16px 26px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: #f8fafc;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            color: #64748b;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="dashboard-navbar">
+        <div class="logo">
+            🏠 HouseHub <span style="font-size:12px; background:#eff6ff; color:#2563eb; padding:3px 8px; border-radius:12px; margin-left:8px;">Admin Panel</span>
+        </div>
+        <div class="user-area">
+            <span>Welcome, Admin</span>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="page-container">
+        <a href="admin-dashboard.html" class="back-link">← Back to Admin Dashboard</a>
+
+        <div class="page-header">
+            <div>
+                <h1>🏘️ Approved & Live Properties</h1>
+                <p>Properties approved by Admin that are verified and actively published on HouseHub (Rule 2).</p>
+            </div>
+            <div class="stats-badge">
+                Total Live Properties: <span id="propCount">0</span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs between Pending and Approved -->
+        <div class="nav-tabs">
+            <a href="property-verification.html" class="nav-tab inactive">
+                ⏳ Pending Verification
+            </a>
+            <a href="approved-properties.html" class="nav-tab active">
+                ✅ Approved Properties
+            </a>
+        </div>
+
+        <!-- Filter / Search Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <span class="icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search by title, city, address, or broker...">
+            </div>
+
+            <select id="purposeFilter" class="filter-select">
+                <option value="ALL">All Purposes</option>
+                <option value="RENT">For Rent</option>
+                <option value="BUY">For Buy</option>
+            </select>
+
+            <select id="typeFilter" class="filter-select">
+                <option value="ALL">All Types</option>
+                <option value="APARTMENT">Apartment</option>
+                <option value="INDEPENDENT_HOUSE">House</option>
+                <option value="VILLA">Villa</option>
+                <option value="PLOT">Plot</option>
+                <option value="COMMERCIAL">Commercial</option>
+            </select>
+
+            <select id="statusFilter" class="filter-select">
+                <option value="ALL">All Status</option>
+                <option value="AVAILABLE">Available</option>
+                <option value="RENTED">Rented</option>
+                <option value="SOLD">Sold</option>
+            </select>
+        </div>
+
+        <!-- Property Grid -->
+        <div class="property-grid" id="propertiesContainer">
+            <p style="grid-column: 1 / -1; text-align:center; padding:50px; color:#64748b;">
+                Loading approved properties...
+            </p>
+        </div>
+
+        <!-- Property Details Modal -->
+        <div id="propertyModalOverlay" class="modal-overlay" onclick="handleOverlayClick(event)">
+            <div class="modal-container" id="propertyModalContainer">
+                <!-- Dynamic content populated by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        let allApprovedProperties = [];
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            // Admin RBAC Protection Guard
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "ADMIN") {
+                alert("Access restricted: Please login as Admin.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Bind filter event listeners
+            document.getElementById("searchInput").addEventListener("input", renderFilteredProperties);
+            document.getElementById("purposeFilter").addEventListener("change", renderFilteredProperties);
+            document.getElementById("typeFilter").addEventListener("change", renderFilteredProperties);
+            document.getElementById("statusFilter").addEventListener("change", renderFilteredProperties);
+
+            await loadApprovedProperties();
+        });
+
+        async function loadApprovedProperties() {
+            const container = document.getElementById("propertiesContainer");
+            const countSpan = document.getElementById("propCount");
+
+            try {
+                // Try admin endpoint first, then fallback to public properties
+                let properties = [];
+                try {
+                    const res = await window.api.getApprovedProperties();
+                    properties = res.data || [];
+                } catch (e) {
+                    console.warn("Falling back to public properties endpoint:", e.message);
+                    const res = await window.api.getPublicProperties();
+                    properties = res.data || [];
+                }
+
+                allApprovedProperties = properties;
+                countSpan.textContent = properties.length;
+                renderFilteredProperties();
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="empty-state" style="color:#b91c1c;">
+                        <div class="icon">⚠️</div>
+                        <h3>Failed to load approved properties</h3>
+                        <p>${err.message}</p>
+                        <button onclick="loadApprovedProperties()" style="margin-top:12px; padding:8px 18px; border-radius:6px; background:#2563eb; color:#fff; border:none; cursor:pointer;">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderFilteredProperties() {
+            const container = document.getElementById("propertiesContainer");
+            const searchQuery = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+            const purposeVal = document.getElementById("purposeFilter").value;
+            const typeVal = document.getElementById("typeFilter").value;
+            const statusVal = document.getElementById("statusFilter").value;
+
+            const filtered = allApprovedProperties.filter(prop => {
+                // Search filter
+                if (searchQuery) {
+                    const title = (prop.title || "").toLowerCase();
+                    const city = (prop.city || "").toLowerCase();
+                    const addr = (prop.address || "").toLowerCase();
+                    const brokerName = (prop.broker && prop.broker.user && prop.broker.user.name) ? prop.broker.user.name.toLowerCase() : "";
+                    const brokerCode = (prop.broker && prop.broker.brokerCode) ? prop.broker.brokerCode.toLowerCase() : "";
+                    const agency = (prop.broker && prop.broker.agencyName) ? prop.broker.agencyName.toLowerCase() : "";
+
+                    const matchesSearch = title.includes(searchQuery) ||
+                                          city.includes(searchQuery) ||
+                                          addr.includes(searchQuery) ||
+                                          brokerName.includes(searchQuery) ||
+                                          brokerCode.includes(searchQuery) ||
+                                          agency.includes(searchQuery);
+                    if (!matchesSearch) return false;
+                }
+
+                // Purpose filter
+                if (purposeVal !== "ALL" && (prop.purpose || "").toUpperCase() !== purposeVal) {
+                    return false;
+                }
+
+                // Type filter
+                if (typeVal !== "ALL" && (prop.propertyType || "").toUpperCase() !== typeVal) {
+                    return false;
+                }
+
+                // Status filter
+                if (statusVal !== "ALL" && (prop.propertyStatus || "").toUpperCase() !== statusVal) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🏘️</div>
+                        <h3>No matching approved properties</h3>
+                        <p>No verified properties match your current search or filter criteria.</p>
+                        ${allApprovedProperties.length === 0 ? '<a href="property-verification.html" class="nav-tab active" style="display:inline-block; margin-top:14px; text-decoration:none;">Review Pending Properties →</a>' : ''}
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+            filtered.forEach(prop => {
+                const broker = prop.broker || {};
+                const brokerUser = broker.user || {};
+                const brokerName = brokerUser.name || "Verified Broker";
+                const brokerAgency = broker.agencyName || "Real Estate Partner";
+                const brokerCode = broker.brokerCode || "BRK-VERIFIED";
+
+                // Images
+                let primaryImg = "../images/home-banner.jpg";
+                if (prop.images && prop.images.length > 0) {
+                    const primary = prop.images.find(img => img.isPrimary) || prop.images[0];
+                    if (primary && primary.imageUrl) primaryImg = primary.imageUrl;
+                }
+
+                // Status formatting
+                const propStatus = (prop.propertyStatus || "AVAILABLE").toUpperCase();
+                let statusBadgeClass = "status-available";
+                let statusLabel = "Available";
+                if (propStatus === "RENTED") {
+                    statusBadgeClass = "status-rented";
+                    statusLabel = "Rented";
+                } else if (propStatus === "SOLD") {
+                    statusBadgeClass = "status-sold";
+                    statusLabel = "Sold";
+                }
+
+                const purpose = (prop.purpose || "RENT").toUpperCase();
+                const isRent = purpose === "RENT";
+                const priceFormatted = "₹" + Number(prop.price).toLocaleString();
+
+                const card = document.createElement("div");
+                card.className = "property-card";
+                card.innerHTML = `
+                    <div class="card-img-wrapper">
+                        <img src="${primaryImg}" alt="${prop.title}" onerror="this.src='../images/home-banner.jpg'">
+                        <span class="badge-purpose ${isRent ? 'badge-rent' : 'badge-buy'}">For ${purpose}</span>
+                        <span class="badge-status ${statusBadgeClass}">● ${statusLabel}</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div>
+                            <div class="price-row">
+                                <div class="price">
+                                    ${priceFormatted}
+                                    ${isRent ? '<span class="price-period">/ month</span>' : ''}
+                                </div>
+                                <span class="prop-type-badge">${prop.propertyType || 'Apartment'}</span>
+                            </div>
+
+                            <h3 class="property-title" title="${prop.title}">${prop.title}</h3>
+
+                            <div class="property-location">
+                                <span>📍</span>
+                                <span>${prop.city ? prop.city + ', ' : ''}${prop.address || 'Address'}</span>
+                            </div>
+
+                            <div class="specs-grid" style="grid-template-columns: repeat(4, 1fr); gap: 6px;">
+                                <div class="spec-item">
+                                    <span class="spec-label">ROOMS</span>
+                                    <span class="spec-value">${prop.rooms || prop.bhk} R</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">BATH</span>
+                                    <span class="spec-value">${prop.bathrooms || 1} B</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">FLOOR</span>
+                                    <span class="spec-value" style="font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${prop.floorNo || 'Ground'}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">AREA</span>
+                                    <span class="spec-value">${prop.areaSqft ? prop.areaSqft + ' sq.ft' : 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="broker-section">
+                                <div class="broker-info">
+                                    <span class="broker-name">👤 ${brokerName}</span>
+                                    <span class="broker-agency">${brokerAgency}</span>
+                                </div>
+                                <span class="broker-code-tag">${brokerCode}</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn-view" onclick="openPropertyModal(${prop.propertyId})">
+                                    View Full Details 🔍
+                                </button>
+                                <a href="property-details.html?id=${prop.propertyId}" class="btn-view-alt" target="_blank" title="Open full property page in new tab">
+                                    ↗
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // PROPERTY DETAILS MODAL CONTROLLER
+        // ==========================================
+        let currentModalImages = [];
+        let currentModalImgIdx = 0;
+
+        function openPropertyModal(propertyId) {
+            const prop = allApprovedProperties.find(p => p.propertyId === propertyId);
+            if (!prop) return;
+
+            // Save in localStorage so standalone page also knows selected property
+            localStorage.setItem("selectedPropertyId", propertyId);
+
+            renderPropertyModal(prop);
+            document.getElementById("propertyModalOverlay").classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closePropertyModal() {
+            document.getElementById("propertyModalOverlay").classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target.id === "propertyModalOverlay") {
+                closePropertyModal();
+            }
+        }
+
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") {
+                closePropertyModal();
+            }
+        });
+
+        function changeModalSlide(dir) {
+            if (!currentModalImages || currentModalImages.length <= 1) return;
+            currentModalImgIdx = (currentModalImgIdx + dir + currentModalImages.length) % currentModalImages.length;
+            updateModalImg();
+        }
+
+        function setModalSlide(idx) {
+            if (!currentModalImages || idx < 0 || idx >= currentModalImages.length) return;
+            currentModalImgIdx = idx;
+            updateModalImg();
+        }
+
+        function updateModalImg() {
+            const imgEl = document.getElementById("modalMainImg");
+            const counter = document.getElementById("modalImgCounter");
+            if (imgEl && currentModalImages[currentModalImgIdx]) {
+                imgEl.src = currentModalImages[currentModalImgIdx];
+            }
+            if (counter) {
+                counter.textContent = `${currentModalImgIdx + 1} / ${currentModalImages.length}`;
+            }
+            currentModalImages.forEach((_, i) => {
+                const thumb = document.getElementById(`modalThumb-${i}`);
+                if (thumb) {
+                    thumb.style.borderColor = (i === currentModalImgIdx) ? "#2563eb" : "transparent";
+                    thumb.style.opacity = (i === currentModalImgIdx) ? "1" : "0.5";
+                }
+            });
+        }
+
+        function renderPropertyModal(prop) {
+            const container = document.getElementById("propertyModalContainer");
+            const broker = prop.broker || {};
+            const brokerUser = broker.user || {};
+            const brokerName = brokerUser.name || "Verified Broker";
+            const brokerAgency = broker.agencyName || "Real Estate Partner";
+            const brokerCode = broker.brokerCode || "BRK-VERIFIED";
+
+            let imagesList = [];
+            if (prop.images && prop.images.length > 0) {
+                imagesList = prop.images.map(img => img.imageUrl);
+            } else if (prop.image) {
+                imagesList = [prop.image];
+            } else {
+                imagesList = ["../images/home-banner.jpg"];
+            }
+            currentModalImages = imagesList;
+            currentModalImgIdx = 0;
+
+            const purpose = (prop.purpose || "RENT").toUpperCase();
+            const isRent = purpose === "RENT";
+            const priceFormatted = "₹" + Number(prop.price).toLocaleString();
+            const priceDisplay = isRent ? `${priceFormatted} / month` : priceFormatted;
+
+            const propStatus = (prop.propertyStatus || "AVAILABLE").toUpperCase();
+            let statusLabel = "Available";
+            let statusBadgeClass = "status-available";
+            if (propStatus === "RENTED") {
+                statusLabel = "Rented";
+                statusBadgeClass = "status-rented";
+            } else if (propStatus === "SOLD") {
+                statusLabel = "Sold";
+                statusBadgeClass = "status-sold";
+            }
+
+            container.innerHTML = `
+                <div class="modal-header">
+                    <div>
+                        <h2>
+                            ${prop.title}
+                            <span class="badge-purpose ${isRent ? 'badge-rent' : 'badge-buy'}" style="position:static; margin-left:8px; font-size:11px;">For ${purpose}</span>
+                            <span class="badge-status ${statusBadgeClass}" style="position:static; margin-left:6px; font-size:11px;">● ${statusLabel}</span>
+                        </h2>
+                        <div style="font-size:13px; color:#64748b; margin-top:4px;">
+                            📍 ${prop.address}, ${prop.city}${prop.state ? ', ' + prop.state : ''}
+                        </div>
+                    </div>
+                    <button class="modal-close-btn" onclick="closePropertyModal()" title="Close">✕</button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Image Carousel -->
+                    <div style="background:#0f172a; border-radius:12px; overflow:hidden; position:relative; height:340px; display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
+                        <img id="modalMainImg" src="${imagesList[0]}" alt="${prop.title}" style="max-height:100%; max-width:100%; object-fit:contain;">
+
+                        ${imagesList.length > 1 ? `
+                            <button type="button" onclick="changeModalSlide(-1)" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">❮</button>
+                            <button type="button" onclick="changeModalSlide(1)" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">❯</button>
+                            <div style="position:absolute; bottom:12px; right:16px; background:rgba(15,23,42,0.85); color:#fff; padding:4px 12px; border-radius:16px; font-size:11px; font-weight:600; border:1px solid rgba(255,255,255,0.2);">
+                                📷 <span id="modalImgCounter">1 / ${imagesList.length}</span> Photos
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    ${imagesList.length > 1 ? `
+                        <div style="display:flex; gap:8px; margin-bottom:20px; overflow-x:auto; padding-bottom:6px;">
+                            ${imagesList.map((url, i) => `
+                                <img id="modalThumb-${i}" src="${url}" onclick="setModalSlide(${i})" style="width:68px; height:48px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid ${i === 0 ? '#2563eb' : 'transparent'}; opacity:${i === 0 ? '1' : '0.5'}; flex-shrink:0;">
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <!-- Price & Type Highlight -->
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; padding:16px 20px; background:#eff6ff; border-radius:12px; border:1px solid #bfdbfe; margin-bottom:22px;">
+                        <div>
+                            <span style="font-size:12px; color:#1d4ed8; text-transform:uppercase; font-weight:700;">Listed Price / Rent</span>
+                            <div style="font-size:28px; font-weight:800; color:#1d4ed8;">${priceDisplay}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:12px; color:#64748b;">Property Category</span>
+                            <div style="font-size:16px; font-weight:700; color:#0f172a;">${prop.propertyType || 'Apartment'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Key Specifications -->
+                    <h4 style="font-size:16px; color:#1e293b; margin-bottom:12px;">📐 Layout & Key Specifications</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(135px, 1fr)); gap:12px; margin-bottom:24px;">
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">ROOMS</span>
+                            <strong style="font-size:14px; color:#0f172a;">🛏️ ${prop.rooms || prop.bhk} Rooms</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">BATHROOMS</span>
+                            <strong style="font-size:14px; color:#0f172a;">🚿 ${prop.bathrooms || 1} Baths</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">KITCHEN</span>
+                            <strong style="font-size:13px; color:#0f172a;">🍳 ${prop.kitchen || 'Modular'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">FLOOR NO</span>
+                            <strong style="font-size:13px; color:#0f172a;">🏢 ${prop.floorNo ? prop.floorNo + (prop.totalFloors ? ' (' + prop.totalFloors + ' Flrs)' : '') : 'Ground'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">HALL</span>
+                            <strong style="font-size:13px; color:#0f172a;">🛋️ ${prop.hall || '1 Hall'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">BALCONIES</span>
+                            <strong style="font-size:14px; color:#0f172a;">🌅 ${prop.balconies !== undefined && prop.balconies !== null ? prop.balconies : 1}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">SUPER AREA</span>
+                            <strong style="font-size:14px; color:#0f172a;">📐 ${prop.areaSqft ? prop.areaSqft + ' sq.ft' : 'N/A'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">FURNISHING</span>
+                            <strong style="font-size:13px; color:#0f172a;">🛋️ ${prop.furnishedStatus || 'Standard'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">PARKING</span>
+                            <strong style="font-size:14px; color:#0f172a;">🚗 ${prop.parking ? 'Available' : 'No'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">FACING</span>
+                            <strong style="font-size:13px; color:#0f172a;">🧭 ${prop.facing || 'East'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center;">
+                            <span style="font-size:11px; color:#64748b; font-weight:600; display:block; margin-bottom:2px;">AGE</span>
+                            <strong style="font-size:13px; color:#0f172a;">⏳ ${prop.propertyAge || 'New'}</strong>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <h4 style="font-size:16px; color:#1e293b; margin-bottom:8px;">📝 Property Description</h4>
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:22px; font-size:14px; color:#334155; line-height:1.6;">
+                        ${prop.description || 'No detailed description provided.'}
+                    </div>
+
+                    <!-- Amenities -->
+                    <h4 style="font-size:16px; color:#1e293b; margin-bottom:8px;">✨ Amenities & Features</h4>
+                    <div style="margin-bottom:24px; display:flex; flex-wrap:wrap; gap:8px;">
+                        ${(prop.amenities ? prop.amenities.split(',').map(a => `<span style="background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; padding:5px 12px; border-radius:20px; font-size:13px; font-weight:500;">✓ ${a.trim()}</span>`).join('') : '<span style="color:#64748b; font-size:13px;">Basic Amenities (Water, Electricity)</span>')}
+                    </div>
+
+                    <!-- Submitting Broker Dossier -->
+                    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin-bottom:20px; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+                            <h4 style="font-size:16px; color:#1e293b; margin:0; display:flex; align-items:center; gap:8px;">
+                                🏢 Submitting Broker Details
+                            </h4>
+                            <span class="broker-code-tag">${brokerCode}</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; font-size:13px;">
+                            <div><span style="color:#64748b; display:block;">Broker Name</span><strong style="color:#0f172a; font-size:14px;">${brokerName}</strong></div>
+                            <div><span style="color:#64748b; display:block;">Agency Name</span><strong style="color:#0f172a;">${brokerAgency}</strong></div>
+                            <div><span style="color:#64748b; display:block;">Email Address</span><strong style="color:#0f172a; word-break:break-all;">✉️ ${brokerUser.email || 'N/A'}</strong></div>
+                            <div><span style="color:#64748b; display:block;">Contact Mobile</span><strong style="color:#0f172a;">📞 ${brokerUser.mobile || 'N/A'}</strong></div>
+                            <div><span style="color:#64748b; display:block;">Operating City</span><strong style="color:#0f172a;">📍 ${broker.city || prop.city}</strong></div>
+                            <div><span style="color:#64748b; display:block;">Experience</span><strong style="color:#0f172a;">⏳ ${broker.experience || 'Experienced'}</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Verification & Audit Info -->
+                    <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <span style="font-size:11px; background:#047857; color:#fff; padding:3px 8px; border-radius:10px; font-weight:700; text-transform:uppercase;">Admin Verified</span>
+                            <div style="font-size:13px; color:#065f46; font-weight:600; margin-top:4px;">
+                                Listing is APPROVED and actively LIVE for all customers.
+                            </div>
+                        </div>
+                        <div style="font-size:12px; color:#047857; text-align:right;">
+                            ${prop.approvedAt ? `<div>Approved Date: <strong>${new Date(prop.approvedAt).toLocaleString()}</strong></div>` : ''}
+                            ${prop.createdAt ? `<div>Created Date: <strong>${new Date(prop.createdAt).toLocaleString()}</strong></div>` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button onclick="closePropertyModal()" style="padding:9px 18px; border-radius:8px; border:1px solid #cbd5e1; background:#ffffff; color:#475467; font-weight:600; font-size:14px; cursor:pointer;">
+                        Close
+                    </button>
+                    <a href="property-details.html?id=${prop.propertyId}" target="_blank" style="padding:9px 20px; border-radius:8px; background:#2563eb; color:#ffffff; font-weight:600; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                        Open Full Page View ↗
+                    </a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

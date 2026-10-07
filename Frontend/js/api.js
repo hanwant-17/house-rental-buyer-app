@@ -190,6 +190,10 @@ const api = {
         return await this.request("/admin/brokers/approved", { method: "GET" });
     },
 
+    async getApprovedProperties() {
+        return await this.request("/admin/properties/approved", { method: "GET" });
+    },
+
     async getAdminReports() {
         return await this.request("/admin/reports", { method: "GET" });
     },
@@ -243,6 +247,33 @@ const api = {
         return await this.request("/properties/my-properties", { method: "GET" });
     },
 
+    async getTrashProperties() {
+        return await this.request("/properties/trash", { method: "GET" });
+    },
+
+    async deleteProperty(id) {
+        return await this.request(`/properties/${id}`, { method: "DELETE" });
+    },
+
+    async restoreProperty(id) {
+        return await this.request(`/properties/${id}/restore`, { method: "PUT" });
+    },
+
+    async permanentDeleteProperty(id) {
+        return await this.request(`/properties/${id}/permanent`, { method: "DELETE" });
+    },
+
+    async emptyTrash() {
+        return await this.request("/properties/trash/empty", { method: "DELETE" });
+    },
+
+    async updateProperty(id, propertyData) {
+        return await this.request(`/properties/${id}`, {
+            method: "PUT",
+            body: JSON.stringify(propertyData)
+        });
+    },
+
     async updatePropertyStatus(id, status) {
         return await this.request(`/properties/${id}/status?status=${status.toUpperCase()}`, {
             method: "PUT"
@@ -278,6 +309,10 @@ const api = {
 
     async getUnreadChatCount() {
         return await this.request("/chats/unread-count", { method: "GET" });
+    },
+
+    async clearChat(chatId) {
+        return await this.request(`/chats/${chatId}/messages`, { method: "DELETE" });
     },
 
     // ==========================================

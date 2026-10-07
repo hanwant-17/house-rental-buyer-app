@@ -269,6 +269,15 @@
 
         </div>
 
+        <!-- Navigation Tabs -->
+        <div style="display:flex; gap:12px; margin-bottom:25px; border-bottom:2px solid #e5e7eb; padding-bottom:12px;">
+            <a href="property-verification.html" style="padding:9px 20px; border-radius:8px; background:#1d4ed8; color:#ffffff; text-decoration:none; font-weight:600; font-size:14px; box-shadow:0 2px 4px rgba(29,78,216,0.2);">
+                ⏳ Pending Verification
+            </a>
+            <a href="approved-properties.html" style="padding:9px 20px; border-radius:8px; background:#f1f5f9; color:#475467; text-decoration:none; font-weight:600; font-size:14px; border:1px solid #e2e8f0;">
+                ✅ Approved Properties
+            </a>
+        </div>
 
         <!-- Dynamic Property Requests Container -->
         <div id="propertyRequestsContainer">
@@ -312,7 +321,8 @@
                         <div class="property-card" style="text-align:center; padding:40px;">
                             <div style="font-size:40px; margin-bottom:10px;">🏠</div>
                             <h2>No Pending Properties</h2>
-                            <p style="color:#667085; margin-top:5px;">All submitted properties have been reviewed and published!</p>
+                            <p style="color:#667085; margin-top:5px; margin-bottom:15px;">All submitted properties have been reviewed and published!</p>
+                            <a href="approved-properties.html" style="display:inline-block; padding:10px 20px; background:#16a34a; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">View Approved Properties →</a>
                         </div>
                     `;
                     return;
@@ -353,16 +363,36 @@
                                     <span>${prop.city}, ${prop.address}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <strong>BHK</strong>
-                                    <span>${prop.bhk} BHK (${prop.bathrooms || 1} Baths)</span>
+                                    <strong>Rooms & BHK</strong>
+                                    <span>${prop.rooms || prop.bhk} Rooms (${prop.bhk} BHK)</span>
                                 </div>
                                 <div class="detail-item">
-                                    <strong>Area</strong>
-                                    <span>${prop.areaSqft || "N/A"} sq.ft</span>
+                                    <strong>Bathrooms</strong>
+                                    <span>🚿 ${prop.bathrooms || 1} Baths</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Kitchen</strong>
+                                    <span>🍳 ${prop.kitchen || 'Modular Kitchen'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Floor Number</strong>
+                                    <span>🏢 ${prop.floorNo || 'Ground Floor'}${prop.totalFloors ? ' (of ' + prop.totalFloors + ' Floors)' : ''}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Hall / Living Area</strong>
+                                    <span>🛋️ ${prop.hall || '1 Living Hall'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Balconies & Facing</strong>
+                                    <span>🌅 ${prop.balconies !== undefined && prop.balconies !== null ? prop.balconies : 1} Balcony | 🧭 ${prop.facing || 'East Facing'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Area & Age</strong>
+                                    <span>📐 ${prop.areaSqft || "N/A"} sq.ft | ⏳ ${prop.propertyAge || 'New'}</span>
                                 </div>
                                 <div class="detail-item">
                                     <strong>Furnished Status</strong>
-                                    <span>${prop.furnishedStatus || "Unfurnished"}</span>
+                                    <span>${prop.furnishedStatus || "Semi-Furnished"}</span>
                                 </div>
                                 <div class="detail-item">
                                     <strong>Parking</strong>

@@ -3,66 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>My Properties - HouseHub</title>
-
     <link rel="stylesheet" href="../css/dashboard.css">
 
     <style>
-        .properties-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 45px 25px;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --slate-800: #1e293b;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
         }
 
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+        }
+
+        .properties-page {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 35px 24px 60px;
+        }
+
+        /* PAGE HEADER */
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
-        .page-header h1 {
-            font-size: 30px;
-            margin-bottom: 7px;
+        .header-title-area h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--slate-800);
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
         }
 
-        .page-header p {
-            color: #667085;
+        .header-title-area p {
+            color: var(--slate-600);
             font-size: 14px;
+            margin: 0;
+        }
+
+        .header-action-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
         .add-property-btn {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
             text-decoration: none;
-            padding: 11px 18px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 9px;
             font-size: 14px;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
         }
 
         .add-property-btn:hover {
-            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
         }
 
+        /* KPI METRICS OVERVIEW */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
+        }
+
+        .metric-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .metric-info .metric-num {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--slate-800);
+            line-height: 1.1;
+        }
+
+        .metric-info .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 3px;
+        }
+
+        /* TABS AND SEARCH CONTROLS */
+        .control-panel {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--slate-200);
+            padding-bottom: 12px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--slate-600);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--slate-100);
+            color: var(--slate-800);
+        }
+
+        .tab-btn.active {
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        .tab-badge {
+            background: var(--slate-200);
+            color: var(--slate-600);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .tab-btn.active .tab-badge {
+            background: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .tab-btn.trash-tab.active {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .tab-btn.trash-tab.active .tab-badge {
+            background: #fecaca;
+            color: #b91c1c;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 36px;
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.15s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-500);
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 9px 12px;
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            font-size: 14px;
+            background: #ffffff;
+            color: var(--slate-800);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary);
+        }
+
+        /* TRASH BANNER */
+        .trash-alert-banner {
+            display: none;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 22px;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .trash-alert-text {
+            color: #9a3412;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .empty-trash-btn {
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .empty-trash-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* PROPERTY LIST GRID */
         .property-list {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
         }
 
         .my-property-card {
-            background: white;
-            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .my-property-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .my-property-card.is-trash {
+            border: 1px dashed #f87171;
+            background: #fffafa;
         }
 
         .property-image {
             width: 100%;
-            height: 190px;
+            height: 200px;
+            position: relative;
+            background: #e2e8f0;
             overflow: hidden;
         }
 
@@ -70,335 +343,1520 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .my-property-card:hover .property-image img {
+            transform: scale(1.03);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: #f1f5f9;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .image-placeholder-icon {
+            font-size: 38px;
+            margin-bottom: 6px;
+        }
+
+        .image-placeholder-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .property-purpose-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        .badge-rent {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .badge-buy {
+            background: #7c3aed;
+            color: #ffffff;
+        }
+
+        .property-photo-count-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 12px;
+            background: rgba(15, 23, 42, 0.75);
+            color: #ffffff;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
         }
 
         .property-content {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
-        .property-content h3 {
-            font-size: 19px;
-            margin-bottom: 8px;
+        .property-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-800);
+            margin: 0 0 6px;
+            line-height: 1.35;
         }
 
         .property-location {
-            color: #667085;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .property-info {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .property-info span {
+            color: var(--slate-500);
             font-size: 13px;
-            color: #475467;
+            margin: 0 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 5-Item Compact Layout Specs Grid */
+        .specs-grid-compact {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 10px;
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .spec-cell .spec-title {
+            font-size: 10px;
+            color: var(--slate-500);
+            font-weight: 600;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .spec-cell .spec-val {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--slate-800);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .property-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
         }
 
         .property-price {
-            color: #1d4ed8;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 800;
         }
 
-        .status {
-            display: inline-block;
-            padding: 6px 11px;
-            border-radius: 20px;
+        .property-price-period {
+            font-size: 13px;
+            color: var(--slate-500);
+            font-weight: normal;
+        }
+
+        .property-status-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 16px;
             font-size: 12px;
             font-weight: 600;
         }
 
-        .pending {
-            background: #fff7ed;
-            color: #c2410c;
-        }
-
-        .approved {
+        .status-pill.approved {
             background: #ecfdf3;
             color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
-        .rejected {
+        .status-pill.pending {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .status-pill.rejected {
             background: #fef2f2;
             color: #dc2626;
+            border: 1px solid #fecaca;
         }
 
-        .property-actions {
-            margin-top: 18px;
+        .deal-pill {
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .deal-available {
+            background: #ecfdf3;
+            color: #027a48;
+            border: 1px solid #a7f3d0;
+        }
+
+        .deal-rented {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .deal-sold {
+            background: #faf5ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+        }
+
+        .trash-countdown-pill {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* DEAL ACTIONS BOX */
+        .deal-actions-box {
+            padding: 10px 12px;
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
+
+        .deal-actions-box p {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--slate-500);
+            margin: 0 0 6px;
+            text-transform: uppercase;
+        }
+
+        .deal-btn-group {
             display: flex;
-            gap: 10px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
-        .view-btn,
-        .edit-btn {
-            padding: 9px 14px;
-            border-radius: 7px;
-            text-decoration: none;
+        .deal-btn {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .deal-btn-rented {
+            background: #2563eb;
+            color: #ffffff;
+        }
+        .deal-btn-rented:hover { background: #1d4ed8; }
+
+        .deal-btn-sold {
+            background: #7c3aed;
+            color: #ffffff;
+        }
+        .deal-btn-sold:hover { background: #6d28d9; }
+
+        .deal-btn-available {
+            background: #059669;
+            color: #ffffff;
+        }
+        .deal-btn-available:hover { background: #047857; }
+
+        /* PROPERTY CARD FOOTER ACTIONS */
+        .card-actions {
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--slate-200);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            text-decoration: none;
         }
 
-        .view-btn {
-            background: #eef4ff;
-            color: #1d4ed8;
+        .action-btn-view {
+            background: #eff6ff;
+            color: var(--primary);
+            border: 1px solid #bfdbfe;
+        }
+        .action-btn-view:hover {
+            background: #dbeafe;
         }
 
-        .edit-btn {
-            background: #f2f4f7;
-            color: #344054;
+        .action-btn-edit {
+            background: var(--slate-100);
+            color: var(--slate-800);
+            border: 1px solid var(--slate-200);
+        }
+        .action-btn-edit:hover {
+            background: #e2e8f0;
         }
 
-        .empty-message {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 50px 20px;
+        .action-btn-delete {
+            background: #fef2f2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+        .action-btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        .action-btn-restore {
+            background: #ecfdf3;
+            color: var(--success);
+            border: 1px solid #bbf7d0;
+        }
+        .action-btn-restore:hover {
+            background: #dcfce7;
+        }
+
+        .action-btn-permanent {
+            background: #b91c1c;
+            color: #ffffff;
+        }
+        .action-btn-permanent:hover {
+            background: #991b1b;
+        }
+
+        /* MODAL POPUPS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 860px;
+            max-height: 90vh;
+            border-radius: 16px;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--slate-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--slate-800);
+        }
+
+        .modal-close-btn {
+            background: var(--slate-100);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            color: var(--slate-600);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s ease;
+        }
+
+        .modal-close-btn:hover {
+            background: var(--slate-200);
+            color: var(--slate-800);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* 12-Item Specs Grid in Modal */
+        .modal-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .modal-spec-card {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            padding: 12px;
             text-align: center;
-            color: #667085;
         }
 
-        @media (max-width: 950px) {
+        .modal-spec-card span {
+            font-size: 11px;
+            color: var(--slate-500);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .modal-spec-card strong {
+            font-size: 13px;
+            color: var(--slate-800);
+            display: block;
+        }
+
+        /* EDIT MODAL FORM */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-800);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 9px 12px;
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--slate-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: var(--slate-50);
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
             .property-list {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 600px) {
             .properties-page {
-                padding: 30px 18px;
+                padding: 20px 14px 40px;
             }
-
+            .property-list {
+                grid-template-columns: 1fr;
+            }
             .page-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 18px;
             }
-
-            .property-list {
-                grid-template-columns: 1fr;
+            .specs-grid-compact {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Navbar -->
+    <!-- NAVBAR -->
     <nav class="dashboard-navbar">
-
         <div class="logo">
             🏠 HouseHub
         </div>
-
         <div class="user-area">
-            <span>Broker</span>
+            <span id="welcomeUserName">Broker</span>
             <button id="logoutButton">Logout</button>
         </div>
-
     </nav>
 
-
-    <!-- Main Content -->
+    <!-- MAIN CONTAINER -->
     <main class="properties-page">
 
+        <!-- HEADER -->
         <div class="page-header">
-
-            <div>
+            <div class="header-title-area">
                 <h1>My Properties</h1>
-                <p>Manage your submitted properties and verification status.</p>
+                <p>Manage your real estate listings, inspect layouts, monitor deals, and recover trash.</p>
             </div>
-
-            <a href="add-property.html" class="add-property-btn">
-                + Add Property
-            </a>
-
+            <div class="header-action-area">
+                <a href="broker-dashboard.html" style="color:var(--slate-600); text-decoration:none; font-size:14px; font-weight:600; padding:10px 14px; background:#fff; border:1px solid var(--slate-200); border-radius:8px;">
+                    ← Dashboard
+                </a>
+                <a href="add-property.html" class="add-property-btn">
+                    + Add New Property
+                </a>
+            </div>
         </div>
 
+        <!-- KPI METRICS SUMMARY -->
+        <div class="metrics-grid">
+            <div class="metric-card" onclick="switchTab('all')">
+                <div class="metric-icon" style="background:#eff6ff; color:#2563eb;">📋</div>
+                <div class="metric-info">
+                    <div class="metric-num" id="metricTotal">0</div>
+                    <div class="metric-label">Total Listed</div>
+                </div>
+            </div>
+            <div class="metric-card" onclick="switchTab('approved')">
+                <div class="metric-icon" style="background:#ecfdf3; color:#16a34a;">🟢</div>
+                <div class="metric-info">
+                    <div class="metric-num" id="metricApproved">0</div>
+                    <div class="metric-label">Approved & Live</div>
+                </div>
+            </div>
+            <div class="metric-card" onclick="switchTab('pending')">
+                <div class="metric-icon" style="background:#fff7ed; color:#d97706;">⏳</div>
+                <div class="metric-info">
+                    <div class="metric-num" id="metricPending">0</div>
+                    <div class="metric-label">Pending Verification</div>
+                </div>
+            </div>
+            <div class="metric-card" onclick="switchTab('closed')">
+                <div class="metric-icon" style="background:#faf5ff; color:#7c3aed;">🏷️</div>
+                <div class="metric-info">
+                    <div class="metric-num" id="metricClosed">0</div>
+                    <div class="metric-label">Deals Closed</div>
+                </div>
+            </div>
+            <div class="metric-card" onclick="switchTab('trash')">
+                <div class="metric-icon" style="background:#fef2f2; color:#dc2626;">🗑️</div>
+                <div class="metric-info">
+                    <div class="metric-num" id="metricTrash">0</div>
+                    <div class="metric-label">In Trash Bin</div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Property List -->
+        <!-- TABS & LIVE SEARCH / FILTERS -->
+        <div class="control-panel">
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tab-all" onclick="switchTab('all')">
+                    📋 All Properties <span class="tab-badge" id="badgeAll">0</span>
+                </button>
+                <button class="tab-btn" id="tab-approved" onclick="switchTab('approved')">
+                    🟢 Approved & Live <span class="tab-badge" id="badgeApproved">0</span>
+                </button>
+                <button class="tab-btn" id="tab-pending" onclick="switchTab('pending')">
+                    🟠 Pending Verification <span class="tab-badge" id="badgePending">0</span>
+                </button>
+                <button class="tab-btn" id="tab-closed" onclick="switchTab('closed')">
+                    🏷️ Closed Deals <span class="tab-badge" id="badgeClosed">0</span>
+                </button>
+                <button class="tab-btn trash-tab" id="tab-trash" onclick="switchTab('trash')">
+                    🗑️ Trash Bin (15-Day Auto Purge) <span class="tab-badge" id="badgeTrash">0</span>
+                </button>
+            </div>
+
+            <div class="filter-row">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search by property title, city, or address..." oninput="handleFilterChange()">
+                </div>
+                <select class="filter-select" id="purposeFilter" onchange="handleFilterChange()">
+                    <option value="">All Purposes</option>
+                    <option value="RENT">Rent Only</option>
+                    <option value="BUY">Buy / Sale</option>
+                </select>
+                <select class="filter-select" id="bhkFilter" onchange="handleFilterChange()">
+                    <option value="">All Bedrooms / BHK</option>
+                    <option value="1">1 BHK</option>
+                    <option value="2">2 BHK</option>
+                    <option value="3">3 BHK</option>
+                    <option value="4">4+ BHK</option>
+                </select>
+                <select class="filter-select" id="sortFilter" onchange="handleFilterChange()">
+                    <option value="newest">Sort: Newest First</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TRASH BIN RETENTION NOTICE BANNER -->
+        <div class="trash-alert-banner" id="trashAlertBanner">
+            <div class="trash-alert-text">
+                <span style="font-size:22px;">🗑️</span>
+                <div>
+                    <strong>Trash Bin (15-Day Retention System):</strong>
+                    <span>Deleted properties are preserved for 15 days before automatic permanent deletion. You can restore them anytime or delete them permanently now.</span>
+                </div>
+            </div>
+            <button class="empty-trash-btn" onclick="handleEmptyTrash()">
+                Empty Trash Bin
+            </button>
+        </div>
+
+        <!-- PROPERTY CARDS LIST CONTAINER -->
         <div class="property-list" id="myPropertiesContainer">
-            <p style="grid-column: 1 / -1; text-align: center; color: #667085; padding: 40px;">
-                Loading your listed properties...
+            <p style="grid-column: 1 / -1; text-align: center; color: var(--slate-500); padding: 50px;">
+                Loading your property listings...
             </p>
         </div>
 
     </main>
 
-
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer class="dashboard-footer">
-        <p>© 2026 HouseHub. All Rights Reserved.</p>
+        <p>© 2026 HouseHub. All Rights Reserved. • Safe Real Estate Platform</p>
     </footer>
 
+    <!-- ======================================================= -->
+    <!-- 1. FULL PROPERTY DETAILS MODAL (VIEW BUTTON FIX)       -->
+    <!-- ======================================================= -->
+    <div class="modal-overlay" id="propertyDetailsModal" onclick="closeModalOnOverlay(event, 'propertyDetailsModal')">
+        <div class="modal-box" id="detailsModalContent">
+            <!-- Rendered dynamically by JavaScript -->
+        </div>
+    </div>
 
+    <!-- ======================================================= -->
+    <!-- 2. QUICK EDIT PROPERTY MODAL                          -->
+    <!-- ======================================================= -->
+    <div class="modal-overlay" id="editPropertyModal" onclick="closeModalOnOverlay(event, 'editPropertyModal')">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div>
+                    <h2>✏️ Edit Property Details</h2>
+                    <p style="color:var(--slate-500); font-size:13px; margin:4px 0 0;">Update price, description, and specifications.</p>
+                </div>
+                <button class="modal-close-btn" onclick="closeEditModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="editPropertyForm" onsubmit="submitEditProperty(event)">
+                    <input type="hidden" id="editPropId">
+                    <div class="form-group">
+                        <label>Property Title</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price / Monthly Rent (₹)</label>
+                            <input type="number" id="editPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Furnished Status</label>
+                            <select id="editFurnished">
+                                <option value="Furnished">Fully Furnished</option>
+                                <option value="Semi-Furnished">Semi-Furnished</option>
+                                <option value="Unfurnished">Unfurnished</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rooms / Bedrooms</label>
+                            <input type="number" id="editRooms" min="1" max="20" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kitchen Type</label>
+                            <select id="editKitchen">
+                                <option value="Modular Kitchen">Modular Kitchen</option>
+                                <option value="Semi-Modular Kitchen">Semi-Modular Kitchen</option>
+                                <option value="Open Kitchen">Open Kitchen</option>
+                                <option value="Traditional Kitchen">Traditional Kitchen</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Floor Number</label>
+                            <input type="text" id="editFloor" placeholder="e.g. 3rd Floor">
+                        </div>
+                        <div class="form-group">
+                            <label>Hall / Living Area</label>
+                            <input type="text" id="editHall" placeholder="e.g. 1 Spacious Living Hall">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="editDescription" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Amenities (Comma-separated)</label>
+                        <input type="text" id="editAmenities" placeholder="Lift, Security, Power Backup, Covered Parking">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="action-btn action-btn-edit" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="action-btn" style="background:var(--primary); color:#fff; border:none; padding:10px 20px;">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toastMessage">
+        <span id="toastIcon">✅</span>
+        <span id="toastText">Action completed successfully.</span>
+    </div>
+
+    <!-- SCRIPTS -->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
+        // State variables
+        let activeProperties = [];
+        let trashProperties = [];
+        let currentTab = "all"; // 'all', 'approved', 'pending', 'closed', 'trash'
+        let currentModalImages = [];
+        let currentModalImageIdx = 0;
+
+        // Verify Broker Authentication
         const user = window.api ? window.api.getCurrentUser() : null;
         if (!user || user.role !== "BROKER") {
-            alert("Please login as a Broker to view your properties.");
+            alert("Please login as a verified Broker to view your properties.");
             window.location.href = "login.html";
         } else {
-            const userArea = document.querySelector(".user-area span");
-            if (userArea) {
-                userArea.textContent = `Welcome, ${user.name || "Broker"}`;
+            const welcomeEl = document.getElementById("welcomeUserName");
+            if (welcomeEl) {
+                welcomeEl.textContent = `Welcome, ${user.name || "Rahul Sharma"}`;
             }
         }
 
-        const container = document.getElementById("myPropertiesContainer");
+        // Initialize Data on Load
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAllPropertiesData();
+        });
 
-        async function loadMyProperties() {
+        // Load active and trash properties
+        async function loadAllPropertiesData() {
+            const container = document.getElementById("myPropertiesContainer");
             try {
-                const response = await window.api.getMyProperties();
-                const list = response.data || [];
+                container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: var(--slate-500); padding: 50px;">Fetching your latest properties...</p>`;
 
-                if (list.length === 0) {
-                    container.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align:center; padding:50px; background:#fff; border-radius:14px; border:1px solid #e5e7eb;">
-                            <div style="font-size:40px; margin-bottom:10px;">🏠</div>
-                            <h3>No properties added yet</h3>
-                            <p style="color:#667085; margin:8px 0 20px;">Add your first property listing to send it for Admin verification.</p>
-                            <a href="add-property.html" class="add-property-btn">+ Add New Property</a>
-                        </div>
-                    `;
-                    return;
-                }
+                const [activeRes, trashRes] = await Promise.all([
+                    window.api.getMyProperties(),
+                    window.api.getTrashProperties()
+                ]);
 
-                container.innerHTML = "";
-                list.forEach(prop => {
-                    const vStatus = prop.verificationStatus || "PENDING";
-                    let statusClass = "pending";
-                    let statusLabel = "Pending Verification";
+                activeProperties = activeRes.data || [];
+                trashProperties = trashRes.data || [];
 
-                    if (vStatus === "APPROVED") {
-                        statusClass = "approved";
-                        statusLabel = "Approved & Live";
-                    } else if (vStatus === "REJECTED") {
-                        statusClass = "rejected";
-                        statusLabel = "Rejected";
-                    }
-
-                    const primaryImg = (prop.images && prop.images.length > 0) ? prop.images[0].imageUrl : "../images/flat-banner.jpg";
-                    const priceFormatted = Number(prop.price).toLocaleString();
-
-                    const currentDealStatus = prop.propertyStatus || "AVAILABLE";
-                    let dealBadgeColor = "#027a48";
-                    let dealBadgeBg = "#ecfdf3";
-                    if (currentDealStatus === "RENTED") {
-                        dealBadgeColor = "#1d4ed8";
-                        dealBadgeBg = "#eff6ff";
-                    } else if (currentDealStatus === "SOLD") {
-                        dealBadgeColor = "#7e22ce";
-                        dealBadgeBg = "#faf5ff";
-                    }
-
-                    const isApproved = vStatus === "APPROVED";
-                    const isRent = (prop.purpose || "RENT").toUpperCase() === "RENT";
-
-                    const card = document.createElement("div");
-                    card.className = "my-property-card";
-                    card.innerHTML = `
-                        <div class="property-image">
-                            <img src="${primaryImg}" alt="${prop.title}">
-                        </div>
-
-                        <div class="property-content">
-                            <h3>${prop.title}</h3>
-                            <p class="property-location">📍 ${prop.city}, ${prop.address}</p>
-
-                            <div class="property-info">
-                                <span>🛏 ${prop.bhk} BHK</span>
-                                <span>🚿 ${prop.bathrooms || 1} Baths</span>
-                                <span>📐 ${prop.areaSqft || 1000} sq.ft</span>
-                            </div>
-
-                            <div class="property-price">
-                                ₹${priceFormatted} ${prop.purpose === 'RENT' ? '/ month' : ''}
-                            </div>
-
-                            <div style="display:flex; gap:8px; align-items:center; margin:10px 0; flex-wrap:wrap;">
-                                <span class="status ${statusClass}" style="margin:0;">
-                                    ${statusLabel}
-                                </span>
-                                ${isApproved ? `
-                                    <span style="background:${dealBadgeBg}; color:${dealBadgeColor}; font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; border:1px solid ${dealBadgeColor}33;">
-                                        Deal: ${currentDealStatus}
-                                    </span>
-                                ` : ''}
-                            </div>
-
-                            <!-- Lifecycle Management (Mark Rented / Sold / Available) -->
-                            ${isApproved ? `
-                                <div style="margin: 10px 0; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                    <p style="font-size:11px; font-weight:700; color:#64748b; margin-bottom:6px; text-transform:uppercase;">Property Deal Actions:</p>
-                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        ${currentDealStatus !== 'RENTED' && isRent ? `
-                                            <button onclick="updateDealStatus(${prop.propertyId}, 'RENTED')" style="background:#2563eb; color:#fff; border:none; padding:6px 11px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">
-                                                🏷️ Mark as Rented
-                                            </button>
-                                        ` : ''}
-
-                                        ${currentDealStatus !== 'SOLD' && !isRent ? `
-                                            <button onclick="updateDealStatus(${prop.propertyId}, 'SOLD')" style="background:#7c3aed; color:#fff; border:none; padding:6px 11px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">
-                                                🏷️ Mark as Sold
-                                            </button>
-                                        ` : ''}
-
-                                        ${currentDealStatus !== 'AVAILABLE' ? `
-                                            <button onclick="updateDealStatus(${prop.propertyId}, 'AVAILABLE')" style="background:#059669; color:#fff; border:none; padding:6px 11px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">
-                                                🔄 Mark Available
-                                            </button>
-                                        ` : ''}
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                            <div class="property-actions">
-                                <button onclick="viewPropDetails(${prop.propertyId})" class="view-btn" style="border:none; cursor:pointer;">
-                                    View
-                                </button>
-                                <a href="property-status.html" class="edit-btn">
-                                    Track Verification
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
+                updateMetricsAndBadges();
+                renderProperties();
             } catch (err) {
                 container.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align:center; padding:40px; color:#b91c1c;">
-                        <p>Error loading your properties: ${err.message}</p>
+                    <div style="grid-column: 1 / -1; text-align:center; padding:50px; background:#fff; border-radius:14px; border:1px solid #fee2e2; color:#b91c1c;">
+                        <p style="font-size:16px; font-weight:700;">Error loading properties</p>
+                        <p style="color:#64748b; font-size:14px;">${err.message}</p>
+                        <button onclick="loadAllPropertiesData()" style="margin-top:12px; padding:8px 16px; background:#2563eb; color:#fff; border:none; border-radius:6px; cursor:pointer;">Retry</button>
                     </div>
                 `;
             }
         }
 
-        async function updateDealStatus(propertyId, newStatus) {
-            if (!confirm(`Are you sure you want to mark this property as ${newStatus}?`)) return;
+        // Update Top Metrics & Tab Badges
+        function updateMetricsAndBadges() {
+            const total = activeProperties.length;
+            const approved = activeProperties.filter(p => p.verificationStatus === "APPROVED").length;
+            const pending = activeProperties.filter(p => p.verificationStatus === "PENDING").length;
+            const closed = activeProperties.filter(p => p.propertyStatus === "RENTED" || p.propertyStatus === "SOLD").length;
+            const trash = trashProperties.length;
+
+            document.getElementById("metricTotal").textContent = total;
+            document.getElementById("metricApproved").textContent = approved;
+            document.getElementById("metricPending").textContent = pending;
+            document.getElementById("metricClosed").textContent = closed;
+            document.getElementById("metricTrash").textContent = trash;
+
+            document.getElementById("badgeAll").textContent = total;
+            document.getElementById("badgeApproved").textContent = approved;
+            document.getElementById("badgePending").textContent = pending;
+            document.getElementById("badgeClosed").textContent = closed;
+            document.getElementById("badgeTrash").textContent = trash;
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            const activeTabBtn = document.getElementById(`tab-${tabName}`);
+            if (activeTabBtn) activeTabBtn.classList.add("active");
+
+            // Show or hide Trash Banner
+            const trashBanner = document.getElementById("trashAlertBanner");
+            if (trashBanner) {
+                trashBanner.style.display = (tabName === "trash") ? "flex" : "none";
+            }
+
+            renderProperties();
+        }
+
+        function handleFilterChange() {
+            renderProperties();
+        }
+
+        // Filter & Render Property Cards
+        function renderProperties() {
+            const container = document.getElementById("myPropertiesContainer");
+            const searchVal = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
+            const purposeVal = document.getElementById("purposeFilter")?.value || "";
+            const bhkVal = document.getElementById("bhkFilter")?.value || "";
+            const sortVal = document.getElementById("sortFilter")?.value || "newest";
+
+            let dataset = (currentTab === "trash") ? [...trashProperties] : [...activeProperties];
+
+            // Tab Filtering
+            if (currentTab === "approved") {
+                dataset = dataset.filter(p => p.verificationStatus === "APPROVED");
+            } else if (currentTab === "pending") {
+                dataset = dataset.filter(p => p.verificationStatus === "PENDING");
+            } else if (currentTab === "closed") {
+                dataset = dataset.filter(p => p.propertyStatus === "RENTED" || p.propertyStatus === "SOLD");
+            }
+
+            // Search Filter
+            if (searchVal) {
+                dataset = dataset.filter(p => 
+                    (p.title && p.title.toLowerCase().includes(searchVal)) ||
+                    (p.city && p.city.toLowerCase().includes(searchVal)) ||
+                    (p.address && p.address.toLowerCase().includes(searchVal))
+                );
+            }
+
+            // Purpose Filter
+            if (purposeVal) {
+                dataset = dataset.filter(p => p.purpose === purposeVal);
+            }
+
+            // BHK Filter
+            if (bhkVal) {
+                if (bhkVal === "4") {
+                    dataset = dataset.filter(p => (p.bhk >= 4 || p.rooms >= 4));
+                } else {
+                    dataset = dataset.filter(p => (p.bhk == bhkVal || p.rooms == bhkVal));
+                }
+            }
+
+            // Sorting
+            if (sortVal === "price-asc") {
+                dataset.sort((a, b) => (a.price || 0) - (b.price || 0));
+            } else if (sortVal === "price-desc") {
+                dataset.sort((a, b) => (b.price || 0) - (a.price || 0));
+            } else {
+                dataset.sort((a, b) => (b.propertyId || 0) - (a.propertyId || 0));
+            }
+
+            if (dataset.length === 0) {
+                if (currentTab === "trash") {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align:center; padding:60px 20px; background:#fff; border-radius:14px; border:1px solid var(--slate-200);">
+                            <div style="font-size:46px; margin-bottom:12px;">🗑️</div>
+                            <h3 style="margin:0 0 8px; color:var(--slate-800);">Trash Bin is Empty</h3>
+                            <p style="color:var(--slate-500); font-size:14px;">No deleted properties found. Items placed in trash are held for 15 days.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align:center; padding:60px 20px; background:#fff; border-radius:14px; border:1px solid var(--slate-200);">
+                            <div style="font-size:46px; margin-bottom:12px;">🏠</div>
+                            <h3 style="margin:0 0 8px; color:var(--slate-800);">No properties found</h3>
+                            <p style="color:var(--slate-500); font-size:14px; margin:0 0 20px;">Try adjusting your filters or search keywords.</p>
+                            <a href="add-property.html" class="add-property-btn">+ Add New Property</a>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            container.innerHTML = "";
+            dataset.forEach(prop => {
+                const card = createPropertyCard(prop, currentTab === "trash");
+                container.appendChild(card);
+            });
+        }
+
+        // Build HTML for a Single Property Card
+        function createPropertyCard(prop, isTrashItem) {
+            const card = document.createElement("div");
+            card.className = `my-property-card ${isTrashItem ? 'is-trash' : ''}`;
+
+            const purpose = (prop.purpose || "RENT").toUpperCase();
+            const isRent = purpose === "RENT";
+            const priceFormatted = Number(prop.price || 0).toLocaleString();
+
+            const vStatus = prop.verificationStatus || "PENDING";
+            let statusClass = "pending";
+            let statusLabel = "Pending Verification";
+            if (vStatus === "APPROVED") {
+                statusClass = "approved";
+                statusLabel = "Approved & Live";
+            } else if (vStatus === "REJECTED") {
+                statusClass = "rejected";
+                statusLabel = "Rejected";
+            }
+
+            const currentDeal = prop.propertyStatus || "AVAILABLE";
+            let dealBadgeClass = "deal-available";
+            if (currentDeal === "RENTED") dealBadgeClass = "deal-rented";
+            else if (currentDeal === "SOLD") dealBadgeClass = "deal-sold";
+
+            // Photo processing & fallback placeholder
+            let imagesList = [];
+            if (prop.images && prop.images.length > 0) {
+                imagesList = prop.images.map(img => img.imageUrl);
+            } else if (prop.image) {
+                imagesList = [prop.image];
+            }
+
+            const hasPhoto = imagesList.length > 0 && imagesList[0] && imagesList[0].trim() !== "";
+            const primaryPhoto = hasPhoto ? imagesList[0] : "";
+
+            // Calculate Trash 15-Day Auto Purge Countdown
+            let trashDaysLeft = 15;
+            if (isTrashItem && prop.deletedAt) {
+                const deletedDate = new Date(prop.deletedAt);
+                const now = new Date();
+                const diffTime = Math.abs(now - deletedDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                trashDaysLeft = Math.max(1, 15 - diffDays);
+            }
+
+            card.innerHTML = `
+                <div class="property-image">
+                    <span class="property-purpose-badge ${isRent ? 'badge-rent' : 'badge-buy'}">
+                        For ${purpose}
+                    </span>
+                    ${hasPhoto ? `
+                        <img src="${primaryPhoto}" alt="${prop.title}" onerror="this.parentElement.innerHTML='<div class=\\'image-placeholder\\'><div class=\\'image-placeholder-icon\\'>🏠</div><div class=\\'image-placeholder-text\\'>HouseHub Verified Listing</div></div>'">
+                        ${imagesList.length > 1 ? `
+                            <span class="property-photo-count-badge">📷 ${imagesList.length} Photos</span>
+                        ` : ''}
+                    ` : `
+                        <div class="image-placeholder">
+                            <div class="image-placeholder-icon">🏠</div>
+                            <div class="image-placeholder-text">HouseHub Listing</div>
+                        </div>
+                    `}
+                </div>
+
+                <div class="property-content">
+                    <h3 class="property-title">${prop.title}</h3>
+                    <p class="property-location">📍 ${prop.city || 'Jodhpur'}, ${prop.address || ''}</p>
+
+                    <!-- Compact 5-Item Specifications Grid -->
+                    <div class="specs-grid-compact">
+                        <div class="spec-cell">
+                            <span class="spec-title">Rooms</span>
+                            <span class="spec-val">🛏️ ${prop.rooms || prop.bhk} (${prop.bhk} BHK)</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-title">Baths</span>
+                            <span class="spec-val">🚿 ${prop.bathrooms || 1} Baths</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-title">Kitchen</span>
+                            <span class="spec-val">🍳 ${prop.kitchen || 'Modular'}</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-title">Floor</span>
+                            <span class="spec-val">🏢 ${prop.floorNo || 'Ground'}</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-title">Hall</span>
+                            <span class="spec-val">🛋️ ${prop.hall || '1 Hall'}</span>
+                        </div>
+                        <div class="spec-cell">
+                            <span class="spec-title">Area</span>
+                            <span class="spec-val">📐 ${prop.areaSqft || 1000} sq.ft</span>
+                        </div>
+                    </div>
+
+                    <div class="property-price-row">
+                        <div class="property-price">
+                            ₹${priceFormatted} <span class="property-price-period">${isRent ? '/ month' : ''}</span>
+                        </div>
+                        <span style="font-size:12px; color:var(--slate-500); font-weight:600;">${prop.propertyType || 'Apartment'}</span>
+                    </div>
+
+                    <!-- Status Badges -->
+                    <div class="property-status-badges">
+                        ${!isTrashItem ? `
+                            <span class="status-pill ${statusClass}">
+                                ● ${statusLabel}
+                            </span>
+                            ${vStatus === "APPROVED" ? `
+                                <span class="deal-pill ${dealBadgeClass}">
+                                    Deal: ${currentDeal}
+                                </span>
+                            ` : ''}
+                        ` : `
+                            <span class="trash-countdown-pill">
+                                ⏳ Auto-deletes in ${trashDaysLeft} days
+                            </span>
+                        `}
+                    </div>
+
+                    <!-- Deal Actions (for live approved properties) -->
+                    ${(!isTrashItem && vStatus === "APPROVED") ? `
+                        <div class="deal-actions-box">
+                            <p>Property Deal Actions:</p>
+                            <div class="deal-btn-group">
+                                ${isRent && currentDeal !== 'RENTED' ? `
+                                    <button class="deal-btn deal-btn-rented" onclick="handleDealStatusChange(${prop.propertyId}, 'RENTED')">
+                                        🏷️ Mark as Rented
+                                    </button>
+                                ` : ''}
+                                ${!isRent && currentDeal !== 'SOLD' ? `
+                                    <button class="deal-btn deal-btn-sold" onclick="handleDealStatusChange(${prop.propertyId}, 'SOLD')">
+                                        🏷️ Mark as Sold
+                                    </button>
+                                ` : ''}
+                                ${currentDeal !== 'AVAILABLE' ? `
+                                    <button class="deal-btn deal-btn-available" onclick="handleDealStatusChange(${prop.propertyId}, 'AVAILABLE')">
+                                        🔄 Mark Available
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- CARD FOOTER ACTIONS -->
+                    <div class="card-actions">
+                        ${!isTrashItem ? `
+                            <button class="action-btn action-btn-view" onclick="openFullDetailsModal(${prop.propertyId})">
+                                👁️ View
+                            </button>
+                            <button class="action-btn action-btn-edit" onclick="openEditModal(${prop.propertyId})">
+                                ✏️ Edit
+                            </button>
+                            <button class="action-btn action-btn-delete" onclick="handleMoveToTrash(${prop.propertyId}, '${escapeHtml(prop.title)}')">
+                                🗑️ Delete
+                            </button>
+                        ` : `
+                            <button class="action-btn action-btn-view" onclick="openFullDetailsModal(${prop.propertyId})">
+                                👁️ View
+                            </button>
+                            <button class="action-btn action-btn-restore" onclick="handleRestoreProperty(${prop.propertyId}, '${escapeHtml(prop.title)}')">
+                                🔄 Restore
+                            </button>
+                            <button class="action-btn action-btn-permanent" onclick="handlePermanentDelete(${prop.propertyId}, '${escapeHtml(prop.title)}')">
+                                ❌ Purge
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // =========================================================
+        // VIEW FULL PROPERTY DETAILS MODAL (FULL FIX)
+        // =========================================================
+        function openFullDetailsModal(propertyId) {
+            // Find property in active or trash lists
+            const prop = activeProperties.find(p => p.propertyId === propertyId) ||
+                         trashProperties.find(p => p.propertyId === propertyId);
+
+            if (!prop) {
+                showToast("Property details could not be found.", "⚠️");
+                return;
+            }
+
+            const modalOverlay = document.getElementById("propertyDetailsModal");
+            const modalContent = document.getElementById("detailsModalContent");
+
+            // Process photos
+            let imagesList = [];
+            if (prop.images && prop.images.length > 0) {
+                imagesList = prop.images.map(img => img.imageUrl);
+            } else if (prop.image) {
+                imagesList = [prop.image];
+            } else {
+                imagesList = ["../images/flat-banner.jpg"];
+            }
+
+            currentModalImages = imagesList;
+            currentModalImageIdx = 0;
+
+            const purpose = (prop.purpose || "RENT").toUpperCase();
+            const isRent = purpose === "RENT";
+            const priceFormatted = Number(prop.price || 0).toLocaleString();
+            const priceDisplay = isRent ? `₹${priceFormatted} / month` : `₹${priceFormatted}`;
+
+            const vStatus = prop.verificationStatus || "PENDING";
+            let statusBadge = `<span style="background:#fff7ed; color:#c2410c; padding:4px 10px; border-radius:14px; font-size:12px; font-weight:700;">● Pending Verification</span>`;
+            if (vStatus === "APPROVED") {
+                statusBadge = `<span style="background:#ecfdf3; color:#15803d; padding:4px 10px; border-radius:14px; font-size:12px; font-weight:700;">● Approved & Live</span>`;
+            } else if (vStatus === "REJECTED") {
+                statusBadge = `<span style="background:#fef2f2; color:#dc2626; padding:4px 10px; border-radius:14px; font-size:12px; font-weight:700;">● Rejected</span>`;
+            }
+
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+                            <span style="background:${isRent ? '#2563eb' : '#7c3aed'}; color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:12px; text-transform:uppercase;">For ${purpose}</span>
+                            ${statusBadge}
+                            <span style="background:#f1f5f9; color:#475467; font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px;">Deal: ${prop.propertyStatus || 'AVAILABLE'}</span>
+                        </div>
+                        <h2>${prop.title}</h2>
+                        <div style="font-size:13px; color:var(--slate-500); margin-top:4px;">
+                            📍 ${prop.address || ''}, ${prop.city || 'Jodhpur'}, ${prop.state || 'Rajasthan'}
+                        </div>
+                    </div>
+                    <button class="modal-close-btn" onclick="closeDetailsModal()">✕</button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Photo Gallery Carousel -->
+                    <div style="background:#0f172a; border-radius:12px; overflow:hidden; position:relative; height:340px; display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+                        <img id="detailModalMainImg" src="${imagesList[0]}" alt="${prop.title}" style="max-height:100%; max-width:100%; object-fit:contain;">
+
+                        ${imagesList.length > 1 ? `
+                            <button type="button" onclick="changeDetailModalSlide(-1)" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:40px; height:40px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">❮</button>
+                            <button type="button" onclick="changeDetailModalSlide(1)" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:rgba(15,23,42,0.75); color:#fff; border:1px solid rgba(255,255,255,0.3); width:40px; height:40px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">❯</button>
+                            <div style="position:absolute; bottom:12px; right:16px; background:rgba(15,23,42,0.85); color:#fff; padding:4px 12px; border-radius:16px; font-size:11px; font-weight:600;">
+                                📷 <span id="detailModalCounter">1 / ${imagesList.length}</span> Photos
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    ${imagesList.length > 1 ? `
+                        <div style="display:flex; gap:8px; margin-bottom:20px; overflow-x:auto; padding-bottom:6px;">
+                            ${imagesList.map((url, i) => `
+                                <img id="detailThumb-${i}" src="${url}" onclick="setDetailModalSlide(${i})" style="width:68px; height:48px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid ${i === 0 ? '#2563eb' : 'transparent'}; opacity:${i === 0 ? '1' : '0.5'}; flex-shrink:0;">
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <!-- Price & Category Block -->
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; padding:16px 20px; background:#eff6ff; border-radius:12px; border:1px solid #bfdbfe; margin-bottom:24px;">
+                        <div>
+                            <span style="font-size:11px; color:#1d4ed8; text-transform:uppercase; font-weight:700;">Pricing</span>
+                            <div style="font-size:26px; font-weight:800; color:#1d4ed8;">${priceDisplay}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:11px; color:var(--slate-500); text-transform:uppercase; font-weight:600;">Property Category</span>
+                            <div style="font-size:16px; font-weight:700; color:var(--slate-800);">${prop.propertyType || 'Apartment'}</div>
+                        </div>
+                    </div>
+
+                    <!-- 12-Item Layout & Specifications Grid -->
+                    <h4 style="font-size:16px; margin:0 0 12px; color:var(--slate-800);">📐 Complete Layout & Specifications</h4>
+                    <div class="modal-specs-grid">
+                        <div class="modal-spec-card">
+                            <span>ROOMS / BEDROOMS</span>
+                            <strong>🛏️ ${prop.rooms || prop.bhk} Rooms (${prop.bhk} BHK)</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>BATHROOMS</span>
+                            <strong>🚿 ${prop.bathrooms || 1} Baths</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>KITCHEN</span>
+                            <strong>🍳 ${prop.kitchen || 'Modular Kitchen'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>FLOOR NUMBER</span>
+                            <strong>🏢 ${prop.floorNo ? prop.floorNo + (prop.totalFloors ? ' (of ' + prop.totalFloors + ')' : '') : 'Ground Floor'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>HALL / LIVING AREA</span>
+                            <strong>🛋️ ${prop.hall || '1 Living Hall'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>BALCONIES</span>
+                            <strong>🌅 ${prop.balconies !== undefined && prop.balconies !== null ? prop.balconies + ' Balcony' : '1 Balcony'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>SUPER BUILT-UP AREA</span>
+                            <strong>📐 ${prop.areaSqft || 'N/A'} sq.ft</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>FURNISHED STATUS</span>
+                            <strong>🛋️ ${prop.furnishedStatus || 'Standard'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>PARKING</span>
+                            <strong>🚗 ${prop.parking ? 'Available' : 'No'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>FACING DIRECTION</span>
+                            <strong>🧭 ${prop.facing || 'East Facing'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>PROPERTY AGE</span>
+                            <strong>⏳ ${prop.propertyAge || 'New Construction'}</strong>
+                        </div>
+                        <div class="modal-spec-card">
+                            <span>LISTING PURPOSE</span>
+                            <strong>🏷️ For ${purpose}</strong>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <h4 style="font-size:15px; margin:0 0 8px; color:var(--slate-800);">📝 Property Description</h4>
+                    <div style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:10px; padding:14px; margin-bottom:20px; font-size:14px; color:var(--slate-600); line-height:1.6;">
+                        ${prop.description || 'No detailed description provided.'}
+                    </div>
+
+                    <!-- Amenities -->
+                    <h4 style="font-size:15px; margin:0 0 8px; color:var(--slate-800);">✨ Amenities & Facilities</h4>
+                    <div style="margin-bottom:24px; display:flex; flex-wrap:wrap; gap:8px;">
+                        ${(prop.amenities ? prop.amenities.split(',').map(a => `<span style="background:#f1f5f9; color:var(--slate-800); border:1px solid #cbd5e1; padding:4px 12px; border-radius:16px; font-size:12px; font-weight:600;">✓ ${a.trim()}</span>`).join('') : '<span style="color:var(--slate-500); font-size:13px;">Water Supply, Electricity</span>')}
+                    </div>
+
+                    <!-- Rejection Reason Warning (if rejected) -->
+                    ${prop.rejectionReason ? `
+                        <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:14px; margin-bottom:20px;">
+                            <strong style="color:#b91c1c; font-size:14px; display:block; margin-bottom:4px;">Admin Feedback / Rejection Reason:</strong>
+                            <span style="color:#7f1d1d; font-size:13px;">${prop.rejectionReason}</span>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="modal-footer">
+                    <button class="action-btn action-btn-edit" onclick="closeDetailsModal()">Close</button>
+                    ${!prop.isDeleted ? `
+                        <button class="action-btn action-btn-view" onclick="closeDetailsModal(); openEditModal(${prop.propertyId});">✏️ Edit Details</button>
+                    ` : ''}
+                </div>
+            `;
+
+            modalOverlay.classList.add("active");
+        }
+
+        function closeDetailsModal() {
+            document.getElementById("propertyDetailsModal").classList.remove("active");
+        }
+
+        function changeDetailModalSlide(dir) {
+            if (!currentModalImages || currentModalImages.length <= 1) return;
+            currentModalImageIdx = (currentModalImageIdx + dir + currentModalImages.length) % currentModalImages.length;
+            updateDetailModalSlide();
+        }
+
+        function setDetailModalSlide(idx) {
+            currentModalImageIdx = idx;
+            updateDetailModalSlide();
+        }
+
+        function updateDetailModalSlide() {
+            const imgEl = document.getElementById("detailModalMainImg");
+            const counterEl = document.getElementById("detailModalCounter");
+            if (imgEl && currentModalImages[currentModalImageIdx]) {
+                imgEl.src = currentModalImages[currentModalImageIdx];
+            }
+            if (counterEl) {
+                counterEl.textContent = `${currentModalImageIdx + 1} / ${currentModalImages.length}`;
+            }
+            currentModalImages.forEach((_, i) => {
+                const thumb = document.getElementById(`detailThumb-${i}`);
+                if (thumb) {
+                    thumb.style.borderColor = (i === currentModalImageIdx) ? "#2563eb" : "transparent";
+                    thumb.style.opacity = (i === currentModalImageIdx) ? "1" : "0.5";
+                }
+            });
+        }
+
+        // =========================================================
+        // DEAL STATUS ACTIONS
+        // =========================================================
+        async function handleDealStatusChange(propertyId, newStatus) {
+            if (!confirm(`Are you sure you want to change this listing's deal status to ${newStatus}?`)) return;
 
             try {
                 await window.api.updatePropertyStatus(propertyId, newStatus);
-                alert(`✅ Property successfully updated to ${newStatus}!`);
-                loadMyProperties();
-            } catch (error) {
-                alert("Failed to update status: " + error.message);
+                showToast(`Listing deal marked as ${newStatus}!`, "✅");
+                await loadAllPropertiesData();
+            } catch (err) {
+                alert("Failed to update status: " + err.message);
             }
         }
 
-        function viewPropDetails(id) {
-            localStorage.setItem("selectedPropertyId", id);
-            window.location.href = "property-details.html";
+        // =========================================================
+        // MOVE TO TRASH (SOFT DELETE - 15 DAYS RETENTION)
+        // =========================================================
+        async function handleMoveToTrash(propertyId, title) {
+            const confirmed = confirm(
+                `Move "${title}" to Trash Bin?\n\n` +
+                `• The listing will be placed in the Trash Bin for 15 days.\n` +
+                `• You can restore it anytime during this period.\n` +
+                `• After 15 days, it will be automatically and permanently purged.`
+            );
+            if (!confirmed) return;
+
+            try {
+                await window.api.deleteProperty(propertyId);
+                showToast(`Moved to Trash Bin. Auto-deletes after 15 days.`, "🗑️");
+                await loadAllPropertiesData();
+            } catch (err) {
+                alert("Failed to delete property: " + err.message);
+            }
         }
 
-        document.addEventListener("DOMContentLoaded", loadMyProperties);
+        // =========================================================
+        // RESTORE FROM TRASH
+        // =========================================================
+        async function handleRestoreProperty(propertyId, title) {
+            try {
+                await window.api.restoreProperty(propertyId);
+                showToast(`"${title}" restored successfully!`, "🔄");
+                await loadAllPropertiesData();
+            } catch (err) {
+                alert("Failed to restore property: " + err.message);
+            }
+        }
+
+        // =========================================================
+        // PERMANENT DELETE (PURGE)
+        // =========================================================
+        async function handlePermanentDelete(propertyId, title) {
+            const confirmed = confirm(`Are you sure you want to permanently delete "${title}"?\n\n⚠️ WARNING: This action cannot be undone!`);
+            if (!confirmed) return;
+
+            try {
+                await window.api.permanentDeleteProperty(propertyId);
+                showToast("Property permanently deleted.", "❌");
+                await loadAllPropertiesData();
+            } catch (err) {
+                alert("Failed to purge property: " + err.message);
+            }
+        }
+
+        // =========================================================
+        // EMPTY TRASH BIN
+        // =========================================================
+        async function handleEmptyTrash() {
+            if (trashProperties.length === 0) {
+                alert("Trash bin is already empty.");
+                return;
+            }
+
+            const confirmed = confirm(`Permanently delete all ${trashProperties.length} items from Trash Bin?\n\n⚠️ WARNING: All items will be permanently erased!`);
+            if (!confirmed) return;
+
+            try {
+                await window.api.emptyTrash();
+                showToast("Trash Bin completely emptied.", "🗑️");
+                await loadAllPropertiesData();
+            } catch (err) {
+                alert("Failed to empty trash: " + err.message);
+            }
+        }
+
+        // =========================================================
+        // QUICK EDIT MODAL
+        // =========================================================
+        function openEditModal(propertyId) {
+            const prop = activeProperties.find(p => p.propertyId === propertyId);
+            if (!prop) return;
+
+            document.getElementById("editPropId").value = prop.propertyId;
+            document.getElementById("editTitle").value = prop.title || "";
+            document.getElementById("editPrice").value = prop.price || "";
+            document.getElementById("editFurnished").value = prop.furnishedStatus || "Semi-Furnished";
+            document.getElementById("editRooms").value = prop.rooms || prop.bhk || 2;
+            document.getElementById("editKitchen").value = prop.kitchen || "Modular Kitchen";
+            document.getElementById("editFloor").value = prop.floorNo || "";
+            document.getElementById("editHall").value = prop.hall || "";
+            document.getElementById("editDescription").value = prop.description || "";
+            document.getElementById("editAmenities").value = prop.amenities || "";
+
+            document.getElementById("editPropertyModal").classList.add("active");
+        }
+
+        function closeEditModal() {
+            document.getElementById("editPropertyModal").classList.remove("active");
+        }
+
+        async function submitEditProperty(e) {
+            e.preventDefault();
+            const id = document.getElementById("editPropId").value;
+            const payload = {
+                title: document.getElementById("editTitle").value.trim(),
+                price: parseFloat(document.getElementById("editPrice").value),
+                furnishedStatus: document.getElementById("editFurnished").value,
+                rooms: parseInt(document.getElementById("editRooms").value),
+                kitchen: document.getElementById("editKitchen").value,
+                floorNo: document.getElementById("editFloor").value.trim(),
+                hall: document.getElementById("editHall").value.trim(),
+                description: document.getElementById("editDescription").value.trim(),
+                amenities: document.getElementById("editAmenities").value.trim()
+            };
+
+            try {
+                await window.api.updateProperty(id, payload);
+                closeEditModal();
+                showToast("Property updated successfully!", "✅");
+                await loadAllPropertiesData();
+            } catch (err) {
+                alert("Failed to update property: " + err.message);
+            }
+        }
+
+        // =========================================================
+        // UTILITIES & HELPERS
+        // =========================================================
+        function closeModalOnOverlay(e, modalId) {
+            if (e.target.id === modalId) {
+                document.getElementById(modalId).classList.remove("active");
+            }
+        }
+
+        function showToast(msg, icon = "✅") {
+            const toast = document.getElementById("toastMessage");
+            document.getElementById("toastIcon").textContent = icon;
+            document.getElementById("toastText").textContent = msg;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3500);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/['"&<>]/g, function (m) {
+                return {
+                    "'": '&#39;',
+                    '"': '&quot;',
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;'
+                }[m];
+            });
+        }
     </script>
 </body>
 </html>

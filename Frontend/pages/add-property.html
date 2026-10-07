@@ -466,6 +466,121 @@
                 </div>
 
 
+                <!-- Rooms, Kitchen, Hall -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="rooms">
+                            Rooms / Bedrooms <span>*</span>
+                        </label>
+
+                        <select id="rooms">
+                            <option value="1">1 Bedroom / Room</option>
+                            <option value="2">2 Bedrooms / Rooms</option>
+                            <option value="3" selected>3 Bedrooms / Rooms</option>
+                            <option value="4">4 Bedrooms / Rooms</option>
+                            <option value="5">5+ Bedrooms / Rooms</option>
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="kitchen">
+                            Kitchen Type <span>*</span>
+                        </label>
+
+                        <select id="kitchen">
+                            <option value="Modular Kitchen" selected>Modular Kitchen</option>
+                            <option value="Semi-Modular Kitchen">Semi-Modular Kitchen</option>
+                            <option value="Standard Kitchen">Standard Kitchen</option>
+                            <option value="Open Modular Kitchen">Open Modular Kitchen</option>
+                            <option value="1 Kitchen">1 Separate Kitchen</option>
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="hall">
+                            Hall / Living Room <span>*</span>
+                        </label>
+
+                        <select id="hall">
+                            <option value="1 Living Hall" selected>1 Living Hall</option>
+                            <option value="1 Large Hall with Dining">1 Large Hall with Dining Area</option>
+                            <option value="2 Halls (Living + Family)">2 Halls (Living + Family)</option>
+                            <option value="Compact Living Hall">Compact Living Hall</option>
+                            <option value="No Separate Hall">No Separate Hall</option>
+                        </select>
+
+                        <small class="error-message"></small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="floor">
+                            Floor Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="floor"
+                            placeholder="Example: 2nd Floor, Ground Floor">
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="totalFloors">
+                            Total Floors in Building
+                        </label>
+
+                        <input
+                            type="number"
+                            id="totalFloors"
+                            min="1"
+                            placeholder="Example: 4 Floors">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="balconies">
+                            Balconies
+                        </label>
+
+                        <select id="balconies">
+                            <option value="0">0 Balconies</option>
+                            <option value="1" selected>1 Balcony</option>
+                            <option value="2">2 Balconies</option>
+                            <option value="3">3+ Balconies</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
                 <div class="form-row">
 
                     <div class="form-group">
@@ -492,16 +607,12 @@
 
                         <select id="furnishedStatus">
 
-                            <option value="">
-                                Select status
+                            <option value="semi">
+                                Semi Furnished
                             </option>
 
                             <option value="fully">
                                 Fully Furnished
-                            </option>
-
-                            <option value="semi">
-                                Semi Furnished
                             </option>
 
                             <option value="unfurnished">
@@ -527,11 +638,7 @@
 
                         <select id="parking">
 
-                            <option value="">
-                                Select option
-                            </option>
-
-                            <option value="available">
+                            <option value="available" selected>
                                 Available
                             </option>
 
@@ -546,15 +653,43 @@
 
                     <div class="form-group">
 
-                        <label for="floor">
-                            Floor
+                        <label for="facing">
+                            Facing / Direction
                         </label>
 
-                        <input
-                            type="text"
-                            id="floor"
-                            placeholder="Example: 2nd Floor">
+                        <select id="facing">
+                            <option value="East Facing" selected>East Facing</option>
+                            <option value="North-East Facing">North-East Facing</option>
+                            <option value="North Facing">North Facing</option>
+                            <option value="West Facing">West Facing</option>
+                            <option value="South Facing">South Facing</option>
+                        </select>
 
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="propertyAge">
+                            Property Age / Construction
+                        </label>
+
+                        <select id="propertyAge">
+                            <option value="New Construction (0-1 yr)" selected>New Construction (0-1 yr)</option>
+                            <option value="1 to 3 Years">1 to 3 Years</option>
+                            <option value="3 to 5 Years">3 to 5 Years</option>
+                            <option value="5 to 10 Years">5 to 10 Years</option>
+                            <option value="10+ Years">10+ Years</option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <!-- Spacer / reserved -->
                     </div>
 
                 </div>

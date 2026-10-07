@@ -99,6 +99,12 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.success("Pending properties fetched successfully.", pending));
     }
 
+    @GetMapping("/properties/approved")
+    public ResponseEntity<ApiResponse<List<Property>>> getApprovedProperties() {
+        List<Property> approved = propertyRepository.findByVerificationStatus(VerificationStatus.APPROVED);
+        return ResponseEntity.ok(ApiResponse.success("Approved properties fetched successfully.", approved));
+    }
+
     @PutMapping("/properties/{id}/approve")
     public ResponseEntity<ApiResponse<Property>> approveProperty(
             @PathVariable("id") Long propertyId,

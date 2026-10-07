@@ -44,6 +44,15 @@ public class PropertyRequestDto {
     private Integer bhk;
 
     private Integer bathrooms;
+    private Integer rooms;
+    private String kitchen;
+    private String floorNo;
+    private Integer totalFloors;
+    private String hall;
+    private Integer balconies;
+    private String facing;
+    private String propertyAge;
+
     private Double areaSqft;
     private String furnishedStatus;
     private Boolean parking;

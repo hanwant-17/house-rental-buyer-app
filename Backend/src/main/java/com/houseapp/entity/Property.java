@@ -58,7 +58,31 @@ public class Property {
     @Column(nullable = false)
     private Integer bhk;
 
+    @Column(name = "rooms")
+    private Integer rooms;
+
     private Integer bathrooms;
+
+    @Column(name = "kitchen", length = 100)
+    private String kitchen;
+
+    @Column(name = "floor_no", length = 50)
+    private String floorNo;
+
+    @Column(name = "total_floors")
+    private Integer totalFloors;
+
+    @Column(name = "hall", length = 100)
+    private String hall;
+
+    @Column(name = "balconies")
+    private Integer balconies;
+
+    @Column(name = "facing", length = 50)
+    private String facing;
+
+    @Column(name = "property_age", length = 50)
+    private String propertyAge;
 
     @Column(name = "area_sqft")
     private Double areaSqft;
@@ -95,6 +119,13 @@ public class Property {
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
     private List<PropertyImage> images = new ArrayList<>();
+
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

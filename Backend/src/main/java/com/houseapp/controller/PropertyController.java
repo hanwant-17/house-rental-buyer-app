@@ -84,4 +84,63 @@ public class PropertyController {
         Property updated = propertyService.updatePropertyStatus(id, status, userPrincipal.getId());
         return ResponseEntity.ok(ApiResponse.success("Property status updated to: " + status, updated));
     }
+
+    // BROKER: Get deleted properties in Trash Bin
+    @GetMapping("/trash")
+    @PreAuthorize("hasAuthority('ROLE_BROKER')")
+    public ResponseEntity<ApiResponse<List<Property>>> getTrashProperties(
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        List<Property> trashProperties = propertyService.getTrashPropertiesByBroker(userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Trash properties fetched successfully.", trashProperties));
+    }
+
+    // BROKER: Soft delete property (Move to Trash Bin - 15 days retention)
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_BROKER')")
+    public ResponseEntity<ApiResponse<Void>> deleteProperty(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        propertyService.softDeleteProperty(id, userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Property moved to Trash Bin. It will be permanently removed in 15 days unless restored.", null));
+    }
+
+    // BROKER: Restore property from Trash Bin
+    @PutMapping("/{id}/restore")
+    @PreAuthorize("hasAuthority('ROLE_BROKER')")
+    public ResponseEntity<ApiResponse<Property>> restoreProperty(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        Property restored = propertyService.restoreProperty(id, userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Property restored successfully from Trash Bin.", restored));
+    }
+
+    // BROKER: Permanently delete single property from Trash Bin
+    @DeleteMapping("/{id}/permanent")
+    @PreAuthorize("hasAuthority('ROLE_BROKER')")
+    public ResponseEntity<ApiResponse<Void>> permanentDeleteProperty(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        propertyService.permanentDeleteProperty(id, userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Property permanently deleted.", null));
+    }
+
+    // BROKER: Empty entire Trash Bin
+    @DeleteMapping("/trash/empty")
+    @PreAuthorize("hasAuthority('ROLE_BROKER')")
+    public ResponseEntity<ApiResponse<Void>> emptyTrash(
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        propertyService.emptyTrash(userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Trash Bin emptied successfully.", null));
+    }
+
+    // BROKER: Update existing property details
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_BROKER')")
+    public ResponseEntity<ApiResponse<Property>> updateProperty(
+            @PathVariable("id") Long id,
+            @RequestBody PropertyRequestDto request,
+            @AuthenticationPrincipal UserDetailsImpl userPrincipal) {
+        Property updated = propertyService.updateProperty(id, request, userPrincipal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Property updated successfully.", updated));
+    }
 }
