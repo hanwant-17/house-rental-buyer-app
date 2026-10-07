@@ -2,10 +2,26 @@
 // 🏠 HouseHub - Centralized API Service (Frontend <-> Backend)
 // Base URL: Spring Boot Backend
 // ==========================================================
-const API_HOST = (typeof window !== "undefined" && window.location.hostname && window.location.hostname !== "")
-    ? window.location.hostname
-    : "localhost";
-const API_BASE_URL = `http://${API_HOST}:8080/api`;
+// Dynamic Base URL Resolver: Works on Localhost, Local Wi-Fi, and Cloud Production
+function resolveApiBaseUrl() {
+    if (typeof window !== "undefined") {
+        if (window.HOUSEHUB_API_URL) return window.HOUSEHUB_API_URL;
+        const storedApi = localStorage.getItem("househub_api_url");
+        if (storedApi) return storedApi;
+
+        const host = window.location.hostname || "localhost";
+        const isLocalNetwork = host === "localhost" || host === "127.0.0.1" ||
+                               host.startsWith("192.168.") || host.startsWith("10.") || host.endsWith(".local");
+
+        if (isLocalNetwork) {
+            return `http://${host}:8080/api`;
+        }
+    }
+    // Default Cloud Production URL (Render / Cloud Backend)
+    return "https://house-rental-backend.onrender.com/api";
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 const api = {
     // Helper to get stored auth token
     getToken() {
