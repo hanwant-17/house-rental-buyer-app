@@ -1,60 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>My Wishlist - HouseHub</title>
 
-    <link rel="stylesheet" href="../css/dashboard.css">
-
     <style>
-        .wishlist-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 45px 25px;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --emerald: #10b981;
+            --emerald-light: #ecfdf5;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
         }
 
-        .page-heading {
-            margin-bottom: 30px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        .page-heading h1 {
-            font-size: 30px;
-            margin-bottom: 8px;
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .page-heading p {
-            color: #667085;
+        /* NAVBAR */
+        .customer-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span { color: var(--primary); }
+
+        .portal-tag {
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #a7f3d0;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
             font-size: 14px;
+            flex-shrink: 0;
         }
 
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        /* PAGE WORKSPACE */
+        .page-workspace {
+            max-width: 1280px;
+            margin: 30px auto 60px;
+            padding: 0 4%;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .page-header-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .page-header-card p {
+            font-size: 14px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        .count-badge {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* CONTROLS ROW */
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            height: 40px;
+            padding: 0 14px 0 36px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            font-size: 13.5px;
+            outline: none;
+            width: 300px;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            width: 340px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            font-size: 13px;
+        }
+
+        /* WISHLIST GRID */
         .wishlist-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 22px;
         }
 
         .wishlist-card {
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
-        }
-
-        .wishlist-image {
-            height: 200px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
             position: relative;
         }
 
-        .wishlist-image img {
+        .wishlist-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--slate-300);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-img-box {
+            height: 200px;
+            position: relative;
+            background: #e2e8f0;
+        }
+
+        .card-img-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .remove-btn {
+        .badge-purpose {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-rent { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .badge-buy { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+        .btn-remove-wish {
             position: absolute;
             top: 12px;
             right: 12px;
@@ -62,160 +315,248 @@
             height: 36px;
             border: none;
             border-radius: 50%;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.95);
             color: #dc2626;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .remove-btn:hover {
-            background: #fef2f2;
-        }
-
-        .wishlist-content {
-            padding: 20px;
-        }
-
-        .wishlist-content h3 {
-            font-size: 19px;
-            margin-bottom: 8px;
-        }
-
-        .location {
-            color: #667085;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .property-info {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             display: flex;
-            gap: 14px;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-remove-wish:hover {
+            background: #fee2e2;
+            transform: scale(1.08);
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--slate-900);
+            line-height: 1.35;
+        }
+
+        .card-location {
+            font-size: 13px;
+            color: var(--slate-500);
+        }
+
+        .card-specs {
+            display: flex;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            margin: 6px 0 10px;
         }
 
-        .property-info span {
-            color: #475467;
-            font-size: 13px;
-        }
-
-        .price {
-            color: #1d4ed8;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 18px;
-        }
-
-        .view-btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 7px;
-            font-size: 13px;
+        .spec-pill {
+            background: var(--slate-100);
+            color: var(--slate-700);
+            font-size: 12px;
             font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
         }
 
-        .view-btn:hover {
-            background: #1d4ed8;
+        .card-footer {
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--slate-100);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .empty-wishlist {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 60px 20px;
+        .card-price {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .card-actions-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-view-prop {
+            flex: 1;
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
             text-align: center;
+            transition: all 0.2s;
         }
 
-        .empty-wishlist .icon {
-            font-size: 50px;
-            margin-bottom: 15px;
+        .btn-view-prop:hover {
+            background: var(--primary-hover);
         }
 
-        .empty-wishlist h2 {
-            margin-bottom: 8px;
+        .btn-chat-broker {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .empty-wishlist p {
-            color: #667085;
+        .btn-chat-broker:hover {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        /* EMPTY STATE */
+        .empty-card {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            color: var(--slate-500);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-card h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 6px;
+        }
+
+        .empty-card p {
+            font-size: 14px;
+            color: var(--slate-500);
             margin-bottom: 20px;
         }
 
-        .browse-btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
+        .btn-browse {
+            background: var(--primary);
+            color: #ffffff;
             text-decoration: none;
-            padding: 11px 18px;
-            border-radius: 8px;
+            padding: 11px 22px;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
-        @media (max-width: 950px) {
-            .wishlist-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .btn-browse:hover {
+            background: var(--primary-hover);
         }
 
-        @media (max-width: 650px) {
-            .wishlist-page {
-                padding: 30px 18px;
-            }
-
-            .wishlist-grid {
-                grid-template-columns: 1fr;
-            }
+        /* FOOTER */
+        .customer-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 26px 4%;
+            text-align: center;
+            font-size: 13px;
+            color: var(--slate-500);
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
+    <!-- TOP NAVBAR -->
+    <header class="customer-nav">
+        <a href="customer-dashboard.html" class="nav-brand">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="portal-tag">Customer Portal</span>
+        </a>
 
-        <div class="logo">
-            🏠 HouseHub
+        <!-- Shortcuts -->
+        <nav class="nav-shortcuts">
+            <a href="customer-dashboard.html" class="nav-link">📊 Overview</a>
+            <a href="properties.html" class="nav-link">🏢 Browse Homes</a>
+            <a href="wishlist.html" class="nav-link active">❤️ Wishlist</a>
+            <a href="chat.html" class="nav-link">💬 My Chats</a>
+            <a href="my-inquiries.html" class="nav-link">📅 My Visits</a>
+            <a href="price-analysis.html" class="nav-link">📈 Market Index</a>
+        </nav>
+
+        <!-- User Area -->
+        <div class="nav-user-area">
+            <a href="customer-profile.html" class="user-chip">
+                <div class="user-avatar" id="navAvatar">US</div>
+                <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span style="font-size:13px; font-weight:700;" id="navCustomerName">Customer</span>
+                    <span style="font-size:11px; font-weight:700; color:#059669;">Verified Customer</span>
+                </div>
+            </a>
+            <button class="btn-nav-logout" id="logoutButton">🚪 Logout</button>
+        </div>
+    </header>
+
+
+    <!-- MAIN WORKSPACE -->
+    <main class="page-workspace">
+        <a href="customer-dashboard.html" class="back-link">← Back to Customer Dashboard</a>
+
+        <div class="page-header-card">
+            <div>
+                <h1>❤️ My Saved Wishlist</h1>
+                <p>Properties you shortlisted. Compare pricing, request inspection tours, or connect directly with brokers.</p>
+            </div>
+            <div>
+                <span class="count-badge">
+                    Saved Homes: <strong id="wishlistCount">0</strong>
+                </span>
+            </div>
         </div>
 
-        <div class="user-area">
-            <span>Customer</span>
-            <button id="logoutButton">Logout</button>
+        <div class="controls-row">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search saved homes by title, city, price...">
+            </div>
+
+            <a href="properties.html" class="btn-browse" style="padding:9px 16px; font-size:13px;">
+                + Browse More Properties
+            </a>
         </div>
 
-    </nav>
-
-
-    <!-- Main Content -->
-    <main class="wishlist-page">
-
-        <div class="page-heading">
-
-            <h1>❤️ My Wishlist</h1>
-
-            <p>
-                Properties you have saved for later.
-            </p>
-
-        </div>
-
-
-        <div class="wishlist-grid" id="wishlistContainer">
-            <p style="grid-column: 1 / -1; text-align: center; color: #667085; padding: 40px;">
+        <div class="wishlist-grid" id="wishlistGrid">
+            <div class="empty-card">
                 Loading your saved properties...
-            </p>
+            </div>
         </div>
-
     </main>
 
 
-    <!-- Footer -->
-    <footer class="dashboard-footer">
-        <p>© 2026 HouseHub. All Rights Reserved.</p>
+    <!-- FOOTER -->
+    <footer class="customer-footer">
+        © 2026 HouseHub Customer Experience Portal. All Rights Reserved.
     </footer>
 
 
@@ -223,95 +564,165 @@
     <script src="../js/auth.js"></script>
 
     <script>
-        const user = window.api ? window.api.getCurrentUser() : null;
-        if (!user || user.role !== "CUSTOMER") {
-            alert("Please login as a Customer to view your wishlist.");
-            window.location.href = "login.html";
-        } else {
-            const userArea = document.querySelector(".user-area span");
-            if (userArea) {
-                userArea.textContent = `Welcome, ${user.name || "Customer"}`;
-            }
+        let allWishlistItems = [];
+
+        function getInitials(name) {
+            if (!name) return "US";
+            const parts = name.trim().split(" ");
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
         }
 
-        const container = document.getElementById("wishlistContainer");
+        document.addEventListener("DOMContentLoaded", async function () {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "CUSTOMER") {
+                alert("Please log in as Customer to view your wishlist.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const displayName = user.name || "Customer";
+            document.getElementById("navCustomerName").textContent = displayName;
+            document.getElementById("navAvatar").textContent = getInitials(displayName);
+
+            document.getElementById("logoutButton")?.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.href = "login.html";
+                }
+            });
+
+            document.getElementById("searchInput")?.addEventListener("input", function () {
+                renderWishlist();
+            });
+
+            await loadWishlist();
+        });
 
         async function loadWishlist() {
+            const grid = document.getElementById("wishlistGrid");
+            const countSpan = document.getElementById("wishlistCount");
+
             try {
                 const response = await window.api.getWishlist();
-                const items = response.data || [];
+                allWishlistItems = response.data || [];
 
-                if (items.length === 0) {
-                    container.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align:center; padding:50px; background:#fff; border-radius:14px; border:1px solid #e5e7eb;">
-                            <div style="font-size:40px; margin-bottom:10px;">❤️</div>
-                            <h3>Your wishlist is empty</h3>
-                            <p style="color:#667085; margin:10px 0 20px;">Explore verified properties and save your favorites here.</p>
-                            <a href="properties.html" class="view-btn" style="display:inline-block;">Explore Properties</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = "";
-                items.forEach(item => {
-                    const prop = item.property || {};
-                    const primaryImg = (prop.images && prop.images.length > 0) ? prop.images[0].imageUrl : "../images/flat-banner.jpg";
-                    const priceFormatted = Number(prop.price).toLocaleString();
-
-                    const card = document.createElement("div");
-                    card.className = "wishlist-card";
-                    card.innerHTML = `
-                        <div class="wishlist-image">
-                            <img src="${primaryImg}" alt="${prop.title}">
-                            <button class="remove-btn" onclick="handleRemoveWishlist(${prop.propertyId})">
-                                ♥
-                            </button>
-                        </div>
-
-                        <div class="wishlist-content">
-                            <h3>${prop.title}</h3>
-                            <p class="location">📍 ${prop.city}, ${prop.address}</p>
-
-                            <div class="property-info">
-                                <span>🛏 ${prop.bhk} BHK</span>
-                                <span>🚿 ${prop.bathrooms || 1} Baths</span>
-                                <span>📐 ${prop.areaSqft || 1000} sq.ft</span>
-                            </div>
-
-                            <div class="price">
-                                ₹${priceFormatted} ${prop.purpose === 'RENT' ? '/ month' : ''}
-                            </div>
-
-                            <button onclick="viewPropDetails(${prop.propertyId})" class="view-btn" style="width:100%; border:none; cursor:pointer;">
-                                View Details
-                            </button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
+                countSpan.textContent = allWishlistItems.length;
+                renderWishlist();
             } catch (err) {
-                container.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; color:#b91c1c; padding:30px;">Error loading wishlist: ${err.message}</p>`;
+                grid.innerHTML = `
+                    <div class="empty-card" style="color:#dc2626;">
+                        Failed to load wishlist: ${err.message}
+                    </div>
+                `;
             }
         }
 
-        async function handleRemoveWishlist(propertyId) {
-            if (!confirm("Remove this property from your wishlist?")) return;
+        function renderWishlist() {
+            const grid = document.getElementById("wishlistGrid");
+            if (!grid) return;
+
+            const query = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
+
+            let filtered = allWishlistItems;
+            if (query) {
+                filtered = filtered.filter(item => {
+                    const p = item.property || {};
+                    const title = (p.title || "").toLowerCase();
+                    const city = (p.city || "").toLowerCase();
+                    const price = String(p.price || "");
+                    return title.includes(query) || city.includes(query) || price.includes(query);
+                });
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-card">
+                        <div class="empty-icon">❤️</div>
+                        <h2>Your Wishlist is Empty</h2>
+                        <p>Explore our verified properties and click the heart icon to save homes you love!</p>
+                        <a href="properties.html" class="btn-browse">
+                            🔍 Browse Verified Homes Now
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = "";
+            filtered.forEach(item => {
+                const p = item.property || {};
+                const isRent = (p.purpose || "RENT").toUpperCase() === "RENT";
+                const priceFormatted = isRent
+                    ? `₹${Number(p.price || 0).toLocaleString()} / mo`
+                    : (Number(p.price || 0) >= 10000000
+                        ? `₹${(Number(p.price || 0) / 10000000).toFixed(2)} Cr`
+                        : `₹${(Number(p.price || 0) / 100000).toFixed(2)} Lakh`);
+
+                const imgUrl = (p.images && p.images.length > 0)
+                    ? p.images[0].imageUrl
+                    : "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80";
+
+                const card = document.createElement("div");
+                card.className = "wishlist-card";
+                card.id = `wish-card-${p.propertyId}`;
+                card.innerHTML = `
+                    <div class="card-img-box">
+                        <img src="${imgUrl}" alt="${p.title}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80'">
+                        <span class="badge-purpose ${isRent ? 'badge-rent' : 'badge-buy'}">
+                            ${isRent ? 'For Rent' : 'For Sale'}
+                        </span>
+                        <button type="button" class="btn-remove-wish" onclick="removeFromWishlist(${p.propertyId}, '${(p.title || 'Property').replace(/'/g, "\\'")}')" title="Remove from wishlist">
+                            ✕
+                        </button>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-title">${p.title || 'Verified Property'}</div>
+                        <div class="card-location">📍 ${p.address || p.city || 'City'}, ${p.city || ''}</div>
+
+                        <div class="card-specs">
+                            <span class="spec-pill">🛏️ ${p.bhk || 2} BHK</span>
+                            <span class="spec-pill">🚿 ${p.bathrooms || 2} Baths</span>
+                            <span class="spec-pill">📐 ${p.areaSqft || 1200} sq.ft</span>
+                            <span class="spec-pill">🏢 ${p.propertyType || 'Apartment'}</span>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="card-price">${priceFormatted}</div>
+                            <div class="card-actions-row">
+                                <a href="property-details.html?id=${p.propertyId}" class="btn-view-prop">
+                                    🔍 View Details
+                                </a>
+                                <button type="button" class="btn-chat-broker" onclick="openBrokerChat(${p.propertyId})">
+                                    💬 Chat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function removeFromWishlist(propertyId, title) {
+            if (!confirm(`Remove "${title}" from your saved wishlist?`)) return;
 
             try {
                 await window.api.removeFromWishlist(propertyId);
-                loadWishlist();
-            } catch (e) {
-                alert("Failed to remove item: " + e.message);
+                allWishlistItems = allWishlistItems.filter(item => item.property && item.property.propertyId !== propertyId);
+                document.getElementById("wishlistCount").textContent = allWishlistItems.length;
+                renderWishlist();
+            } catch (err) {
+                alert(`Failed to remove property: ${err.message}`);
             }
         }
 
-        function viewPropDetails(id) {
-            localStorage.setItem("selectedPropertyId", id);
-            window.location.href = "property-details.html";
+        function openBrokerChat(propertyId) {
+            localStorage.setItem("selectedPropertyId", propertyId);
+            window.location.href = "chat.html";
         }
-
-        document.addEventListener("DOMContentLoaded", loadWishlist);
     </script>
+
 </body>
 </html>

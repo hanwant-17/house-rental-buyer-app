@@ -1,88 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Customer Management - HouseHub Admin</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+
     <style>
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 45px 25px;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --danger-light: #fef2f2;
+            --success: #16a34a;
+            --success-light: #ecfdf5;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
         }
 
-        .page-header {
-            margin-bottom: 25px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAVBAR */
+        .admin-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
-        .page-header h1 {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .page-header p {
-            color: #667085;
-            font-size: 14px;
-        }
-
-        .back-link {
-            color: #2563eb;
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span { color: var(--primary); }
+
+        .admin-badge-tag {
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #fecaca;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 13.5px;
             font-weight: 600;
-            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 10px;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
         }
 
-        .customers-table-wrapper {
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        /* PAGE WORKSPACE */
+        .page-workspace {
+            max-width: 1280px;
+            margin: 30px auto 60px;
+            padding: 0 4%;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .page-header-card {
             background: #ffffff;
-            border: 1px solid #eaecf0;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        table {
+        .page-header-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .page-header-card p {
+            font-size: 14px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        .count-badge {
+            background: #f5f3ff;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* TABLE CONTAINER */
+        .table-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            padding: 24px;
+        }
+
+        .table-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            height: 40px;
+            padding: 0 14px 0 36px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            font-size: 13.5px;
+            outline: none;
+            width: 280px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            width: 320px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            font-size: 13px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .data-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13.5px;
             text-align: left;
         }
 
-        th {
+        .data-table th {
             background: #f8fafc;
-            padding: 14px 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #475467;
-            border-bottom: 1px solid #eaecf0;
+            padding: 13px 16px;
+            color: var(--slate-600);
+            font-weight: 700;
+            border-bottom: 2px solid var(--slate-200);
+            white-space: nowrap;
         }
 
-        td {
-            padding: 16px 20px;
-            font-size: 14px;
-            color: #1e293b;
-            border-bottom: 1px solid #f1f5f9;
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--slate-100);
+            color: var(--slate-800);
             vertical-align: middle;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: #fafafa;
+        .data-table tr:hover td {
+            background: #f8fafc;
         }
 
         .customer-info {
@@ -92,105 +303,163 @@
         }
 
         .customer-avatar {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: #eff6ff;
-            color: #2563eb;
+            background: #ecfdf5;
+            color: #047857;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+            border: 1px solid #a7f3d0;
         }
 
         .badge-active {
-            display: inline-block;
-            padding: 4px 10px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 8px;
             border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #ecfdf3;
-            color: #15803d;
+            display: inline-block;
         }
 
-        .empty-state {
+        .btn-remove {
+            background: #ffffff;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-remove:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
+        }
+
+        /* FOOTER */
+        .dashboard-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 24px 4%;
             text-align: center;
-            padding: 60px 20px;
-            color: #667085;
-        }
-
-        .empty-state .icon {
-            font-size: 44px;
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .customers-table-wrapper {
-                overflow-x: auto;
-            }
+            font-size: 13px;
+            color: var(--slate-500);
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
-        <div class="logo">
-            🏠 HouseHub <span style="font-size:12px; background:#eff6ff; color:#2563eb; padding:3px 8px; border-radius:12px; margin-left:8px;">Admin Panel</span>
-        </div>
-        <div class="user-area">
-            <span>Admin</span>
-            <button id="logoutButton">Logout</button>
-        </div>
-    </nav>
+    <!-- NAVBAR -->
+    <header class="admin-nav">
+        <a href="admin-dashboard.html" class="nav-brand">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="admin-badge-tag">
+                🛡️ Master Admin Console
+            </span>
+        </a>
 
-    <!-- Main Container -->
-    <main class="page-container">
+        <nav class="nav-shortcuts">
+            <a href="admin-dashboard.html" class="nav-link">📊 Overview</a>
+            <a href="admin-customers.html" class="nav-link active">👥 Customers</a>
+            <a href="approved-brokers.html" class="nav-link">🏢 Brokers</a>
+            <a href="approved-properties.html" class="nav-link">🏠 Properties</a>
+            <a href="admin-reports.html" class="nav-link">⚠️ Reports</a>
+        </nav>
+
+        <div class="nav-user-area">
+            <div class="user-chip">
+                <div class="user-avatar">AD</div>
+                <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span style="font-size:13px; font-weight:700;">Administrator</span>
+                    <span style="font-size:11px; font-weight:700; color:#dc2626;">Root Superuser</span>
+                </div>
+            </div>
+            <button class="btn-nav-logout" id="logoutButton">🚪 Logout</button>
+        </div>
+    </header>
+
+
+    <!-- MAIN WORKSPACE -->
+    <main class="page-workspace">
         <a href="admin-dashboard.html" class="back-link">← Back to Admin Dashboard</a>
 
-        <div class="page-header">
+        <div class="page-header-card">
             <div>
-                <h1>👥 Registered Customers</h1>
-                <p>Manage and monitor customer accounts registered on HouseHub.</p>
+                <h1>👥 Registered Customers Management</h1>
+                <p>Manage and monitor customer accounts registered on HouseHub. Remove violating accounts when needed.</p>
             </div>
-            <div style="font-size:15px; font-weight:600; color:#475467;">
-                Total Customers: <span id="customerCount" style="color:#2563eb;">0</span>
+            <div>
+                <span class="count-badge">
+                    Total Registered: <strong id="customerCount">0</strong>
+                </span>
             </div>
         </div>
 
-        <div class="customers-table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Customer</th>
-                        <th>Email Address</th>
-                        <th>Mobile</th>
-                        <th>Preferred City</th>
-                        <th>Interest</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="customersTableBody">
-                    <tr>
-                        <td colspan="6" style="text-align:center; padding:40px; color:#667085;">
-                            Loading registered customers...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="table-card">
+            <div class="table-top">
+                <div style="font-size:14px; font-weight:700; color:var(--slate-800);">
+                    Registered Customer Directory
+                </div>
+
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email, phone...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Customer Name & ID</th>
+                            <th>Email Address</th>
+                            <th>Mobile Phone</th>
+                            <th>Preferred City</th>
+                            <th>Market Purpose</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:40px; color:#64748b;">
+                                Loading customer records...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <!-- Footer -->
+
+    <!-- FOOTER -->
     <footer class="dashboard-footer">
-        <p>© 2026 HouseHub. All Rights Reserved.</p>
+        © 2026 HouseHub Master Administration Console. All Rights Reserved.
     </footer>
+
 
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
+        let allCustomers = [];
+
         document.addEventListener("DOMContentLoaded", async function () {
             const user = window.api ? window.api.getCurrentUser() : null;
             if (!user || user.role !== "ADMIN") {
@@ -198,6 +467,17 @@
                 window.location.href = "login.html";
                 return;
             }
+
+            document.getElementById("logoutButton")?.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out of Admin Console?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.href = "login.html";
+                }
+            });
+
+            document.getElementById("searchInput")?.addEventListener("input", function () {
+                renderCustomers();
+            });
 
             await loadCustomers();
         });
@@ -208,64 +488,114 @@
 
             try {
                 const response = await window.api.getAdminCustomers();
-                const customers = response.data || [];
+                allCustomers = response.data || [];
 
-                countSpan.textContent = customers.length;
-
-                if (customers.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6">
-                                <div class="empty-state">
-                                    <div class="icon">👥</div>
-                                    <h3>No customers registered yet</h3>
-                                    <p>When customers sign up on HouseHub, they will be listed here.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                customers.forEach(c => {
-                    const u = c.user || {};
-                    const name = u.name || "Customer";
-                    const email = u.email || "N/A";
-                    const mobile = u.mobile || "N/A";
-                    const city = c.preferredCity || "Not Specified";
-                    const purpose = c.preferredPurpose || "RENT & BUY";
-                    const initial = name.charAt(0).toUpperCase();
-
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>
-                            <div class="customer-info">
-                                <div class="customer-avatar">${initial}</div>
-                                <div>
-                                    <strong>${name}</strong>
-                                    <div style="font-size:12px; color:#64748b;">ID: #CST-${c.customerId || u.userId}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${email}</td>
-                        <td>${mobile}</td>
-                        <td>📍 ${city}</td>
-                        <td><span style="font-size:12px; background:#f1f5f9; padding:4px 8px; border-radius:6px; font-weight:600;">${purpose}</span></td>
-                        <td><span class="badge-active">Active</span></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                countSpan.textContent = allCustomers.length;
+                renderCustomers();
             } catch (err) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align:center; padding:30px; color:#b91c1c;">
-                            Failed to load customers: ${err.message}
+                        <td colspan="7" style="text-align:center; padding:30px; color:#dc2626;">
+                            Failed to load customer records: ${err.message}
                         </td>
                     </tr>
                 `;
             }
         }
+
+        function renderCustomers() {
+            const tbody = document.getElementById("customersTableBody");
+            if (!tbody) return;
+
+            const query = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
+
+            let filtered = allCustomers;
+            if (query) {
+                filtered = filtered.filter(c => {
+                    const u = c.user || {};
+                    const name = (u.name || "").toLowerCase();
+                    const email = (u.email || "").toLowerCase();
+                    const mobile = (u.mobile || "").toLowerCase();
+                    const city = (c.preferredCity || "").toLowerCase();
+                    return name.includes(query) || email.includes(query) || mobile.includes(query) || city.includes(query);
+                });
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:45px 20px; color:#64748b;">
+                            <div style="font-size:32px; margin-bottom:8px;">👥</div>
+                            <strong>No customer accounts found</strong>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            filtered.forEach(c => {
+                const u = c.user || {};
+                const name = u.name || "Customer";
+                const email = u.email || "N/A";
+                const mobile = u.mobile || "N/A";
+                const city = c.preferredCity || "Not Specified";
+                const purpose = c.preferredPurpose || "RENT & BUY";
+                const initial = name.charAt(0).toUpperCase();
+
+                const tr = document.createElement("tr");
+                tr.id = `row-cst-${c.customerId}`;
+                tr.innerHTML = `
+                    <td>
+                        <div class="customer-info">
+                            <div class="customer-avatar">${initial}</div>
+                            <div>
+                                <strong style="color:#0f172a;">${name}</strong>
+                                <div style="font-size:12px; color:#64748b; font-family:monospace;">ID: #CST-${c.customerId}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${email}</td>
+                    <td>📞 ${mobile}</td>
+                    <td>📍 ${city}</td>
+                    <td>
+                        <span style="font-size:12px; background:#f1f5f9; padding:3px 8px; border-radius:6px; font-weight:600; color:#475467;">
+                            ${purpose}
+                        </span>
+                    </td>
+                    <td><span class="badge-active">✓ Active</span></td>
+                    <td style="text-align:right;">
+                        <button type="button" class="btn-remove" onclick="removeCustomer(${c.customerId}, '${name.replace(/'/g, "\\'")}')" title="Permanently Delete Customer Account">
+                            🗑️ Remove
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function removeCustomer(customerId, customerName) {
+            const confirmed = confirm(
+                `⚠️ ARE YOU SURE YOU WANT TO REMOVE CUSTOMER "${customerName}"?\n\n` +
+                `This action will permanently delete this customer's account along with all their submitted inquiries, booked site visits, and saved items.\n\n` +
+                `This action CANNOT be undone. Click OK to confirm removal.`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                await window.api.removeCustomer(customerId);
+                alert(`✅ Customer "${customerName}" has been successfully removed.`);
+
+                // Remove from local list and update UI
+                allCustomers = allCustomers.filter(c => c.customerId !== customerId);
+                document.getElementById("customerCount").textContent = allCustomers.length;
+                renderCustomers();
+            } catch (err) {
+                alert(`❌ Failed to remove customer: ${err.message}`);
+            }
+        }
     </script>
+
 </body>
 </html>

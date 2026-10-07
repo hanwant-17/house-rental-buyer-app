@@ -5,171 +5,1028 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Dashboard - HouseHub</title>
+    <title>Master Admin Console - HouseHub</title>
 
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --danger-light: #fef2f2;
+            --success: #16a34a;
+            --success-light: #ecfdf5;
+            --amber: #f59e0b;
+            --amber-light: #fffbeb;
+            --purple: #8b5cf6;
+            --purple-light: #f5f3ff;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================= TOP NAVBAR ================= */
+        .admin-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span {
+            color: var(--primary);
+        }
+
+        .admin-badge-tag {
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #fecaca;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+        }
+
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .user-role-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        /* ================= HERO BANNER ================= */
+        .admin-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            color: #ffffff;
+            padding: 40px 4% 50px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .admin-hero::after {
+            content: "";
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulseGreen 2s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .admin-hero h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .admin-hero p {
+            font-size: 14.5px;
+            color: #94a3b8;
+            max-width: 780px;
+            margin: 0 0 18px;
+            line-height: 1.6;
+        }
+
+        .hero-meta-strip {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #cbd5e1;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-meta-strip span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+        .admin-container {
+            max-width: 1280px;
+            margin: -30px auto 60px;
+            padding: 0 4%;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* ================= KPI STATS GRID ================= */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px 22px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border-color: var(--slate-300);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .stat-blue { background: #eff6ff; color: #2563eb; }
+        .stat-emerald { background: #ecfdf5; color: #059669; }
+        .stat-amber { background: #fffbeb; color: #d97706; }
+        .stat-purple { background: #f5f3ff; color: #7c3aed; }
+        .stat-crimson { background: #fef2f2; color: #dc2626; }
+
+        .stat-info label {
+            font-size: 11px;
+            color: var(--slate-500);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .stat-info .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--slate-900);
+            line-height: 1.1;
+        }
+
+        .stat-info .stat-sub {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--slate-500);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ================= OPERATIONS HUB GRID ================= */
+        .section-header {
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 34px;
+        }
+
+        .hub-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .hub-card:hover {
+            border-color: var(--slate-300);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        }
+
+        .hub-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .hub-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .hub-card-title h3 {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 3px;
+        }
+
+        .hub-card-title p {
+            font-size: 13px;
+            color: var(--slate-500);
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        .hub-card-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hub-pill {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--slate-100);
+            color: var(--slate-700);
+        }
+
+        .hub-pill.alert {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .hub-pill.success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .hub-actions-row {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-hub-primary {
+            flex: 1;
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-hub-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-hub-secondary {
+            background: #ffffff;
+            color: var(--slate-700);
+            border: 1px solid var(--slate-300);
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-hub-secondary:hover {
+            background: var(--slate-50);
+            border-color: var(--slate-400);
+            color: var(--slate-900);
+        }
+
+        /* ================= INSTANT USER DIRECTORY & REMOVAL ================= */
+        .directory-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .directory-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .directory-top h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .directory-top p {
+            font-size: 13px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        .directory-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .dir-tabs {
+            display: flex;
+            background: var(--slate-100);
+            padding: 3px;
+            border-radius: 10px;
+            gap: 2px;
+        }
+
+        .dir-tab-btn {
+            background: none;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--slate-600);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dir-tab-btn.active {
+            background: #ffffff;
+            color: var(--slate-900);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dir-search-box {
+            position: relative;
+        }
+
+        .dir-search-input {
+            height: 38px;
+            padding: 0 12px 0 34px;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            width: 240px;
+            transition: all 0.2s;
+        }
+
+        .dir-search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            width: 280px;
+        }
+
+        .dir-search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        .admin-table th {
+            background: #f8fafc;
+            padding: 13px 14px;
+            color: var(--slate-600);
+            font-weight: 700;
+            border-bottom: 2px solid var(--slate-200);
+            white-space: nowrap;
+        }
+
+        .admin-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--slate-100);
+            color: var(--slate-800);
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-cell-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .avatar-broker { background: #eff6ff; color: #1d4ed8; }
+        .avatar-customer { background: #ecfdf5; color: #047857; }
+
+        .role-chip {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .role-broker { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .role-customer { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+        .btn-table-delete {
+            background: #ffffff;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-table-delete:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        /* ================= FOOTER ================= */
+        .admin-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 28px 4%;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .footer-brand span {
+            color: var(--primary);
+        }
+
+        .footer-sub {
+            font-size: 13px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .admin-nav {
+                padding: 0 16px;
+            }
+            .nav-shortcuts {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
+    <!-- TOP NAVBAR -->
+    <header class="admin-nav">
+        <a href="admin-dashboard.html" class="nav-brand">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="admin-badge-tag">
+                🛡️ Master Admin Console
+            </span>
+        </a>
 
-        <div class="logo">
-            🏠 HouseHub
-        </div>
+        <!-- Admin Shortcuts -->
+        <nav class="nav-shortcuts">
+            <a href="admin-dashboard.html" class="nav-link active">📊 Overview</a>
+            <a href="admin-customers.html" class="nav-link">👥 Customers</a>
+            <a href="approved-brokers.html" class="nav-link">🏢 Brokers</a>
+            <a href="approved-properties.html" class="nav-link">🏠 Properties</a>
+            <a href="admin-reports.html" class="nav-link">⚠️ Reports</a>
+            <a href="price-analysis.html" class="nav-link">📈 Market Index</a>
+        </nav>
 
-        <div class="user-area">
-            <span>Welcome, Admin</span>
-
-            <button id="logoutButton">
-                Logout
+        <!-- User Area -->
+        <div class="nav-user-area">
+            <div class="user-chip">
+                <div class="user-avatar" id="navAdminAvatar">AD</div>
+                <div class="user-meta">
+                    <span class="user-name" id="navAdminName">Administrator</span>
+                    <span class="user-role-badge">Superuser (Root)</span>
+                </div>
+            </div>
+            <button class="btn-nav-logout" id="logoutButton" title="Sign out of Admin Console">
+                🚪 Logout
             </button>
         </div>
+    </header>
 
-    </nav>
 
-
-    <!-- Dashboard -->
-    <main class="dashboard-container">
-
-        <div class="dashboard-header">
-            <h1>Admin Dashboard</h1>
-
+    <!-- HERO BANNER -->
+    <section class="admin-hero">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                HouseHub Platform Operations Online & Secure
+            </div>
+            <h1>Administration & Security Command Center</h1>
             <p>
-                Manage users, brokers, properties and verification requests.
+                Unified governance desk for broker licensing, customer access management, listings compliance, and platform dispute moderation.
             </p>
+
+            <div class="hero-meta-strip">
+                <span>🛡️ Role: Super Administrator</span>
+                <span>•</span>
+                <span>🔒 Access Level: Root Governance & Moderation</span>
+                <span>•</span>
+                <span>⚡ Engine: HouseHub Core 2.0</span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- MAIN WORKSPACE -->
+    <main class="admin-container">
+
+        <!-- 1. LIVE PLATFORM METRICS -->
+        <div class="stats-grid">
+            <!-- Total Users -->
+            <div class="stat-card">
+                <div class="stat-icon stat-blue">👥</div>
+                <div class="stat-info">
+                    <label>Platform Users</label>
+                    <div class="stat-value" id="statTotalUsers">0</div>
+                    <span class="stat-sub">Registered Accounts</span>
+                </div>
+            </div>
+
+            <!-- Approved Brokers -->
+            <a href="approved-brokers.html" class="stat-card">
+                <div class="stat-icon stat-emerald">🏢</div>
+                <div class="stat-info">
+                    <label>Verified Brokers</label>
+                    <div class="stat-value" id="statApprovedBrokers">0</div>
+                    <span class="stat-sub" id="statPendingBrokersAlert">0 Pending Approvals</span>
+                </div>
+            </a>
+
+            <!-- Customers -->
+            <a href="admin-customers.html" class="stat-card">
+                <div class="stat-icon stat-purple">👤</div>
+                <div class="stat-info">
+                    <label>Customers</label>
+                    <div class="stat-value" id="statTotalCustomers">0</div>
+                    <span class="stat-sub">Active Tenants & Buyers</span>
+                </div>
+            </a>
+
+            <!-- Properties -->
+            <a href="approved-properties.html" class="stat-card">
+                <div class="stat-icon stat-amber">🏠</div>
+                <div class="stat-info">
+                    <label>Live Properties</label>
+                    <div class="stat-value" id="statActiveProps">0</div>
+                    <span class="stat-sub" id="statPendingPropsAlert">0 Pending Verification</span>
+                </div>
+            </a>
+
+            <!-- Grievance Reports -->
+            <a href="admin-reports.html" class="stat-card">
+                <div class="stat-icon stat-crimson">⚠️</div>
+                <div class="stat-info">
+                    <label>Grievance Reports</label>
+                    <div class="stat-value" id="statTotalReports">0</div>
+                    <span class="stat-sub" id="statPendingReportsAlert">0 Active Tickets</span>
+                </div>
+            </a>
         </div>
 
 
-        <div class="dashboard-grid">
+        <!-- 2. OPERATIONS HUB GRID -->
+        <div class="section-header">
+            <h2>⚙️ Platform Governance Modules</h2>
+        </div>
 
-            <!-- Broker Verification -->
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-                    👤
+        <div class="hub-grid">
+            <!-- Module 1: Brokers -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-header">
+                        <div class="hub-card-icon stat-blue">🏢</div>
+                        <div class="hub-card-title">
+                            <h3>Broker Verification & Directory</h3>
+                            <p>Review licensing papers, assign broker codes (`BRK-...`), or remove brokers.</p>
+                        </div>
+                    </div>
+                    <div class="hub-card-stats">
+                        <span class="hub-pill alert" id="pillPendingBrokers">0 Pending Review</span>
+                        <span class="hub-pill success" id="pillApprovedBrokers">0 Verified Active</span>
+                    </div>
                 </div>
-
-                <h3>Broker Verification</h3>
-
-                <p>
-                    Review newly registered brokers and approve or reject
-                    their verification requests.
-                </p>
-
-                <a href="broker-verification.html">
-    Review Brokers →
-</a>
-
+                <div class="hub-actions-row">
+                    <a href="broker-verification.html" class="btn-hub-primary" id="btnReviewBrokers">
+                        Review Pending
+                    </a>
+                    <a href="approved-brokers.html" class="btn-hub-secondary">
+                        Approved List →
+                    </a>
+                </div>
             </div>
 
-
-            <!-- Property Verification -->
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-                    🏠
+            <!-- Module 2: Customers -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-header">
+                        <div class="hub-card-icon stat-purple">👥</div>
+                        <div class="hub-card-title">
+                            <h3>Customer Management & Access</h3>
+                            <p>Monitor tenant/buyer profiles, inquiries, search intent, and remove accounts.</p>
+                        </div>
+                    </div>
+                    <div class="hub-card-stats">
+                        <span class="hub-pill" id="pillTotalCustomers">0 Customers Registered</span>
+                        <span class="hub-pill success">All Verified</span>
+                    </div>
                 </div>
-
-                <h3>Property Verification</h3>
-
-                <p>
-                    Check property details and documents submitted by
-                    brokers before publishing them.
-                </p>
-
-                <a href="property-verification.html">
-    Review Properties →
-</a>
-
+                <div class="hub-actions-row">
+                    <a href="admin-customers.html" class="btn-hub-primary">
+                        Manage Customers & Accounts →
+                    </a>
+                </div>
             </div>
 
-
-            <!-- Customers -->
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    👥
+            <!-- Module 3: Properties -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-header">
+                        <div class="hub-card-icon stat-amber">🏘️</div>
+                        <div class="hub-card-title">
+                            <h3>Property Compliance & Inspection</h3>
+                            <p>Check photos, pricing, amenities, room layout, and approve live marketplace listings.</p>
+                        </div>
+                    </div>
+                    <div class="hub-card-stats">
+                        <span class="hub-pill alert" id="pillPendingProps">0 Pending Approval</span>
+                        <span class="hub-pill success" id="pillLiveProps">0 Live Published</span>
+                    </div>
                 </div>
-
-                <h3>Customers</h3>
-
-                <p>
-                    View registered customers and manage customer
-                    accounts.
-                </p>
-
-                <a href="admin-customers.html" id="customersCardLink">
-                    View Customers →
-                </a>
+                <div class="hub-actions-row">
+                    <a href="property-verification.html" class="btn-hub-primary" id="btnReviewProps">
+                        Review Listings
+                    </a>
+                    <a href="approved-properties.html" class="btn-hub-secondary">
+                        Live Inventory →
+                    </a>
+                </div>
             </div>
 
-
-            <!-- Approved Brokers -->
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    🏢
+            <!-- Module 4: Grievance Desk -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-header">
+                        <div class="hub-card-icon stat-crimson">⚠️</div>
+                        <div class="hub-card-title">
+                            <h3>Reports & Dispute Moderation</h3>
+                            <p>Handle user grievances, fake listing reports, fraud alerts, and broker complaints.</p>
+                        </div>
+                    </div>
+                    <div class="hub-card-stats">
+                        <span class="hub-pill alert" id="pillPendingReports">0 Pending Review</span>
+                        <span class="hub-pill" id="pillTotalReports">0 Total Filed</span>
+                    </div>
                 </div>
-
-                <h3>Approved Brokers</h3>
-
-                <p>
-                    View brokers whose registration has been approved
-                    by the administrator.
-                </p>
-
-                <a href="approved-brokers.html" id="approvedBrokersCardLink">
-                    View Brokers →
-                </a>
+                <div class="hub-actions-row">
+                    <a href="admin-reports.html" class="btn-hub-primary" id="btnGrievanceDesk">
+                        Open Grievance Desk →
+                    </a>
+                </div>
             </div>
 
+            <!-- Module 5: Market Analytics -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-header">
+                        <div class="hub-card-icon stat-emerald">📈</div>
+                        <div class="hub-card-title">
+                            <h3>Real Estate Market Price Analytics</h3>
+                            <p>Live pricing index across cities, BHK benchmarks, rental yields, and dataset manager.</p>
+                        </div>
+                    </div>
+                    <div class="hub-card-stats">
+                        <span class="hub-pill success">Live Algorithmic Index</span>
+                        <span class="hub-pill">Multi-City Benchmark</span>
+                    </div>
+                </div>
+                <div class="hub-actions-row">
+                    <a href="price-analysis.html" class="btn-hub-secondary" style="width:100%;">
+                        Explore Market Trends & Pricing →
+                    </a>
+                </div>
+            </div>
+        </div>
 
-            <!-- Approved Properties -->
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    🏘️
+
+        <!-- 3. QUICK USER & BROKER DIRECTORY (INSTANT REMOVAL TOOL) -->
+        <div class="directory-card">
+            <div class="directory-top">
+                <div>
+                    <h3>⚡ User Governance & Instant Removal Desk</h3>
+                    <p>Search, inspect, and remove brokers or customers directly with instant effect.</p>
                 </div>
 
-                <h3>Approved Properties</h3>
+                <div class="directory-controls">
+                    <div class="dir-tabs">
+                        <button type="button" class="dir-tab-btn active" onclick="switchDirectoryTab('ALL', this)">All Accounts</button>
+                        <button type="button" class="dir-tab-btn" onclick="switchDirectoryTab('BROKER', this)">Brokers</button>
+                        <button type="button" class="dir-tab-btn" onclick="switchDirectoryTab('CUSTOMER', this)">Customers</button>
+                    </div>
 
-                <p>
-                    View properties that have completed the admin
-                    verification process.
-                </p>
-
-                <a href="approved-properties.html" id="approvedPropsCardLink">
-                    View Properties →
-                </a>
-            </div>
-
-
-            <!-- Reports -->
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    ⚠️
+                    <div class="dir-search-box">
+                        <span class="dir-search-icon">🔍</span>
+                        <input type="text" id="dirSearchInput" class="dir-search-input" placeholder="Search name, email, phone...">
+                    </div>
                 </div>
-
-                <h3>Reports & Complaints</h3>
-
-                <p>
-                    Review user reports and complaints related to
-                    brokers and properties.
-                </p>
-
-                <a href="admin-reports.html" id="reportsCardLink">
-                    View Reports →
-                </a>
             </div>
 
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User / Entity Name</th>
+                            <th>Role</th>
+                            <th>Contact Information</th>
+                            <th>Location / Agency</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="directoryTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:35px; color:#64748b;">
+                                Loading accounts directory...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </main>
 
 
-    <!-- Footer -->
-    <footer class="dashboard-footer">
-        <p>
-            © 2026 HouseHub. All Rights Reserved.
+    <!-- FOOTER -->
+    <footer class="admin-footer">
+        <div class="footer-brand">
+            🏠 House<span>Hub</span> Master Security & Administration Console
+        </div>
+        <p class="footer-sub">
+            All administrative actions are logged and subject to enterprise compliance audit policies © 2026 HouseHub.
         </p>
     </footer>
 
@@ -178,70 +1035,261 @@
     <script src="../js/auth.js"></script>
 
     <script>
-        // Check Admin Auth Guard
-        const user = window.api ? window.api.getCurrentUser() : null;
-        if (!user || user.role !== "ADMIN") {
-            alert("Access restricted: Please login as Admin.");
-            window.location.href = "login.html";
-        }
+        // State
+        let allAccountsList = [];
+        let currentFilterRole = "ALL";
 
+        document.addEventListener("DOMContentLoaded", async function () {
+            // Guard
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "ADMIN") {
+                alert("Access restricted: Please login as Master Admin.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Set Admin details in navbar
+            if (user.name) {
+                document.getElementById("navAdminName").textContent = user.name;
+                const initials = user.name.split(" ").map(p => p[0]).join("").toUpperCase().substring(0, 2);
+                document.getElementById("navAdminAvatar").textContent = initials || "AD";
+            }
+
+            // Logout listener
+            document.getElementById("logoutButton")?.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out of Admin Console?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.href = "login.html";
+                }
+            });
+
+            // Directory search listener
+            document.getElementById("dirSearchInput")?.addEventListener("input", function (e) {
+                filterAndRenderDirectory();
+            });
+
+            await Promise.all([
+                loadAdminStats(),
+                loadAccountsDirectory()
+            ]);
+        });
+
+        // 1. Load Stats
         async function loadAdminStats() {
             try {
                 const response = await window.api.getAdminStats();
                 const stats = response.data || {};
-                
-                // Broker Verification Badge
-                const brokerCard = document.querySelector("a[href='broker-verification.html']");
-                if (brokerCard && stats.pendingBrokersCount > 0) {
-                    brokerCard.innerHTML = `Review Brokers (${stats.pendingBrokersCount} Pending) →`;
-                    brokerCard.style.color = "#dc2626";
-                    brokerCard.style.fontWeight = "bold";
+
+                document.getElementById("statTotalUsers").textContent = stats.totalUsers ?? 0;
+                document.getElementById("statApprovedBrokers").textContent = stats.approvedBrokersCount ?? 0;
+                document.getElementById("statTotalCustomers").textContent = stats.totalCustomers ?? 0;
+                document.getElementById("statActiveProps").textContent = stats.activePropertiesCount ?? 0;
+                document.getElementById("statTotalReports").textContent = stats.totalReportsCount ?? 0;
+
+                // Alerts & Pills
+                const pendingBrokers = stats.pendingBrokersCount || 0;
+                const approvedBrokers = stats.approvedBrokersCount || 0;
+                const pendingProps = stats.pendingPropertiesCount || 0;
+                const activeProps = stats.activePropertiesCount || 0;
+                const pendingReports = stats.pendingReportsCount || 0;
+                const totalCustomers = stats.totalCustomers || 0;
+
+                document.getElementById("statPendingBrokersAlert").textContent = `${pendingBrokers} Pending Review`;
+                document.getElementById("pillPendingBrokers").textContent = `${pendingBrokers} Pending Review`;
+                document.getElementById("pillApprovedBrokers").textContent = `${approvedBrokers} Verified Active`;
+                if (pendingBrokers > 0) {
+                    document.getElementById("btnReviewBrokers").textContent = `Review Brokers (${pendingBrokers}) →`;
+                    document.getElementById("btnReviewBrokers").style.background = "#dc2626";
                 }
 
-                // Property Verification Badge
-                const propCard = document.querySelector("a[href='property-verification.html']");
-                if (propCard && stats.pendingPropertiesCount > 0) {
-                    propCard.innerHTML = `Review Properties (${stats.pendingPropertiesCount} Pending) →`;
-                    propCard.style.color = "#dc2626";
-                    propCard.style.fontWeight = "bold";
+                document.getElementById("pillTotalCustomers").textContent = `${totalCustomers} Registered Customers`;
+
+                document.getElementById("statPendingPropsAlert").textContent = `${pendingProps} Pending Review`;
+                document.getElementById("pillPendingProps").textContent = `${pendingProps} Pending Review`;
+                document.getElementById("pillLiveProps").textContent = `${activeProps} Live Published`;
+                if (pendingProps > 0) {
+                    document.getElementById("btnReviewProps").textContent = `Review Listings (${pendingProps}) →`;
+                    document.getElementById("btnReviewProps").style.background = "#dc2626";
                 }
 
-                // Customers Card
-                const customersLink = document.getElementById("customersCardLink");
-                if (customersLink && stats.totalCustomers !== undefined) {
-                    customersLink.innerHTML = `View Customers (${stats.totalCustomers}) →`;
+                document.getElementById("statPendingReportsAlert").textContent = `${pendingReports} Active Tickets`;
+                document.getElementById("pillPendingReports").textContent = `${pendingReports} Active Tickets`;
+                document.getElementById("pillTotalReports").textContent = `${stats.totalReportsCount || 0} Total Filed`;
+                if (pendingReports > 0) {
+                    document.getElementById("btnGrievanceDesk").textContent = `Open Grievance Desk (${pendingReports}) →`;
+                    document.getElementById("btnGrievanceDesk").style.background = "#dc2626";
                 }
 
-                // Approved Brokers Card
-                const approvedBrokersLink = document.getElementById("approvedBrokersCardLink");
-                if (approvedBrokersLink && stats.approvedBrokersCount !== undefined) {
-                    approvedBrokersLink.innerHTML = `View Brokers (${stats.approvedBrokersCount} Verified) →`;
-                    approvedBrokersLink.style.color = "#16a34a";
-                }
-
-                // Approved Properties Card
-                const approvedPropsLink = document.getElementById("approvedPropsCardLink");
-                if (approvedPropsLink && stats.activePropertiesCount !== undefined) {
-                    approvedPropsLink.innerHTML = `View Live Properties (${stats.activePropertiesCount}) →`;
-                }
-
-                // Reports & Complaints Card
-                const reportsLink = document.getElementById("reportsCardLink");
-                if (reportsLink) {
-                    if (stats.pendingReportsCount > 0) {
-                        reportsLink.innerHTML = `View Reports (${stats.pendingReportsCount} Pending Review) →`;
-                        reportsLink.style.color = "#dc2626";
-                        reportsLink.style.fontWeight = "bold";
-                    } else if (stats.totalReportsCount !== undefined) {
-                        reportsLink.innerHTML = `View Reports (${stats.totalReportsCount}) →`;
-                    }
-                }
             } catch (err) {
-                console.warn("Could not fetch admin stats:", err.message);
+                console.warn("Could not fetch admin statistics:", err.message);
             }
         }
 
-        document.addEventListener("DOMContentLoaded", loadAdminStats);
+        // 2. Load Directory (Brokers & Customers)
+        async function loadAccountsDirectory() {
+            try {
+                const [brokersResp, customersResp] = await Promise.all([
+                    window.api.getApprovedBrokers().catch(() => ({ data: [] })),
+                    window.api.getAdminCustomers().catch(() => ({ data: [] }))
+                ]);
+
+                const brokers = (brokersResp.data || []).map(b => ({
+                    id: b.brokerId,
+                    userId: b.user ? b.user.userId : null,
+                    name: b.user ? b.user.name : "Broker",
+                    email: b.user ? b.user.email : "N/A",
+                    mobile: b.user ? b.user.mobile : "N/A",
+                    role: "BROKER",
+                    detailCode: b.brokerCode || "BRK-VERIFIED",
+                    location: b.city || "Not Specified",
+                    agency: b.agencyName || "Independent Broker",
+                    status: b.verificationStatus || "APPROVED"
+                }));
+
+                const customers = (customersResp.data || []).map(c => ({
+                    id: c.customerId,
+                    userId: c.user ? c.user.userId : null,
+                    name: c.user ? c.user.name : "Customer",
+                    email: c.user ? c.user.email : "N/A",
+                    mobile: c.user ? c.user.mobile : "N/A",
+                    role: "CUSTOMER",
+                    detailCode: `#CST-${c.customerId}`,
+                    location: c.preferredCity || "General",
+                    agency: c.preferredPurpose || "RENT & BUY",
+                    status: "ACTIVE"
+                }));
+
+                allAccountsList = [...brokers, ...customers];
+                filterAndRenderDirectory();
+            } catch (err) {
+                const tbody = document.getElementById("directoryTableBody");
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#dc2626;">Failed to load accounts: ${err.message}</td></tr>`;
+                }
+            }
+        }
+
+        function switchDirectoryTab(role, btn) {
+            currentFilterRole = role;
+            document.querySelectorAll(".dir-tab-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            filterAndRenderDirectory();
+        }
+
+        function filterAndRenderDirectory() {
+            const tbody = document.getElementById("directoryTableBody");
+            if (!tbody) return;
+
+            const query = (document.getElementById("dirSearchInput")?.value || "").toLowerCase().trim();
+
+            let filtered = allAccountsList;
+            if (currentFilterRole !== "ALL") {
+                filtered = filtered.filter(a => a.role === currentFilterRole);
+            }
+
+            if (query) {
+                filtered = filtered.filter(a =>
+                    a.name.toLowerCase().includes(query) ||
+                    a.email.toLowerCase().includes(query) ||
+                    a.mobile.toLowerCase().includes(query) ||
+                    a.location.toLowerCase().includes(query) ||
+                    a.detailCode.toLowerCase().includes(query)
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:40px; color:#64748b;">
+                            <div style="font-size:28px; margin-bottom:6px;">🔍</div>
+                            <strong>No accounts found matching your query</strong>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            filtered.forEach(acc => {
+                const isBroker = acc.role === "BROKER";
+                const initial = acc.name.charAt(0).toUpperCase();
+
+                const tr = document.createElement("tr");
+                tr.id = `dir-row-${acc.role}-${acc.id}`;
+                tr.innerHTML = `
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-cell-avatar ${isBroker ? 'avatar-broker' : 'avatar-customer'}">
+                                ${initial}
+                            </div>
+                            <div>
+                                <strong style="color:#0f172a; font-size:14px;">${acc.name}</strong>
+                                <div style="font-size:12px; font-family:monospace; color:#64748b;">${acc.detailCode}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-chip ${isBroker ? 'role-broker' : 'role-customer'}">
+                            ${isBroker ? '🏢 Broker' : '👤 Customer'}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-size:13px; color:#0f172a;">${acc.email}</div>
+                        <div style="font-size:12px; color:#64748b;">📞 ${acc.mobile}</div>
+                    </td>
+                    <td>
+                        <div style="font-size:13px; font-weight:600; color:#0f172a;">📍 ${acc.location}</div>
+                        <div style="font-size:12px; color:#64748b;">${acc.agency}</div>
+                    </td>
+                    <td>
+                        <span style="display:inline-block; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:10px; background:#ecfdf5; color:#047857;">
+                            ✓ Active
+                        </span>
+                    </td>
+                    <td style="text-align:right;">
+                        <button type="button" class="btn-table-delete" onclick="handleRemoveAccount('${acc.role}', ${acc.id}, '${acc.name.replace(/'/g, "\\'")}')" title="Permanently Remove Account">
+                            🗑️ Remove
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 3. Remove Broker / Customer Action
+        async function handleRemoveAccount(role, id, name) {
+            const roleName = role === "BROKER" ? "Broker" : "Customer";
+            const extraWarning = role === "BROKER" 
+                ? "This will permanently delete this broker, their license approval, and ALL their property listings, chats, and inquiries."
+                : "This will permanently delete this customer, their inquiries, site visits, and saved listings.";
+
+            const confirmed = confirm(
+                `⚠️ ARE YOU SURE YOU WANT TO REMOVE THIS ${roleName.toUpperCase()}?\n\n` +
+                `Account Name: "${name}"\n\n` +
+                `${extraWarning}\n\n` +
+                `This action cannot be undone. Click OK to proceed.`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                if (role === "BROKER") {
+                    await window.api.removeBroker(id);
+                } else {
+                    await window.api.removeCustomer(id);
+                }
+
+                alert(`✅ Successfully removed ${roleName} "${name}".`);
+
+                // Remove from local list and UI
+                allAccountsList = allAccountsList.filter(a => !(a.role === role && a.id === id));
+                filterAndRenderDirectory();
+                loadAdminStats(); // Refresh counters
+            } catch (err) {
+                alert(`❌ Failed to remove ${roleName}: ${err.message}`);
+            }
+        }
     </script>
+
 </body>
 </html>

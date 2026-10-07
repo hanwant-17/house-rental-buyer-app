@@ -1,85 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approved Brokers - HouseHub Admin</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <title>Verified Brokers - HouseHub Admin</title>
+
     <style>
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 45px 25px;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --danger-light: #fef2f2;
+            --success: #16a34a;
+            --success-light: #ecfdf5;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
         }
 
-        .page-header {
-            margin-bottom: 25px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAVBAR */
+        .admin-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
-        .page-header h1 {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .page-header p {
-            color: #667085;
-            font-size: 14px;
-        }
-
-        .back-link {
-            color: #2563eb;
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span { color: var(--primary); }
+
+        .admin-badge-tag {
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #fecaca;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 13.5px;
             font-weight: 600;
-            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 10px;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
         }
 
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        /* PAGE WORKSPACE */
+        .page-workspace {
+            max-width: 1280px;
+            margin: 30px auto 60px;
+            padding: 0 4%;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .page-header-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .page-header-card p {
+            font-size: 14px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        .count-badge {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* NAVIGATION TABS & SEARCH */
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .tabs-pill-box {
+            display: flex;
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+        }
+
+        .tab-pill {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--slate-600);
+            transition: all 0.2s;
+        }
+
+        .tab-pill.active {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            height: 40px;
+            padding: 0 14px 0 36px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            font-size: 13.5px;
+            outline: none;
+            width: 280px;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            width: 320px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            font-size: 13px;
+        }
+
+        /* BROKER GRID */
         .broker-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 20px;
+            gap: 22px;
         }
 
         .broker-card {
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .broker-card:hover {
+            border-color: var(--slate-300);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+        }
+
+        .broker-avatar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .broker-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            border: 1px solid #bfdbfe;
         }
 
         .broker-name {
-            font-size: 19px;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 4px;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 2px;
         }
 
         .broker-agency {
-            color: #2563eb;
-            font-size: 14px;
+            color: var(--primary);
+            font-size: 13px;
             font-weight: 600;
         }
 
@@ -87,10 +349,10 @@
             background: #eff6ff;
             color: #1d4ed8;
             border: 1px solid #bfdbfe;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11.5px;
+            font-weight: 800;
             font-family: monospace;
         }
 
@@ -98,41 +360,66 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            padding: 15px 0;
-            border-top: 1px solid #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
-            margin-bottom: 15px;
+            padding: 14px 0;
+            border-top: 1px solid var(--slate-100);
+            border-bottom: 1px solid var(--slate-100);
+            margin-bottom: 16px;
         }
 
         .info-item span {
             display: block;
-            font-size: 12px;
-            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 2px;
         }
 
         .info-item strong {
-            font-size: 14px;
-            color: #1e293b;
+            font-size: 13.5px;
+            color: var(--slate-800);
+            word-break: break-all;
         }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
         .badge-verified {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: #ecfdf3;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-            padding: 5px 12px;
-            border-radius: 20px;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            padding: 4px 10px;
+            border-radius: 12px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+        }
+
+        .btn-remove-broker {
+            background: #ffffff;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-remove-broker:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
         }
 
         .empty-state {
@@ -140,70 +427,109 @@
             text-align: center;
             padding: 60px 20px;
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            color: #667085;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            color: var(--slate-500);
         }
 
-        .empty-state .icon {
-            font-size: 44px;
-            margin-bottom: 10px;
+        /* FOOTER */
+        .dashboard-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 24px 4%;
+            text-align: center;
+            font-size: 13px;
+            color: var(--slate-500);
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
-        <div class="logo">
-            🏠 HouseHub <span style="font-size:12px; background:#eff6ff; color:#2563eb; padding:3px 8px; border-radius:12px; margin-left:8px;">Admin Panel</span>
-        </div>
-        <div class="user-area">
-            <span>Admin</span>
-            <button id="logoutButton">Logout</button>
-        </div>
-    </nav>
+    <!-- NAVBAR -->
+    <header class="admin-nav">
+        <a href="admin-dashboard.html" class="nav-brand">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="admin-badge-tag">
+                🛡️ Master Admin Console
+            </span>
+        </a>
 
-    <!-- Main Container -->
-    <main class="page-container">
+        <nav class="nav-shortcuts">
+            <a href="admin-dashboard.html" class="nav-link">📊 Overview</a>
+            <a href="admin-customers.html" class="nav-link">👥 Customers</a>
+            <a href="approved-brokers.html" class="nav-link active">🏢 Brokers</a>
+            <a href="approved-properties.html" class="nav-link">🏠 Properties</a>
+            <a href="admin-reports.html" class="nav-link">⚠️ Reports</a>
+        </nav>
+
+        <div class="nav-user-area">
+            <div class="user-chip">
+                <div class="user-avatar">AD</div>
+                <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span style="font-size:13px; font-weight:700;">Administrator</span>
+                    <span style="font-size:11px; font-weight:700; color:#dc2626;">Root Superuser</span>
+                </div>
+            </div>
+            <button class="btn-nav-logout" id="logoutButton">🚪 Logout</button>
+        </div>
+    </header>
+
+
+    <!-- MAIN WORKSPACE -->
+    <main class="page-workspace">
         <a href="admin-dashboard.html" class="back-link">← Back to Admin Dashboard</a>
 
-        <div class="page-header">
+        <div class="page-header-card">
             <div>
-                <h1>🏢 Approved & Verified Brokers</h1>
-                <p>Brokers who have completed official identity and document verification (Rule 1).</p>
+                <h1>🏢 Verified Brokers Management</h1>
+                <p>Brokers who have completed official identity and document verification. Remove non-compliant brokers when necessary.</p>
             </div>
-            <div style="font-size:15px; font-weight:600; color:#475467;">
-                Total Verified: <span id="brokerCount" style="color:#16a34a;">0</span>
+            <div>
+                <span class="count-badge">
+                    Total Verified: <strong id="brokerCount">0</strong>
+                </span>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div style="display:flex; gap:12px; margin-bottom:25px; border-bottom:2px solid #e5e7eb; padding-bottom:12px;">
-            <a href="broker-verification.html" style="padding:9px 20px; border-radius:8px; background:#f1f5f9; color:#475467; text-decoration:none; font-weight:600; font-size:14px; border:1px solid #e2e8f0;">
-                ⏳ Pending Verification
-            </a>
-            <a href="approved-brokers.html" style="padding:9px 20px; border-radius:8px; background:#16a34a; color:#ffffff; text-decoration:none; font-weight:600; font-size:14px; box-shadow:0 2px 4px rgba(22,163,74,0.2);">
-                ✅ Approved Brokers
-            </a>
+        <div class="controls-row">
+            <div class="tabs-pill-box">
+                <a href="broker-verification.html" class="tab-pill">
+                    ⏳ Pending Applications
+                </a>
+                <a href="approved-brokers.html" class="tab-pill active">
+                    ✅ Verified Brokers
+                </a>
+            </div>
+
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search broker, code, agency, city...">
+            </div>
         </div>
 
         <div class="broker-grid" id="brokersContainer">
-            <p style="grid-column: 1 / -1; text-align:center; padding:40px; color:#667085;">
-                Loading approved brokers...
-            </p>
+            <div class="empty-state">
+                Loading approved broker records...
+            </div>
         </div>
     </main>
 
-    <!-- Footer -->
+
+    <!-- FOOTER -->
     <footer class="dashboard-footer">
-        <p>© 2026 HouseHub. All Rights Reserved.</p>
+        © 2026 HouseHub Master Administration Console. All Rights Reserved.
     </footer>
+
 
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
+        let allBrokers = [];
+
         document.addEventListener("DOMContentLoaded", async function () {
             const user = window.api ? window.api.getCurrentUser() : null;
             if (!user || user.role !== "ADMIN") {
@@ -211,6 +537,17 @@
                 window.location.href = "login.html";
                 return;
             }
+
+            document.getElementById("logoutButton")?.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out of Admin Console?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.href = "login.html";
+                }
+            });
+
+            document.getElementById("searchInput")?.addEventListener("input", function () {
+                renderBrokers();
+            });
 
             await loadApprovedBrokers();
         });
@@ -221,83 +558,133 @@
 
             try {
                 const response = await window.api.getApprovedBrokers();
-                const brokers = response.data || [];
+                allBrokers = response.data || [];
 
-                countSpan.textContent = brokers.length;
-
-                if (brokers.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="icon">🏢</div>
-                            <h3>No approved brokers yet</h3>
-                            <p>Once you review and approve pending broker applications, they will appear here with their generated Broker Code.</p>
-                            <a href="broker-verification.html" class="back-link" style="display:inline-block; margin-top:12px;">Review Pending Brokers →</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = "";
-                brokers.forEach(b => {
-                    const u = b.user || {};
-                    const name = u.name || "Broker";
-                    const email = u.email || "N/A";
-                    const mobile = u.mobile || "N/A";
-                    const agency = b.agencyName || "Independent Broker";
-                    const city = b.city || "Not Specified";
-                    const exp = b.experienceYears ? `${b.experienceYears} Years` : "Experienced";
-                    const brokerCode = b.brokerCode || "BRK-VERIFIED";
-                    const license = b.licenseNumber || "Verified Document";
-
-                    const card = document.createElement("div");
-                    card.className = "broker-card";
-                    card.innerHTML = `
-                        <div>
-                            <div class="card-top">
-                                <div>
-                                    <div class="broker-name">${name}</div>
-                                    <div class="broker-agency">🏢 ${agency}</div>
-                                </div>
-                                <span class="broker-code-badge">${brokerCode}</span>
-                            </div>
-
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span>Operating City</span>
-                                    <strong>📍 ${city}</strong>
-                                </div>
-                                <div class="info-item">
-                                    <span>Experience</span>
-                                    <strong>⏳ ${exp}</strong>
-                                </div>
-                                <div class="info-item">
-                                    <span>Contact Email</span>
-                                    <strong style="word-break:break-all;">✉️ ${email}</strong>
-                                </div>
-                                <div class="info-item">
-                                    <span>Phone Number</span>
-                                    <strong>📞 ${mobile}</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer">
-                            <div style="font-size:12px; color:#64748b;">
-                                License: <strong>${license}</strong>
-                            </div>
-                            <span class="badge-verified">✓ Approved Partner</span>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
+                countSpan.textContent = allBrokers.length;
+                renderBrokers();
             } catch (err) {
                 container.innerHTML = `
-                    <div class="empty-state" style="color:#b91c1c;">
+                    <div class="empty-state" style="color:#dc2626;">
                         Failed to load brokers: ${err.message}
                     </div>
                 `;
             }
         }
+
+        function renderBrokers() {
+            const container = document.getElementById("brokersContainer");
+            if (!container) return;
+
+            const query = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
+
+            let filtered = allBrokers;
+            if (query) {
+                filtered = filtered.filter(b => {
+                    const u = b.user || {};
+                    const name = (u.name || "").toLowerCase();
+                    const agency = (b.agencyName || "").toLowerCase();
+                    const code = (b.brokerCode || "").toLowerCase();
+                    const city = (b.city || "").toLowerCase();
+                    const email = (u.email || "").toLowerCase();
+                    return name.includes(query) || agency.includes(query) || code.includes(query) || city.includes(query) || email.includes(query);
+                });
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size:36px; margin-bottom:8px;">🏢</div>
+                        <h3>No verified brokers found</h3>
+                        <p>No broker accounts matched your search criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+            filtered.forEach(b => {
+                const u = b.user || {};
+                const name = u.name || "Broker";
+                const email = u.email || "N/A";
+                const mobile = u.mobile || "N/A";
+                const agency = b.agencyName || "Independent Broker";
+                const city = b.city || "Not Specified";
+                const exp = b.experience || "Experienced";
+                const brokerCode = b.brokerCode || "BRK-VERIFIED";
+                const initial = name.charAt(0).toUpperCase();
+
+                const card = document.createElement("div");
+                card.className = "broker-card";
+                card.id = `card-brk-${b.brokerId}`;
+                card.innerHTML = `
+                    <div>
+                        <div class="card-top">
+                            <div class="broker-avatar-row">
+                                <div class="broker-avatar">${initial}</div>
+                                <div>
+                                    <div class="broker-name">${name}</div>
+                                    <div class="broker-agency">🏢 ${agency}</div>
+                                </div>
+                            </div>
+                            <span class="broker-code-badge">${brokerCode}</span>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span>Operating City</span>
+                                <strong>📍 ${city}</strong>
+                            </div>
+                            <div class="info-item">
+                                <span>Experience</span>
+                                <strong>⏳ ${exp}</strong>
+                            </div>
+                            <div class="info-item">
+                                <span>Contact Email</span>
+                                <strong>✉️ ${email}</strong>
+                            </div>
+                            <div class="info-item">
+                                <span>Phone Number</span>
+                                <strong>📞 ${mobile}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <span class="badge-verified">✓ Verified Partner</span>
+                        <button type="button" class="btn-remove-broker" onclick="removeBroker(${b.brokerId}, '${name.replace(/'/g, "\\'")}', '${brokerCode}')" title="Permanently Remove Broker & Listings">
+                            🗑️ Remove Broker
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function removeBroker(brokerId, brokerName, brokerCode) {
+            const confirmed = confirm(
+                `⚠️ ARE YOU SURE YOU WANT TO REMOVE BROKER "${brokerName}" (${brokerCode})?\n\n` +
+                `This action will permanently delete:\n` +
+                `1. Broker verification approval and account access\n` +
+                `2. ALL active properties and listings created by this broker\n` +
+                `3. Associated chats, messages, and inquiries\n\n` +
+                `This action CANNOT be undone. Click OK to confirm removal.`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                await window.api.removeBroker(brokerId);
+                alert(`✅ Broker "${brokerName}" and all associated listings have been removed.`);
+
+                // Update local list & UI
+                allBrokers = allBrokers.filter(b => b.brokerId !== brokerId);
+                document.getElementById("brokerCount").textContent = allBrokers.length;
+                renderBrokers();
+            } catch (err) {
+                alert(`❌ Failed to remove broker: ${err.message}`);
+            }
+        }
     </script>
+
 </body>
 </html>
