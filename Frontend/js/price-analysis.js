@@ -8,6 +8,7 @@ let rawMarketData = [];
 let activeDataset = [];
 let chartInstances = {};
 let isCustomUploaded = false;
+let currentSummaryData = []; // Cached for fast client-side table search
 
 // Benchmark seed data to enrich initial charts alongside live platform properties
 const benchmarkMarketSeed = [
@@ -28,37 +29,165 @@ const benchmarkMarketSeed = [
     { title: "4 BHK Green Meadow Villa", city: "Bengaluru", state: "Karnataka", purpose: "BUY", propertyType: "VILLA", price: 18000000, bhk: 4, areaSqft: 3100, locality: "Sarjapur Road" }
 ];
 
+// Helper: initials for avatar
+function getInitials(name) {
+    if (!name) return "US";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 // ==========================================
 // 1. INITIALIZATION & LIVE DATA LOADER
 // ==========================================
 document.addEventListener("DOMContentLoaded", async function () {
+    // Configure Chart.js global defaults
+    if (typeof Chart !== "undefined") {
+        Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+        Chart.defaults.color = "#475467";
+        Chart.defaults.plugins.tooltip.backgroundColor = "#0f172a";
+        Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: "bold" };
+        Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    }
+
     setupAuthNavbar();
+    setupTableSearchListener();
     await loadInitialMarketData();
 });
 
 function setupAuthNavbar() {
     const user = window.api ? window.api.getCurrentUser() : null;
     const navArea = document.getElementById("navAuthArea");
-    if (navArea && user && user.token) {
-        let dashPage = "customer-dashboard.html";
-        if (user.role === "BROKER") dashPage = "broker-dashboard.html";
-        else if (user.role === "ADMIN") dashPage = "admin-dashboard.html";
+    const navShortcuts = document.getElementById("navShortcuts");
+    const portalTag = document.getElementById("portalRoleTag");
+    const brandLink = document.getElementById("navBrandLink");
+    const backBtn = document.getElementById("backToDashboard");
 
-        navArea.innerHTML = `
-            <a href="${dashPage}" class="login-btn" style="background:#2563eb; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:600; text-decoration:none;">
-                Dashboard (${user.name ? user.name.split(" ")[0] : "User"})
-            </a>
-            <a href="#" id="analyticsNavLogout" class="register-btn" style="background:#f1f5f9; color:#475467; border:1px solid #cbd5e1; padding:8px 16px; border-radius:6px; font-weight:600; text-decoration:none;">
-                Logout
-            </a>
-        `;
+    if (user && user.token) {
+        const isBroker = user.role === "BROKER";
+        const displayName = user.name || (isBroker ? "Broker" : "Customer");
+        const initials = getInitials(displayName);
 
-        document.getElementById("analyticsNavLogout")?.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (window.api) window.api.clearAuth();
-            window.location.reload();
-        });
+        if (isBroker) {
+            if (portalTag) portalTag.textContent = "Broker Analytics";
+            if (brandLink) brandLink.href = "broker-dashboard.html";
+            if (backBtn) {
+                backBtn.href = "broker-dashboard.html";
+                backBtn.textContent = "← Back to Broker Dashboard";
+            }
+            if (navShortcuts) {
+                navShortcuts.innerHTML = `
+                    <a href="broker-dashboard.html" class="nav-link">📊 Overview</a>
+                    <a href="my-properties.html" class="nav-link">🏠 My Properties</a>
+                    <a href="chat.html" class="nav-link">💬 Client Chats</a>
+                    <a href="my-inquiries.html" class="nav-link">📅 Leads & Visits</a>
+                    <a href="price-analysis.html" class="nav-link active">📈 Analytics</a>
+                `;
+            }
+        } else {
+            if (portalTag) portalTag.textContent = "Customer Intelligence";
+            if (brandLink) brandLink.href = "customer-dashboard.html";
+            if (backBtn) {
+                backBtn.href = "customer-dashboard.html";
+                backBtn.textContent = "← Back to Customer Dashboard";
+            }
+            if (navShortcuts) {
+                navShortcuts.innerHTML = `
+                    <a href="customer-dashboard.html" class="nav-link">📊 Dashboard</a>
+                    <a href="properties.html" class="nav-link">🏢 Browse Listings</a>
+                    <a href="chat.html" class="nav-link">💬 My Chats</a>
+                    <a href="my-inquiries.html" class="nav-link">📅 My Visits</a>
+                    <a href="price-analysis.html" class="nav-link active">📈 Market Trends</a>
+                `;
+            }
+        }
+
+        if (navArea) {
+            navArea.innerHTML = `
+                <div class="user-chip">
+                    <div class="user-avatar">${initials}</div>
+                    <div class="user-meta">
+                        <span class="user-name">${displayName}</span>
+                        <span class="user-role-badge">${isBroker ? (user.brokerCode || "BRK-VERIFIED") : "Customer"}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-nav-logout" id="analyticsNavLogout" title="Sign out">
+                    🚪 Logout
+                </button>
+            `;
+
+            document.getElementById("analyticsNavLogout")?.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Are you sure you want to log out?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.reload();
+                }
+            });
+        }
+    } else {
+        // Guest / Public User
+        if (portalTag) portalTag.textContent = "Market Intelligence";
+        if (brandLink) brandLink.href = "../index.html";
+        if (backBtn) {
+            backBtn.href = "../index.html";
+            backBtn.textContent = "← Back to Portal Home";
+        }
+        if (navShortcuts) {
+            navShortcuts.innerHTML = `
+                <a href="properties.html" class="nav-link">🏢 Browse Properties</a>
+                <a href="price-analysis.html" class="nav-link active">📈 Market Analytics</a>
+            `;
+        }
+        if (navArea) {
+            navArea.innerHTML = `
+                <a href="login.html" class="btn-nav-login">Sign In</a>
+                <a href="customer-register.html" class="btn-nav-register">Register</a>
+            `;
+        }
     }
+}
+
+// Collapsible Schema & Format Guide Toggle
+function toggleSchemaGuide() {
+    const content = document.getElementById("schemaGuideContent");
+    const icon = document.getElementById("schemaToggleIcon");
+    if (!content) return;
+    if (content.style.display === "none" || content.style.display === "") {
+        content.style.display = "block";
+        if (icon) icon.textContent = "▲";
+    } else {
+        content.style.display = "none";
+        if (icon) icon.textContent = "▼";
+    }
+}
+
+// Setup table live search listener
+function setupTableSearchListener() {
+    const searchInput = document.getElementById("tableSearchInput");
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", function (e) {
+        const query = (e.target.value || "").trim().toLowerCase();
+        filterSummaryTableByQuery(query);
+    });
+}
+
+function filterSummaryTableByQuery(query) {
+    if (!currentSummaryData || currentSummaryData.length === 0) return;
+    if (!query) {
+        renderSummaryTable(currentSummaryData, false);
+        return;
+    }
+
+    const filtered = currentSummaryData.filter(d => 
+        (d.city && d.city.toLowerCase().includes(query)) ||
+        (d.state && d.state.toLowerCase().includes(query)) ||
+        (d.locality && d.locality.toLowerCase().includes(query))
+    );
+
+    renderSummaryTable(filtered, false);
 }
 
 async function loadInitialMarketData() {
@@ -104,6 +233,7 @@ async function loadInitialMarketData() {
 function populateFilterDropdowns() {
     const stateSelect = document.getElementById("filterState");
     const citySelect = document.getElementById("filterCity");
+    if (!stateSelect || !citySelect) return;
 
     // Extract unique states and cities
     const states = [...new Set(activeDataset.map(d => d.state).filter(Boolean))].sort();
@@ -121,10 +251,15 @@ function populateFilterDropdowns() {
 }
 
 function applyFilters() {
-    const selectedState = document.getElementById("filterState").value;
-    const selectedCity = document.getElementById("filterCity").value;
-    const selectedPurpose = document.getElementById("filterPurpose").value;
-    const selectedType = document.getElementById("filterType").value;
+    const stateSelect = document.getElementById("filterState");
+    const citySelect = document.getElementById("filterCity");
+    const purposeSelect = document.getElementById("filterPurpose");
+    const typeSelect = document.getElementById("filterType");
+
+    const selectedState = stateSelect ? stateSelect.value : "";
+    const selectedCity = citySelect ? citySelect.value : "";
+    const selectedPurpose = purposeSelect ? purposeSelect.value : "";
+    const selectedType = typeSelect ? typeSelect.value : "";
 
     let filtered = [...activeDataset];
 
@@ -146,14 +281,22 @@ function applyFilters() {
 
     renderKPIs(filtered);
     renderCharts(filtered);
-    renderSummaryTable(filtered);
+    renderSummaryTable(filtered, true);
 }
 
 function resetFilters() {
-    document.getElementById("filterState").value = "";
-    document.getElementById("filterCity").value = "";
-    document.getElementById("filterPurpose").value = "";
-    document.getElementById("filterType").value = "";
+    const stateSelect = document.getElementById("filterState");
+    const citySelect = document.getElementById("filterCity");
+    const purposeSelect = document.getElementById("filterPurpose");
+    const typeSelect = document.getElementById("filterType");
+    const searchInput = document.getElementById("tableSearchInput");
+
+    if (stateSelect) stateSelect.value = "";
+    if (citySelect) citySelect.value = "";
+    if (purposeSelect) purposeSelect.value = "";
+    if (typeSelect) typeSelect.value = "";
+    if (searchInput) searchInput.value = "";
+
     applyFilters();
 }
 
@@ -190,10 +333,8 @@ function handleFileUpload(event) {
             // Update badge & buttons
             const badge = document.getElementById("activeSourceBadge");
             if (badge) {
-                badge.textContent = `● Custom Dataset: ${file.name} (${parsedRows.length} properties)`;
-                badge.style.background = "#eff6ff";
-                badge.style.color = "#1d4ed8";
-                badge.style.borderColor = "#93c5fd";
+                badge.innerHTML = `<span class="pulse-dot blue"></span> Custom Dataset: <strong>${file.name}</strong> (${parsedRows.length} records)`;
+                badge.className = "source-pill source-custom";
             }
 
             const resetBtn = document.getElementById("resetDataBtn");
@@ -208,7 +349,7 @@ function handleFileUpload(event) {
                 `All graphs and market metrics have been updated.`
             );
         } catch (error) {
-            alert(`❌ File Upload Error:\n\n${error.message}\n\nPlease check the "DATA FORMAT NOTICE" table above.`);
+            alert(`❌ File Upload Error:\n\n${error.message}\n\nPlease check the format specification table.`);
         } finally {
             event.target.value = "";
         }
@@ -226,7 +367,7 @@ function parseCsvData(csvText) {
 
     const headers = lines[0].split(",").map(h => h.trim().toLowerCase().replace(/[\"\'\s_]/g, ""));
 
-    // Check mandatory headers: city, state, purpose, price, bhk, areasqft
+    // Check mandatory headers: city, state, purpose, price, bhk
     const requiredKeys = ["city", "state", "purpose", "price", "bhk"];
     const missingKeys = [];
 
@@ -335,10 +476,8 @@ function resetToLiveDatabase() {
 
     const badge = document.getElementById("activeSourceBadge");
     if (badge) {
-        badge.textContent = "● Live Platform Data";
-        badge.style.background = "#ecfdf5";
-        badge.style.color = "#047857";
-        badge.style.borderColor = "#a7f3d0";
+        badge.innerHTML = `<span class="pulse-dot green"></span> Live Marketplace Database (Synchronized)`;
+        badge.className = "source-pill source-live";
     }
 
     const resetBtn = document.getElementById("resetDataBtn");
@@ -380,7 +519,7 @@ function downloadSampleCsv() {
 function refreshAllAnalytics() {
     renderKPIs(activeDataset);
     renderCharts(activeDataset);
-    renderSummaryTable(activeDataset);
+    renderSummaryTable(activeDataset, true);
 }
 
 function renderKPIs(data) {
@@ -404,11 +543,17 @@ function renderKPIs(data) {
 
     const citiesCount = new Set(data.map(d => d.city)).size;
 
-    document.getElementById("kpiTotalCount").textContent = totalCount.toLocaleString();
-    document.getElementById("kpiLocationsCount").textContent = `Across ${citiesCount} Cities`;
-    document.getElementById("kpiAvgRent").textContent = avgRent > 0 ? `₹${avgRent.toLocaleString()} / mo` : "N/A";
-    document.getElementById("kpiAvgBuy").textContent = avgBuy > 0 ? formatIndianCurrency(avgBuy) : "N/A";
-    document.getElementById("kpiAvgRate").textContent = avgRateSqft > 0 ? `₹${avgRateSqft.toLocaleString()} / sq.ft` : "N/A";
+    const elTotal = document.getElementById("kpiTotalCount");
+    const elLocations = document.getElementById("kpiLocationsCount");
+    const elRent = document.getElementById("kpiAvgRent");
+    const elBuy = document.getElementById("kpiAvgBuy");
+    const elRate = document.getElementById("kpiAvgRate");
+
+    if (elTotal) elTotal.textContent = totalCount.toLocaleString();
+    if (elLocations) elLocations.textContent = `Across ${citiesCount} Active Cities`;
+    if (elRent) elRent.textContent = avgRent > 0 ? `₹${avgRent.toLocaleString()} / mo` : "N/A";
+    if (elBuy) elBuy.textContent = avgBuy > 0 ? formatIndianCurrency(avgBuy) : "N/A";
+    if (elRate) elRate.textContent = avgRateSqft > 0 ? `₹${avgRateSqft.toLocaleString()} / sq.ft` : "N/A";
 }
 
 function formatIndianCurrency(num) {
@@ -463,16 +608,20 @@ function renderCityPriceChart(data) {
             labels: cities,
             datasets: [
                 {
-                    label: "Avg. Buy Price (in ₹ Lakhs)",
+                    label: "Avg. Sale Price (₹ Lakhs)",
                     data: buyPrices,
-                    backgroundColor: "rgba(37, 99, 235, 0.85)",
-                    borderRadius: 6
+                    backgroundColor: "#2563eb",
+                    borderRadius: 8,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.75
                 },
                 {
-                    label: "Avg. Monthly Rent (in ₹ Thousands)",
+                    label: "Avg. Rent (₹ Thousands/mo)",
                     data: rentPrices,
-                    backgroundColor: "rgba(16, 185, 129, 0.85)",
-                    borderRadius: 6
+                    backgroundColor: "#10b981",
+                    borderRadius: 8,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.75
                 }
             ]
         },
@@ -480,12 +629,15 @@ function renderCityPriceChart(data) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: "top" },
+                legend: {
+                    position: "top",
+                    labels: { boxWidth: 14, font: { weight: "600", size: 12 } }
+                },
                 tooltip: {
                     callbacks: {
                         label: function (ctx) {
                             if (ctx.datasetIndex === 0) {
-                                return ` Avg Buy: ₹${ctx.parsed.y} Lakhs`;
+                                return ` Avg Sale: ₹${ctx.parsed.y} Lakhs`;
                             }
                             return ` Avg Rent: ₹${ctx.parsed.y * 1000} / mo`;
                         }
@@ -495,7 +647,12 @@ function renderCityPriceChart(data) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: { display: true, text: "Value Scale (₹ Lakhs / Thousands)" }
+                    grid: { color: "#f1f5f9" },
+                    ticks: { font: { size: 11 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { weight: "600", size: 12 } }
                 }
             }
         }
@@ -517,12 +674,14 @@ function renderPurposeDoughnutChart(data) {
     chartInstances["purposeDoughnut"] = new Chart(ctx, {
         type: "doughnut",
         data: {
-            labels: ["For Rent", "For Sale / Purchase"],
+            labels: ["For Rent", "For Sale / Buy"],
             datasets: [
                 {
                     data: [rentCount, buyCount],
                     backgroundColor: ["#10b981", "#2563eb"],
-                    hoverOffset: 6
+                    borderWidth: 2,
+                    borderColor: "#ffffff",
+                    hoverOffset: 8
                 }
             ]
         },
@@ -530,9 +689,21 @@ function renderPurposeDoughnutChart(data) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: "bottom" }
+                legend: {
+                    position: "bottom",
+                    labels: { boxWidth: 14, font: { weight: "600", size: 12 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            const total = rentCount + buyCount;
+                            const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                            return ` ${ctx.label}: ${ctx.parsed} listings (${pct}%)`;
+                        }
+                    }
+                }
             },
-            cutout: "68%"
+            cutout: "70%"
         }
     });
 }
@@ -569,16 +740,20 @@ function renderBhkChart(data) {
             labels: labels,
             datasets: [
                 {
-                    label: "Avg. Buy (₹ Lakhs)",
+                    label: "Avg. Sale (₹ Lakhs)",
                     data: buyByBhk,
-                    backgroundColor: "rgba(99, 102, 241, 0.85)",
-                    borderRadius: 6
+                    backgroundColor: "#6366f1",
+                    borderRadius: 8,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.75
                 },
                 {
-                    label: "Avg. Rent (₹ / month)",
-                    data: rentByBhk.map(p => Math.round(p / 1000)), // in thousands
-                    backgroundColor: "rgba(245, 158, 11, 0.85)",
-                    borderRadius: 6
+                    label: "Avg. Rent (₹ Thousands/mo)",
+                    data: rentByBhk.map(p => Math.round(p / 1000)),
+                    backgroundColor: "#f59e0b",
+                    borderRadius: 8,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.75
                 }
             ]
         },
@@ -586,12 +761,30 @@ function renderBhkChart(data) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: "top" }
+                legend: {
+                    position: "top",
+                    labels: { boxWidth: 14, font: { weight: "600", size: 12 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            if (ctx.datasetIndex === 0) {
+                                return ` Avg Sale: ₹${ctx.parsed.y} Lakhs`;
+                            }
+                            return ` Avg Rent: ₹${ctx.parsed.y * 1000} / mo`;
+                        }
+                    }
+                }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: { display: true, text: "Value Index (₹ Lakhs / ₹ Thousands Rent)" }
+                    grid: { color: "#f1f5f9" },
+                    ticks: { font: { size: 11 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { weight: "600", size: 12 } }
                 }
             }
         }
@@ -625,12 +818,9 @@ function renderSqftRateChart(data) {
                 {
                     label: "Avg. Rate (₹ per Sq.Ft)",
                     data: avgRates,
-                    backgroundColor: [
-                        "rgba(37, 99, 235, 0.85)",
-                        "rgba(217, 119, 6, 0.85)",
-                        "rgba(147, 51, 234, 0.85)"
-                    ],
-                    borderRadius: 6
+                    backgroundColor: ["#3b82f6", "#8b5cf6", "#ec4899"],
+                    borderRadius: 8,
+                    barPercentage: 0.55
                 }
             ]
         },
@@ -638,12 +828,24 @@ function renderSqftRateChart(data) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            return ` Rate: ₹${ctx.parsed.y.toLocaleString()} / sq.ft`;
+                        }
+                    }
+                }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: { display: true, text: "Rate (₹ / Sq.Ft)" }
+                    grid: { color: "#f1f5f9" },
+                    ticks: { font: { size: 11 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { weight: "600", size: 12 } }
                 }
             }
         }
@@ -653,18 +855,29 @@ function renderSqftRateChart(data) {
 // ==========================================
 // 6. SUMMARY TABLE GENERATOR
 // ==========================================
-function renderSummaryTable(data) {
+function renderSummaryTable(data, updateCache = true) {
+    if (updateCache) {
+        currentSummaryData = data;
+    }
+
     const tableBody = document.getElementById("summaryTableBody");
     const countBadge = document.getElementById("tableRecordCount");
     if (!tableBody) return;
 
     if (!data || data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;">No matching properties found for the selected filters.</td></tr>`;
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center; padding:45px 20px; color:#64748b;">
+                    <div style="font-size:32px; margin-bottom:8px;">🔍</div>
+                    <div style="font-weight:700; font-size:15px; color:#0f172a;">No Matching Market Records Found</div>
+                    <div style="font-size:13px; margin-top:4px;">Try loosening your filters or clearing search keywords.</div>
+                </td>
+            </tr>`;
         if (countBadge) countBadge.textContent = "0 Records";
         return;
     }
 
-    if (countBadge) countBadge.textContent = `${data.length} Records`;
+    if (countBadge) countBadge.textContent = `${data.length} Properties in View`;
 
     // Group by City
     const cityMap = {};
@@ -705,13 +918,17 @@ function renderSummaryTable(data) {
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td><strong>📍 ${group.city}</strong></td>
-            <td>${group.state}</td>
-            <td><span style="background:#eff6ff; color:#1d4ed8; font-weight:700; padding:2px 8px; border-radius:10px; font-size:12px;">${items.length}</span></td>
-            <td style="color:#059669; font-weight:600;">${avgRent}</td>
-            <td style="color:#2563eb; font-weight:600;">${avgBuy}</td>
-            <td style="font-weight:600;">${avgRate}</td>
-            <td style="font-size:12px; color:#475467;">${rangeStr}</td>
+            <td>
+                <div class="table-city-cell">
+                    <span class="city-name">📍 ${group.city}</span>
+                </div>
+            </td>
+            <td><span class="table-state-badge">${group.state}</span></td>
+            <td><span class="table-count-pill">${items.length} Listings</span></td>
+            <td><span class="price-rent-val">${avgRent}</span></td>
+            <td><span class="price-buy-val">${avgBuy}</span></td>
+            <td><span class="rate-sqft-val">${avgRate}</span></td>
+            <td><span class="range-val">${rangeStr}</span></td>
         `;
         tableBody.appendChild(tr);
     });

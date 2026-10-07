@@ -5,174 +5,1192 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Broker Dashboard - HouseHub</title>
+    <title>Broker Workspace - HouseHub</title>
 
     <link rel="stylesheet" href="../css/dashboard.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #ecfdf5;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --purple: #7c3aed;
+            --purple-light: #f5f3ff;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        /* NAVBAR */
+        .broker-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 5%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .broker-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .broker-nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .broker-nav-logo span {
+            color: var(--primary);
+        }
+
+        .broker-portal-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #bae6fd;
+        }
+
+        .broker-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .broker-nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .broker-nav-link:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .broker-nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-badge {
+            background: var(--primary);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        .broker-nav-user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .broker-profile-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .broker-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #008069 0%, #128c7e 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 2px 8px rgba(0, 128, 105, 0.25);
+            flex-shrink: 0;
+        }
+
+        .broker-user-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .broker-user-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .broker-user-code {
+            font-size: 11px;
+            color: var(--slate-500);
+            font-weight: 600;
+            font-family: monospace;
+            margin-top: 2px;
+        }
+
+        .broker-logout-btn {
+            background: #fff;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .broker-logout-btn:hover {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+
+        /* MAIN CONTAINER */
+        .broker-workspace {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* HERO WELCOME BANNER */
+        .broker-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #172554 100%);
+            border-radius: 20px;
+            padding: 35px 40px;
+            color: #ffffff;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .broker-hero::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .broker-hero-left {
+            max-width: 650px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .broker-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .broker-hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 8px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .broker-hero-subtitle {
+            font-size: 14.5px;
+            color: #94a3b8;
+            margin: 0 0 14px;
+            line-height: 1.5;
+        }
+
+        .broker-hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+            color: #cbd5e1;
+            flex-wrap: wrap;
+        }
+
+        .broker-hero-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .broker-hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-hero-primary {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-hero-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-hero-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s;
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* KPI STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+            border-color: var(--primary);
+        }
+
+        .stat-card-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-500);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--slate-900);
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .stat-card-sub {
+            font-size: 12.5px;
+            color: var(--slate-500);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-card-sub strong {
+            color: var(--success);
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .icon-blue { background: #eff6ff; color: #2563eb; }
+        .icon-green { background: #ecfdf5; color: #059669; }
+        .icon-amber { background: #fffbeb; color: #d97706; }
+        .icon-purple { background: #f5f3ff; color: #7c3aed; }
+
+        /* SECTION HEADER */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header p {
+            color: var(--slate-500);
+            font-size: 13.5px;
+            margin: 3px 0 0;
+        }
+
+        /* ACTIONS HUB GRID */
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .hub-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 26px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .hub-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .hub-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .hub-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .hub-card-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-blue { background: #eff6ff; color: #1d4ed8; }
+        .badge-green { background: #ecfdf5; color: #047857; }
+        .badge-amber { background: #fffbeb; color: #b45309; }
+        .badge-purple { background: #f5f3ff; color: #6d28d9; }
+        .badge-slate { background: #f1f5f9; color: #334155; }
+
+        .hub-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin: 0 0 8px;
+        }
+
+        .hub-card p {
+            font-size: 13.5px;
+            color: var(--slate-600);
+            line-height: 1.55;
+            margin: 0 0 18px;
+            flex-grow: 1;
+        }
+
+        .hub-card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .hub-feature-tag {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            color: var(--slate-600);
+            font-size: 11.5px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .hub-card-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .action-blue { background: #eff6ff; color: #1d4ed8; }
+        .action-blue:hover { background: #2563eb; color: #fff; }
+
+        .action-green { background: #ecfdf5; color: #047857; }
+        .action-green:hover { background: #059669; color: #fff; }
+
+        .action-amber { background: #fffbeb; color: #b45309; }
+        .action-amber:hover { background: #d97706; color: #fff; }
+
+        .action-purple { background: #f5f3ff; color: #6d28d9; }
+        .action-purple:hover { background: #7c3aed; color: #fff; }
+
+        .action-slate { background: #f1f5f9; color: #334155; }
+        .action-slate:hover { background: #1e293b; color: #fff; }
+
+        /* RECENT LISTINGS TABLE CARD */
+        .recent-section {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            margin-bottom: 30px;
+        }
+
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--slate-100);
+            padding-bottom: 14px;
+        }
+
+        .recent-header h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recent-header a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+        }
+
+        .recent-header a:hover {
+            text-decoration: underline;
+        }
+
+        .recent-listings-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .recent-listing-item {
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        .recent-listing-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .listing-thumb {
+            width: 72px;
+            height: 72px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: var(--slate-100);
+            flex-shrink: 0;
+        }
+
+        .listing-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .listing-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin: 0 0 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .listing-loc {
+            font-size: 12px;
+            color: var(--slate-500);
+            margin: 0 0 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .listing-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .listing-price {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .listing-status-tag {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .status-available { background: #dcfce7; color: #15803d; }
+        .status-rented { background: #fee2e2; color: #b91c1c; }
+        .status-sold { background: #fef3c7; color: #b45309; }
+
+        /* FOOTER */
+        .broker-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 24px 5%;
+            text-align: center;
+            color: var(--slate-500);
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .broker-hero {
+                padding: 28px 24px;
+            }
+            .broker-hero-title {
+                font-size: 24px;
+            }
+            .hub-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .broker-nav {
+                padding: 0 16px;
+            }
+            .broker-nav-links {
+                display: none;
+            }
+            .broker-hero-actions {
+                width: 100%;
+            }
+            .btn-hero-primary, .btn-hero-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
-
-        <div class="logo">
-            🏠 HouseHub
-        </div>
-
-        <div class="user-area">
-
-            <span>Welcome, Broker</span>
-
-            <button id="logoutButton">
-                Logout
-            </button>
-
-        </div>
-
-    </nav>
-
-
-    <!-- Dashboard -->
-    <main class="dashboard-container">
-
-        <div class="dashboard-header">
-
-            <h1>Broker Dashboard</h1>
-
-            <p>
-                Manage your listings, deals, market analytics, and customer communication.
-            </p>
-
-        </div>
-
-
-        <div class="dashboard-grid">
-
-
-            <!-- Add Property -->
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-                    ➕
-                </div>
-
-                <h3>Add Property</h3>
-
-                <p>
-                    Add a new house, flat, villa or apartment and
-                    submit it for Admin verification.
-                </p>
-
-                <a href="add-property.html">
-                    Add Property →
-                </a>
-
+    <!-- TOP NAVBAR -->
+    <header class="broker-nav">
+        <a href="broker-dashboard.html" class="broker-nav-brand">
+            <div class="broker-nav-logo">
+                🏠 House<span>Hub</span>
             </div>
+            <span class="broker-portal-tag">Broker Portal</span>
+        </a>
+
+        <!-- Quick Nav Shortcuts -->
+        <nav class="broker-nav-links">
+            <a href="broker-dashboard.html" class="broker-nav-link active">
+                📊 Overview
+            </a>
+            <a href="my-properties.html" class="broker-nav-link">
+                🏠 My Properties
+            </a>
+            <a href="chat.html" class="broker-nav-link">
+                💬 Client Chats <span class="nav-badge" id="navChatBadge" style="display:none;">0</span>
+            </a>
+            <a href="my-inquiries.html" class="broker-nav-link">
+                📅 Leads & Visits
+            </a>
+            <a href="price-analysis.html" class="broker-nav-link">
+                📈 Analytics
+            </a>
+        </nav>
+
+        <!-- User Profile & Logout -->
+        <div class="broker-nav-user">
+            <a href="broker-profile.html" class="broker-profile-chip" title="Manage Broker Profile">
+                <div class="broker-avatar" id="navAvatar">BR</div>
+                <div class="broker-user-info">
+                    <span class="broker-user-name" id="navBrokerName">Rahul Sharma</span>
+                    <span class="broker-user-code" id="navBrokerCode">BRK-VERIFIED</span>
+                </div>
+            </a>
+            <button class="broker-logout-btn" id="logoutButton" title="Sign out of Broker Workspace">
+                🚪 Logout
+            </button>
+        </div>
+    </header>
 
 
-            <!-- My Properties -->
-            <div class="dashboard-card">
+    <!-- MAIN WORKSPACE -->
+    <main class="broker-workspace">
 
-                <div class="card-icon">
+        <!-- HERO WELCOME BANNER -->
+        <section class="broker-hero">
+            <div class="broker-hero-left">
+                <div class="broker-hero-badge">
+                    <span>✓</span> Verified Partner Agent
+                </div>
+                <h1 class="broker-hero-title">
+                    Welcome back, <span id="brokerHeroName">Broker</span> 👋
+                </h1>
+                <p class="broker-hero-subtitle" id="brokerHeroAgency">
+                    Manage verified listings, customer conversations, scheduled visits, and market analytics from your unified real estate dashboard.
+                </p>
+                <div class="broker-hero-meta">
+                    <span>📍 Operating City: <strong id="heroCity">Jodhpur</strong></span>
+                    <span>•</span>
+                    <span>🏢 Agency: <strong id="heroAgency">Direct Partner</strong></span>
+                    <span>•</span>
+                    <span>🛡️ License: <strong id="heroLicense">Active & Approved</strong></span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- LIVE KPI METRIC CARDS -->
+        <section class="stats-grid">
+            <!-- 1. Total Properties -->
+            <a href="my-properties.html" class="stat-card">
+                <div class="stat-card-info">
+                    <span class="stat-card-title">My Properties</span>
+                    <span class="stat-card-value" id="statTotalProps">0</span>
+                    <span class="stat-card-sub">
+                        <strong id="statAvailProps">0</strong> Available Listings
+                    </span>
+                </div>
+                <div class="stat-card-icon icon-blue">
                     🏠
                 </div>
+            </a>
 
-                <h3>My Properties</h3>
-
-                <p>
-                    Manage all your listings, check approval status, track deals, and restore from trash bin.
-                </p>
-
-                <a href="my-properties.html">View Properties →</a>
-
-            </div>
-
-
-
-            <!-- Customer Chats -->
-            <div class="dashboard-card">
-
-                <div class="card-icon">
+            <!-- 2. Active Customer Chats -->
+            <a href="chat.html" class="stat-card">
+                <div class="stat-card-info">
+                    <span class="stat-card-title">Customer Chats</span>
+                    <span class="stat-card-value" id="statActiveChats">0</span>
+                    <span class="stat-card-sub">
+                        WhatsApp-style conversations
+                    </span>
+                </div>
+                <div class="stat-card-icon icon-green">
                     💬
                 </div>
+            </a>
 
-                <h3>Customer Chats</h3>
-
-                <p>
-                    Chat with interested customers without sharing
-                    personal contact details.
-                </p>
-
-                <a href="chat.html">Open Chats →</a>
-
-            </div>
-
-
-            <!-- Profile -->
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-                    👤
+            <!-- 3. Inquiries & Site Visits -->
+            <a href="my-inquiries.html" class="stat-card">
+                <div class="stat-card-info">
+                    <span class="stat-card-title">Client Leads & Visits</span>
+                    <span class="stat-card-value" id="statTotalLeads">0</span>
+                    <span class="stat-card-sub">
+                        Inquiries & Visit passes
+                    </span>
                 </div>
+                <div class="stat-card-icon icon-amber">
+                    📅
+                </div>
+            </a>
 
-                <h3>My Profile</h3>
-
-                <p>
-                    View and manage your broker profile and
-                    verification information.
-                </p>
-
-                <a href="broker-profile.html">View Profile →</a>
-
-            </div>
-
-            <!-- Price Analytics -->
-            <div class="dashboard-card">
-
-                <div class="card-icon">
+            <!-- 4. Market Trends -->
+            <a href="price-analysis.html" class="stat-card">
+                <div class="stat-card-info">
+                    <span class="stat-card-title">Market Benchmark</span>
+                    <span class="stat-card-value" style="font-size:24px; font-weight:800;">₹6,680<span style="font-size:14px; font-weight:600; color:#64748b;">/sq.ft</span></span>
+                    <span class="stat-card-sub">
+                        Jodhpur & Rajasthan Avg
+                    </span>
+                </div>
+                <div class="stat-card-icon icon-purple">
                     📊
                 </div>
+            </a>
+        </section>
 
-                <h3>Market Price Analytics</h3>
 
-                <p>
-                    Compare city rates, evaluate price per sq.ft, and analyze custom market data files.
-                </p>
+        <!-- ACTIONS & TOOLS HUB (6 Core Modules) -->
+        <div class="section-header">
+            <div>
+                <h2>⚡ Workspace Modules & Tools</h2>
+                <p>Everything you need to list, market, communicate, and close property deals.</p>
+            </div>
+        </div>
 
-                <a href="price-analysis.html">Open Analytics →</a>
+        <section class="hub-grid">
 
+            <!-- 1. Add Property -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-top">
+                        <div class="hub-card-icon icon-blue">
+                            ➕
+                        </div>
+                        <span class="hub-card-badge badge-blue">New Listing</span>
+                    </div>
+                    <h3>Add Property Listing</h3>
+                    <p>
+                        Submit a new flat, independent house, villa, or commercial space. Upload multiple photos and fill in all 12 layout specifications (rooms, bathrooms, kitchen, floor, balcony, parking).
+                    </p>
+                    <div class="hub-card-features">
+                        <span class="hub-feature-tag">📸 Multi-Photo Upload</span>
+                        <span class="hub-feature-tag">📐 12 Layout Attributes</span>
+                        <span class="hub-feature-tag">⚡ Fast Verification</span>
+                    </div>
+                </div>
+                <a href="add-property.html" class="hub-card-action action-blue">
+                    <span>Create New Listing</span>
+                    <span>→</span>
+                </a>
             </div>
 
-        </div>
+            <!-- 2. My Properties Inventory -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-top">
+                        <div class="hub-card-icon icon-blue">
+                            🏠
+                        </div>
+                        <span class="hub-card-badge badge-blue">Inventory</span>
+                    </div>
+                    <h3>My Properties & Trash Bin</h3>
+                    <p>
+                        Review all your submitted listings, toggle deal status (Available, Rented, Sold), view Admin approval state, and recover deleted properties from the 15-day auto-expiry Trash Bin.
+                    </p>
+                    <div class="hub-card-features">
+                        <span class="hub-feature-tag">🏷️ Toggle Available/Rented/Sold</span>
+                        <span class="hub-feature-tag">🗑️ 15-Day Trash Bin</span>
+                        <span class="hub-feature-tag">👁️ View Counts</span>
+                    </div>
+                </div>
+                <a href="my-properties.html" class="hub-card-action action-blue">
+                    <span>Manage All Properties</span>
+                    <span>→</span>
+                </a>
+            </div>
+
+            <!-- 3. Customer Chats -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-top">
+                        <div class="hub-card-icon icon-green">
+                            💬
+                        </div>
+                        <span class="hub-card-badge badge-green">Live Chat</span>
+                    </div>
+                    <h3>Customer In-App Messaging</h3>
+                    <p>
+                        Communicate in real time with interested customers in a multi-chat list format like WhatsApp. Privacy-protected: chat securely without exposing your phone number or email.
+                    </p>
+                    <div class="hub-card-features">
+                        <span class="hub-feature-tag">🔒 Phone/Email Protected</span>
+                        <span class="hub-feature-tag">📱 WhatsApp-Style List</span>
+                        <span class="hub-feature-tag">⚡ Live Notifications</span>
+                    </div>
+                </div>
+                <a href="chat.html" class="hub-card-action action-green">
+                    <span>Open Client Chats</span>
+                    <span>→</span>
+                </a>
+            </div>
+
+            <!-- 4. Inquiries & Site Visits -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-top">
+                        <div class="hub-card-icon icon-amber">
+                            📅
+                        </div>
+                        <span class="hub-card-badge badge-amber">Deal Pipeline</span>
+                    </div>
+                    <h3>Inquiries & Site Visits</h3>
+                    <p>
+                        View customer queries about agreement terms and price negotiations. Track scheduled property inspection appointments and verify digital Visit Pass slips.
+                    </p>
+                    <div class="hub-card-features">
+                        <span class="hub-feature-tag">📩 Price Negotiations</span>
+                        <span class="hub-feature-tag">🎫 Site Visit Passes</span>
+                        <span class="hub-feature-tag">⏰ Time Slot Booking</span>
+                    </div>
+                </div>
+                <a href="my-inquiries.html" class="hub-card-action action-amber">
+                    <span>Review Inquiries & Visits</span>
+                    <span>→</span>
+                </a>
+            </div>
+
+            <!-- 5. Market Price Analytics -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-top">
+                        <div class="hub-card-icon icon-purple">
+                            📊
+                        </div>
+                        <span class="hub-card-badge badge-purple">Intelligence</span>
+                    </div>
+                    <h3>Market Price Analytics</h3>
+                    <p>
+                        Compare live market benchmarks across Jodhpur, Jaipur, and other cities. Analyze average rate per sq.ft by BHK and upload custom datasets to value listings competitively.
+                    </p>
+                    <div class="hub-card-features">
+                        <span class="hub-feature-tag">📈 Price/Sq.Ft Curves</span>
+                        <span class="hub-feature-tag">🏙️ City Rate Benchmarks</span>
+                        <span class="hub-feature-tag">📂 Custom File Upload</span>
+                    </div>
+                </div>
+                <a href="price-analysis.html" class="hub-card-action action-purple">
+                    <span>Open Analytics Tool</span>
+                    <span>→</span>
+                </a>
+            </div>
+
+            <!-- 6. Broker Profile & Agency -->
+            <div class="hub-card">
+                <div>
+                    <div class="hub-card-top">
+                        <div class="hub-card-icon icon-slate">
+                            👤
+                        </div>
+                        <span class="hub-card-badge badge-slate">Credentials</span>
+                    </div>
+                    <h3>Broker Profile & Agency</h3>
+                    <p>
+                        Keep your business details updated. Manage your agency name, operating address, experience level, verified broker code, and professional contact information.
+                    </p>
+                    <div class="hub-card-features">
+                        <span class="hub-feature-tag">🛡️ Verified Partner Tag</span>
+                        <span class="hub-feature-tag">🏢 Agency Branding</span>
+                        <span class="hub-feature-tag">📝 Experience & Bio</span>
+                    </div>
+                </div>
+                <a href="broker-profile.html" class="hub-card-action action-slate">
+                    <span>Edit Profile & Agency</span>
+                    <span>→</span>
+                </a>
+            </div>
+
+        </section>
+
+
+        <!-- RECENT LISTINGS PREVIEW -->
+        <section class="recent-section">
+            <div class="recent-header">
+                <h3>
+                    <span>🏠</span> My Recent Property Listings
+                </h3>
+                <a href="my-properties.html">View All in Inventory →</a>
+            </div>
+
+            <div class="recent-listings-list" id="recentListingsContainer">
+                <div style="grid-column: 1/-1; text-align: center; padding: 30px; color: #64748b;">
+                    Loading your active listings...
+                </div>
+            </div>
+        </section>
 
     </main>
 
 
-    <!-- Footer -->
-    <footer class="dashboard-footer">
-
-        <p>
-            © 2026 HouseHub. All Rights Reserved.
-        </p>
-
+    <!-- FOOTER -->
+    <footer class="broker-footer">
+        <p>© 2026 HouseHub • Professional Broker Workspace • All Rights Reserved.</p>
     </footer>
 
 
+    <!-- SCRIPTS -->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
-        const user = window.api ? window.api.getCurrentUser() : null;
-        if (!user || user.role !== "BROKER") {
-            // alert("Please login as Broker.");
-            // window.location.href = "login.html";
-        } else {
-            const userArea = document.querySelector(".user-area span");
-            if (userArea) {
-                const codeBadge = user.brokerCode ? ` (${user.brokerCode})` : "";
-                userArea.textContent = `Welcome, ${user.name || "Broker"}${codeBadge}`;
+        function getInitials(name) {
+            if (!name) return "BR";
+            const parts = name.trim().split(" ");
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        async function initBrokerDashboard() {
+            const user = window.api ? window.api.getCurrentUser() : null;
+            if (!user || user.role !== "BROKER") {
+                alert("Please log in as a Broker to access this workspace.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // 1. Populate User Identity
+            const brokerName = user.name || "Broker";
+            const brokerCode = user.brokerCode || "BRK-VERIFIED";
+
+            document.getElementById("navBrokerName").textContent = brokerName;
+            document.getElementById("navBrokerCode").textContent = brokerCode;
+            document.getElementById("navAvatar").textContent = getInitials(brokerName);
+            document.getElementById("brokerHeroName").textContent = brokerName.split(" ")[0];
+
+            // 2. Load Properties Data & KPI
+            try {
+                const propRes = await window.api.getMyProperties();
+                const props = propRes.data || [];
+                
+                document.getElementById("statTotalProps").textContent = props.length;
+                const availableCount = props.filter(p => (p.propertyStatus || "AVAILABLE").toUpperCase() === "AVAILABLE").length;
+                document.getElementById("statAvailProps").textContent = availableCount;
+
+                // Update city/agency from first property broker data if available
+                if (props.length > 0 && props[0].broker) {
+                    const b = props[0].broker;
+                    if (b.city) document.getElementById("heroCity").textContent = b.city;
+                    if (b.agencyName) {
+                        document.getElementById("heroAgency").textContent = b.agencyName;
+                        document.getElementById("brokerHeroAgency").textContent = `${b.agencyName} • Manage verified listings, customer conversations, scheduled visits, and market analytics from your unified real estate dashboard.`;
+                    }
+                }
+
+                renderRecentListings(props);
+            } catch (err) {
+                console.error("Error loading properties:", err);
+                document.getElementById("recentListingsContainer").innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #b91c1c;">
+                        Could not load listings: ${err.message}
+                    </div>
+                `;
+            }
+
+            // 3. Load Active Chats Count
+            try {
+                const chatRes = await window.api.getUserChats();
+                const chats = chatRes.data || [];
+                document.getElementById("statActiveChats").textContent = chats.length;
+                if (chats.length > 0) {
+                    const badge = document.getElementById("navChatBadge");
+                    if (badge) {
+                        badge.textContent = chats.length;
+                        badge.style.display = "inline-flex";
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading chats:", err);
+            }
+
+            // 4. Load Leads (Inquiries & Visits)
+            try {
+                const inqRes = await window.api.getBrokerInquiries();
+                const inqs = inqRes.data || [];
+                const visitRes = await window.api.getBrokerVisits();
+                const visits = visitRes.data || [];
+                document.getElementById("statTotalLeads").textContent = inqs.length + visits.length;
+            } catch (err) {
+                console.error("Error loading leads:", err);
+            }
+
+            // 5. Logout Handler
+            const logoutBtn = document.getElementById("logoutButton");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", function () {
+                    if (confirm("Are you sure you want to log out of your Broker Workspace?")) {
+                        if (window.api) window.api.clearAuth();
+                        window.location.href = "login.html";
+                    }
+                });
             }
         }
+
+        function renderRecentListings(props) {
+            const container = document.getElementById("recentListingsContainer");
+            if (!container) return;
+
+            if (!props || props.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 35px 20px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                        <p style="font-size: 15px; font-weight: 600; color: #475467; margin: 0 0 6px;">No listings added yet.</p>
+                        <p style="font-size: 13px; color: #64748b; margin: 0 0 15px;">Add your first apartment, villa, or flat to start receiving customer inquiries.</p>
+                        <a href="add-property.html" style="background: #2563eb; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                            ➕ Add Your First Property
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const recent = props.slice(0, 3);
+            container.innerHTML = recent.map(prop => {
+                let imgUrl = "../images/flat-banner.jpg";
+                if (prop.images && prop.images.length > 0) {
+                    imgUrl = prop.images[0].imageUrl;
+                } else if (prop.image) {
+                    imgUrl = prop.image;
+                }
+
+                const purpose = (prop.purpose || "RENT").toUpperCase();
+                const price = Number(prop.price || 0).toLocaleString();
+                const priceDisplay = purpose === "RENT" ? `₹${price} / mo` : `₹${price}`;
+                const status = (prop.propertyStatus || "AVAILABLE").toUpperCase();
+                let statusClass = "status-available";
+                if (status === "RENTED") statusClass = "status-rented";
+                else if (status === "SOLD") statusClass = "status-sold";
+
+                return `
+                    <div class="recent-listing-item">
+                        <img src="${imgUrl}" alt="${prop.title || 'Property'}" class="listing-thumb">
+                        <div class="listing-info">
+                            <h4 class="listing-title" title="${prop.title}">${prop.title}</h4>
+                            <p class="listing-loc">📍 ${prop.address ? prop.address + ', ' : ''}${prop.city || 'Jodhpur'}</p>
+                            <div class="listing-meta">
+                                <span class="listing-price">${priceDisplay}</span>
+                                <span class="listing-status-tag ${statusClass}">${status}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initBrokerDashboard);
+        } else {
+            initBrokerDashboard();
+        }
     </script>
+
 </body>
+
 </html>

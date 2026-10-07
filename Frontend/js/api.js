@@ -198,6 +198,14 @@ const api = {
         return await this.request("/admin/reports", { method: "GET" });
     },
 
+    async removeBroker(brokerId) {
+        return await this.request(`/admin/brokers/${brokerId}`, { method: "DELETE" });
+    },
+
+    async removeCustomer(customerId) {
+        return await this.request(`/admin/customers/${customerId}`, { method: "DELETE" });
+    },
+
     async updateReportStatus(reportId, status, remarks = "") {
         return await this.request(`/admin/reports/${reportId}/status?status=${status.toUpperCase()}&remarks=${encodeURIComponent(remarks)}`, {
             method: "PUT"

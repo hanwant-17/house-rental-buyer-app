@@ -1,346 +1,695 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Inquiries & Visits - HouseHub</title>
+    <title>Inquiries & Site Visits - HouseHub</title>
 
     <link rel="stylesheet" href="../css/dashboard.css">
 
     <style>
-        .inquiries-page {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 45px 25px;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #ecfdf5;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --teal: #0f766e;
+            --teal-light: #f0fdfa;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
         }
 
-        .page-heading {
-            margin-bottom: 25px;
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        /* NAVBAR */
+        .page-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 5%;
+            height: 72px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
-        .page-heading h1 {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .page-heading p {
-            color: #667085;
-            font-size: 14px;
-        }
-
-        .back-link {
-            color: #2563eb;
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             text-decoration: none;
-            font-weight: 600;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span {
+            color: var(--primary);
+        }
+
+        .portal-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #bae6fd;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
             font-size: 14px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
 
-        .back-link:hover {
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #008069 0%, #128c7e 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .user-text-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .user-name-label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .user-role-label {
+            font-size: 11px;
+            color: var(--slate-500);
+            font-weight: 600;
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid #fecaca;
+            color: var(--danger);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
+        }
+
+        /* MAIN CONTAINER */
+        .inquiries-workspace {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* PAGE HEADER */
+        .page-header-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 18px;
+            padding: 26px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .back-dashboard-btn {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .back-dashboard-btn:hover {
             text-decoration: underline;
         }
 
-        /* Tabs */
-        .tab-bar {
+        .page-header-card h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0 0 5px;
+            color: var(--slate-900);
+            letter-spacing: -0.3px;
+        }
+
+        .page-header-card p {
+            color: var(--slate-500);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* SEGMENTED TAB BAR */
+        .tabs-wrapper {
             display: flex;
-            gap: 12px;
-            border-bottom: 2px solid #e5e7eb;
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 14px;
+            padding: 6px;
+            gap: 8px;
             margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         }
 
-        .tab-button {
-            padding: 10px 20px;
-            background: none;
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
             border: none;
-            font-size: 15px;
-            font-weight: 600;
-            color: #667085;
+            border-radius: 10px;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--slate-600);
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .tab-button.active {
-            color: #2563eb;
-            border-bottom-color: #2563eb;
+        .tab-btn:hover {
+            color: var(--primary);
+            background: var(--slate-50);
         }
 
-        .inquiry-list {
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .tab-count-pill {
+            background: rgba(0, 0, 0, 0.08);
+            color: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .tab-btn.active .tab-count-pill {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        /* CARDS LIST */
+        .cards-list {
             display: flex;
             flex-direction: column;
             gap: 18px;
         }
 
-        .inquiry-card {
+        /* CARD CONTAINER */
+        .item-card {
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 22px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-            transition: box-shadow 0.2s ease;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        .inquiry-card:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+        .item-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
 
-        .inquiry-top {
+        .item-card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--slate-100);
+            margin-bottom: 16px;
         }
 
-        .property-name {
-            font-size: 19px;
-            margin-bottom: 5px;
-            color: #111827;
+        .item-prop-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0 0 4px;
         }
 
-        .location {
-            color: #667085;
-            font-size: 14px;
+        .item-prop-meta {
+            font-size: 13px;
+            color: var(--slate-500);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .status {
-            display: inline-block;
-            padding: 6px 14px;
+        .prop-id-tag {
+            background: var(--slate-100);
+            color: var(--slate-700);
+            font-family: monospace;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        /* STATUS BADGES */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
+            font-size: 11.5px;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .pending {
-            background: #fff7ed;
-            color: #c2410c;
-            border: 1px solid #ffedd5;
+        .status-pending {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
 
-        .responded, .confirmed {
-            background: #ecfdf3;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
+        .status-responded, .status-confirmed {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
         }
 
-        .closed, .cancelled {
-            background: #f2f4f7;
-            color: #475467;
-            border: 1px solid #e5e7eb;
+        .status-cancelled {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
         }
 
-        .inquiry-details {
+        /* DETAILS GRID */
+        .item-details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid #f2f4f7;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
         }
 
-        .detail-box span {
-            display: block;
-            color: #667085;
-            font-size: 12px;
-            margin-bottom: 4px;
+        .detail-item {
+            display: flex;
+            flex-direction: column;
         }
 
-        .detail-box strong {
-            font-size: 14px;
-            color: #172033;
+        .detail-item label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
         }
 
-        .message-bubble {
-            margin-top: 15px;
-            padding: 12px 16px;
+        .detail-item strong {
+            font-size: 13.5px;
+            color: var(--slate-900);
+            font-weight: 700;
+        }
+
+        /* MESSAGE BUBBLES */
+        .bubble-inquiry {
             background: #f8fafc;
-            border-radius: 8px;
-            border-left: 3px solid #2563eb;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 14px 18px;
             font-size: 14px;
-            color: #334155;
+            color: var(--slate-700);
+            margin-bottom: 14px;
+            line-height: 1.6;
         }
 
-        .reply-bubble {
-            margin-top: 10px;
-            padding: 12px 16px;
+        .bubble-inquiry-header {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .bubble-reply {
             background: #f0fdf4;
-            border-radius: 8px;
-            border-left: 3px solid #16a34a;
+            border: 1px solid #bbf7d0;
+            border-left: 4px solid var(--success);
+            border-radius: 10px;
+            padding: 14px 18px;
             font-size: 14px;
             color: #14532d;
+            margin-bottom: 14px;
+            line-height: 1.6;
         }
 
-        .inquiry-actions {
-            margin-top: 18px;
+        .bubble-reply-header {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--success);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        /* INLINE REPLY FORM */
+        .inline-reply-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            background: #f8fafc;
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 8px;
+        }
+
+        .reply-text-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            color: var(--slate-900);
+            font-family: inherit;
+        }
+
+        .reply-text-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-send-reply {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-send-reply:hover {
+            background: var(--primary-hover);
+        }
+
+        /* ACTION BUTTONS */
+        .item-actions-row {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             align-items: center;
         }
 
-        .chat-btn,
-        .view-btn,
-        .action-btn {
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
+        .btn-action-chat {
+            background: #16a34a;
+            color: #fff;
             border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .chat-btn {
-            background: #2563eb;
-            color: white;
+        .btn-action-chat:hover {
+            background: #15803d;
+            box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
         }
 
-        .chat-btn:hover {
-            background: #1d4ed8;
-        }
-
-        .view-btn {
-            background: #eef4ff;
+        .btn-action-view {
+            background: #eff6ff;
             color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .view-btn:hover {
+        .btn-action-view:hover {
             background: #dbeafe;
         }
 
-        .confirm-btn {
-            background: #16a34a;
-            color: white;
+        .btn-action-pass {
+            background: #0f766e;
+            color: #fff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
-        .confirm-btn:hover {
+        .btn-action-pass:hover {
+            background: #115e59;
+            box-shadow: 0 2px 8px rgba(15, 118, 110, 0.3);
+        }
+
+        .btn-confirm-visit {
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-confirm-visit:hover {
             background: #15803d;
         }
 
-        .cancel-btn {
+        .btn-cancel-visit {
             background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel-visit:hover {
+            background: #fca5a5;
             color: #991b1b;
         }
 
-        .reply-form {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            margin-top: 12px;
-        }
-
-        .reply-input {
-            flex: 1;
-            padding: 9px 13px;
-            border: 1px solid #d0d5dd;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .reply-input:focus {
-            border-color: #2563eb;
-        }
-
-        .empty-state {
+        /* EMPTY STATE */
+        .empty-card {
             text-align: center;
             padding: 60px 20px;
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
+            border: 1px dashed var(--slate-300);
+            border-radius: 16px;
         }
 
-        .empty-state .icon {
-            font-size: 42px;
+        .empty-icon {
+            font-size: 48px;
             margin-bottom: 12px;
         }
 
-        .empty-state h3 {
+        .empty-card h3 {
             font-size: 18px;
-            margin-bottom: 6px;
+            font-weight: 700;
+            margin: 0 0 6px;
+            color: var(--slate-900);
         }
 
-        .empty-state p {
-            color: #667085;
+        .empty-card p {
+            color: var(--slate-500);
             font-size: 14px;
+            margin: 0 0 16px;
         }
 
-        @media (max-width: 700px) {
-            .inquiries-page {
-                padding: 30px 18px;
-            }
-
-            .inquiry-top {
-                flex-direction: column;
-            }
-
-        /* Site Visit Pass Modal & Print Styles */
+        /* VISIT PASS MODAL & PRINT */
         .visit-pass-modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            box-sizing: border-box;
         }
+
         .visit-pass-card {
             background: #ffffff;
             max-width: 680px;
             width: 100%;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border-radius: 18px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
             border: 2px solid #0f766e;
             overflow: hidden;
             position: relative;
             max-height: 92vh;
             overflow-y: auto;
         }
+
         .pass-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: #ffffff;
-            padding: 22px 26px;
+            padding: 22px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
         .pass-body {
-            padding: 26px;
+            padding: 26px 28px;
         }
+
         .pass-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 14px;
             margin: 18px 0;
         }
+
         .pass-item {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 12px 14px;
         }
+
         .pass-item label {
             font-size: 11px;
             font-weight: 700;
             color: #64748b;
             text-transform: uppercase;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
+
         .pass-item .val {
             font-size: 14px;
             font-weight: 700;
@@ -376,54 +725,82 @@
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="dashboard-navbar">
-        <div class="logo">
-            🏠 HouseHub
+    <!-- TOP NAVBAR -->
+    <header class="page-navbar">
+        <a href="../index.html" class="nav-brand">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
+            </div>
+            <span class="portal-tag" id="portalRoleTag">Workspace</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <nav class="nav-shortcuts" id="navShortcuts">
+            <!-- Populated dynamically based on role -->
+        </nav>
+
+        <!-- User Area -->
+        <div class="nav-user-area">
+            <div class="user-chip">
+                <div class="user-avatar" id="navUserAvatar">US</div>
+                <div class="user-text-info">
+                    <span class="user-name-label" id="navUserName">User</span>
+                    <span class="user-role-label" id="navUserRole">Account</span>
+                </div>
+            </div>
+            <button class="btn-nav-logout" id="logoutButton" title="Sign out">
+                🚪 Logout
+            </button>
         </div>
-
-        <div class="user-area">
-            <span id="userGreeting">User</span>
-            <button id="logoutButton">Logout</button>
-        </div>
-    </nav>
+    </header>
 
 
-    <!-- Main Content -->
-    <main class="inquiries-page">
+    <!-- MAIN WORKSPACE -->
+    <main class="inquiries-workspace">
 
-        <div class="page-heading">
+        <!-- PAGE HEADER CARD -->
+        <div class="page-header-card">
             <div>
-                <a href="#" id="backToDashboard" class="back-link">← Back to Dashboard</a>
-                <h1 id="pageTitle">📋 Inquiries & Visits</h1>
-                <p id="pageSubtitle">Track your property inquiries, site visits, and broker communication.</p>
+                <a href="#" id="backToDashboard" class="back-dashboard-btn">
+                    ← Back to Dashboard
+                </a>
+                <h1 id="pageTitle">📋 Inquiries & Site Visits</h1>
+                <p id="pageSubtitle">
+                    Track client questions, respond to inquiries, and manage physical site visit inspection passes.
+                </p>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="tab-bar">
-            <button class="tab-button active" id="tabInquiries" onclick="switchTab('inquiries')">
-                📩 Property Inquiries (<span id="inquiryCount">0</span>)
+        <!-- SEGMENTED TABS -->
+        <div class="tabs-wrapper">
+            <button class="tab-btn active" id="tabInquiries" onclick="switchTab('inquiries')">
+                <span>📩</span> Property Inquiries 
+                <span class="tab-count-pill" id="inquiryCount">0</span>
             </button>
-            <button class="tab-button" id="tabVisits" onclick="switchTab('visits')">
-                📅 Site Visits (<span id="visitCount">0</span>)
+            <button class="tab-btn" id="tabVisits" onclick="switchTab('visits')">
+                <span>📅</span> Scheduled Site Visits 
+                <span class="tab-count-pill" id="visitCount">0</span>
             </button>
         </div>
 
-
-        <!-- Inquiries List Container -->
-        <div class="inquiry-list" id="inquiriesContainer">
-            <p style="text-align:center; color:#667085; padding:40px;">Loading inquiries...</p>
+        <!-- 1. INQUIRIES CONTAINER -->
+        <div class="cards-list" id="inquiriesContainer">
+            <div style="text-align:center; color:#64748b; padding:40px;">
+                Loading inquiries...
+            </div>
         </div>
 
-        <!-- Visits List Container -->
-        <div class="inquiry-list" id="visitsContainer" style="display:none;">
-            <p style="text-align:center; color:#667085; padding:40px;">Loading site visits...</p>
+        <!-- 2. SITE VISITS CONTAINER -->
+        <div class="cards-list" id="visitsContainer" style="display:none;">
+            <div style="text-align:center; color:#64748b; padding:40px;">
+                Loading site visits...
+            </div>
         </div>
 
     </main>
 
-    <!-- ================= SITE VISIT PASS / SLIP MODAL ================= -->
+
+    <!-- ================= OFFICIAL SITE VISIT PASS / SLIP MODAL ================= -->
     <div id="visitPassModal" class="visit-pass-modal" onclick="if(event.target === this) closeVisitPass()">
         <div class="visit-pass-card">
             <!-- Pass Header -->
@@ -478,7 +855,6 @@
 
                 <!-- QR & Safety Checklist Row -->
                 <div style="display:flex; gap:18px; align-items:center; background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; padding:16px; margin:20px 0;">
-                    <!-- QR Mockup -->
                     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:8px; text-align:center; flex-shrink:0;">
                         <svg width="65" height="65" viewBox="0 0 24 24" fill="#0f766e">
                             <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm11-2h2v2h-2v-2zm-3 0h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-4 4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm2 2h2v2h-2v-2z"/>
@@ -497,12 +873,12 @@
                     </div>
                 </div>
 
-                <!-- Pass Actions (Hidden in Print) -->
+                <!-- Actions Bar (Hidden in Print) -->
                 <div class="pass-actions-bar" style="display:flex; justify-content:flex-end; gap:10px; padding-top:15px; border-top:1px solid #f1f5f9;">
-                    <button type="button" onclick="window.print()" class="action-btn" style="background:#0f766e; color:#ffffff; padding:10px 20px; font-size:14px; font-weight:700;">
+                    <button type="button" onclick="window.print()" class="btn-action-pass" style="padding:10px 20px; font-size:14px;">
                         🖨️ Print Pass / Save as PDF
                     </button>
-                    <button type="button" onclick="closeVisitPass()" class="action-btn cancel-btn" style="padding:10px 18px; font-size:14px; font-weight:600;">
+                    <button type="button" onclick="closeVisitPass()" class="btn-cancel-visit" style="padding:10px 18px; font-size:14px;">
                         ✖ Close
                     </button>
                 </div>
@@ -510,63 +886,115 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="dashboard-footer">
-        <p>© 2026 HouseHub. All Rights Reserved.</p>
-    </footer>
 
-
+    <!-- SCRIPTS -->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
         let currentTab = "inquiries";
         let user = null;
+        let loadedVisitsMap = {};
+
+        function getInitials(name) {
+            if (!name) return "US";
+            const parts = name.trim().split(" ");
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
 
         document.addEventListener("DOMContentLoaded", async function () {
             user = window.api ? window.api.getCurrentUser() : null;
 
             if (!user || !user.token) {
-                alert("Please login first to view inquiries and visits.");
+                alert("Please log in to view inquiries and site visits.");
                 window.location.href = "login.html";
                 return;
             }
 
-            // Set user greeting and dashboard link
-            const greeting = document.getElementById("userGreeting");
+            setupNavbarAndRole();
+            await Promise.all([loadInquiries(), loadVisits()]);
+
+            // Check if URL has ?tab=visits or ?passId=
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get("tab") === "visits") {
+                switchTab("visits");
+            }
+        });
+
+        function setupNavbarAndRole() {
+            const isBroker = user.role === "BROKER";
+            const tag = document.getElementById("portalRoleTag");
+            const nav = document.getElementById("navShortcuts");
+            const avatar = document.getElementById("navUserAvatar");
+            const nameEl = document.getElementById("navUserName");
+            const roleEl = document.getElementById("navUserRole");
             const backLink = document.getElementById("backToDashboard");
-            
-            if (user.role === "BROKER") {
-                if (greeting) greeting.textContent = `Broker: ${user.name || "Broker"}`;
-                if (backLink) backLink.href = "broker-dashboard.html";
-                document.getElementById("pageTitle").textContent = "📋 Client Inquiries & Site Visits";
-                document.getElementById("pageSubtitle").textContent = "Respond to client inquiries and manage scheduled site visits.";
+            const titleEl = document.getElementById("pageTitle");
+            const subTitleEl = document.getElementById("pageSubtitle");
+
+            const displayName = user.name || (isBroker ? "Broker" : "Customer");
+            avatar.textContent = getInitials(displayName);
+            nameEl.textContent = displayName;
+
+            if (isBroker) {
+                tag.textContent = "Broker Portal";
+                roleEl.textContent = user.brokerCode || "Verified Broker";
+                backLink.href = "broker-dashboard.html";
+                backLink.textContent = "← Back to Broker Dashboard";
+                titleEl.textContent = "📋 Client Inquiries & Site Visits";
+                subTitleEl.textContent = "Review customer queries, answer questions directly, and confirm site inspection appointments.";
+
+                nav.innerHTML = `
+                    <a href="broker-dashboard.html" class="nav-link">📊 Overview</a>
+                    <a href="my-properties.html" class="nav-link">🏠 My Properties</a>
+                    <a href="chat.html" class="nav-link">💬 Client Chats</a>
+                    <a href="my-inquiries.html" class="nav-link active">📅 Leads & Visits</a>
+                    <a href="price-analysis.html" class="nav-link">📈 Analytics</a>
+                `;
             } else {
-                if (greeting) greeting.textContent = `Welcome, ${user.name || "Customer"}`;
-                if (backLink) backLink.href = "customer-dashboard.html";
+                tag.textContent = "Customer Portal";
+                roleEl.textContent = "Verified Customer";
+                backLink.href = "customer-dashboard.html";
+                backLink.textContent = "← Back to Customer Dashboard";
+                titleEl.textContent = "📩 My Inquiries & Visit Passes";
+                subTitleEl.textContent = "Track your submitted property questions, check broker replies, and print official Site Visit Passes.";
+
+                nav.innerHTML = `
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="properties.html" class="nav-link">Properties</a>
+                    <a href="customer-dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="chat.html" class="nav-link">💬 In-App Chat</a>
+                    <a href="my-inquiries.html" class="nav-link active">📋 My Inquiries</a>
+                `;
             }
 
-            // Load data
-            await Promise.all([loadInquiries(), loadVisits()]);
-        });
+            // Logout listener
+            document.getElementById("logoutButton")?.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out?")) {
+                    if (window.api) window.api.clearAuth();
+                    window.location.href = "login.html";
+                }
+            });
+        }
 
         function switchTab(tab) {
             currentTab = tab;
             const tabInquiries = document.getElementById("tabInquiries");
             const tabVisits = document.getElementById("tabVisits");
-            const inquiriesCont = document.getElementById("inquiriesContainer");
-            const visitsCont = document.getElementById("visitsContainer");
+            const inqCont = document.getElementById("inquiriesContainer");
+            const visCont = document.getElementById("visitsContainer");
 
             if (tab === "inquiries") {
                 tabInquiries.classList.add("active");
                 tabVisits.classList.remove("active");
-                inquiriesCont.style.display = "flex";
-                visitsCont.style.display = "none";
+                inqCont.style.display = "flex";
+                visCont.style.display = "none";
             } else {
                 tabVisits.classList.add("active");
                 tabInquiries.classList.remove("active");
-                inquiriesCont.style.display = "none";
-                visitsCont.style.display = "flex";
+                inqCont.style.display = "none";
+                visCont.style.display = "flex";
             }
         }
 
@@ -590,81 +1018,93 @@
 
                 if (inquiries.length === 0) {
                     container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="icon">📩</div>
-                            <h3>No inquiries found</h3>
-                            <p>${user.role === 'BROKER' ? 'You have not received any client inquiries yet.' : 'You have not submitted any property inquiries yet.'}</p>
-                            ${user.role === 'CUSTOMER' ? '<a href="properties.html" class="chat-btn" style="display:inline-block; margin-top:15px;">Browse Properties</a>' : ''}
+                        <div class="empty-card">
+                            <div class="empty-icon">📩</div>
+                            <h3>No Property Inquiries Found</h3>
+                            <p>${user.role === 'BROKER' ? 'You have not received any customer inquiries yet. Add more listings to generate client leads.' : 'You have not submitted any property questions yet. Ask brokers directly from property pages.'}</p>
+                            ${user.role === 'CUSTOMER' ? '<a href="properties.html" class="btn-action-chat" style="display:inline-flex;">Explore Properties →</a>' : '<a href="add-property.html" class="btn-action-chat" style="display:inline-flex;">➕ Add New Property</a>'}
                         </div>
                     `;
                     return;
                 }
 
-                container.innerHTML = "";
-                inquiries.forEach(inq => {
-                    const statusClass = (inq.status === 'RESPONDED') ? 'responded' : 'pending';
-                    const dateFormatted = inq.createdAt ? new Date(inq.createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' }) : "Recent";
-                    
-                    const card = document.createElement("div");
-                    card.className = "inquiry-card";
-                    card.innerHTML = `
-                        <div class="inquiry-top">
-                            <div>
-                                <h2 class="property-name">${inq.propertyTitle || 'Property #' + inq.propertyId}</h2>
-                                <p class="location">Property ID: #${inq.propertyId}</p>
-                            </div>
-                            <span class="status ${statusClass}">${inq.status || 'PENDING'}</span>
-                        </div>
+                container.innerHTML = inquiries.map(inq => {
+                    const isResponded = inq.status === 'RESPONDED';
+                    const statusClass = isResponded ? 'status-responded' : 'status-pending';
+                    const statusText = isResponded ? '✓ Responded' : '⏳ Pending Reply';
+                    const dateFormatted = inq.createdAt 
+                        ? new Date(inq.createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                        : "Recent";
 
-                        <div class="inquiry-details">
-                            <div class="detail-box">
-                                <span>${user.role === 'BROKER' ? 'Client Name' : 'Inquired By'}</span>
-                                <strong>${inq.customerName || 'Customer'}</strong>
+                    return `
+                        <div class="item-card">
+                            <div class="item-card-top">
+                                <div>
+                                    <h3 class="item-prop-title">🏠 ${inq.propertyTitle || 'Property #' + inq.propertyId}</h3>
+                                    <div class="item-prop-meta">
+                                        <span class="prop-id-tag">ID: #${inq.propertyId}</span>
+                                        <span>•</span>
+                                        <span>Inquiry Reference: <strong>#INQ-${inq.inquiryId}</strong></span>
+                                        <span>•</span>
+                                        <span>📅 ${dateFormatted}</span>
+                                    </div>
+                                </div>
+                                <span class="status-pill ${statusClass}">
+                                    ${statusText}
+                                </span>
                             </div>
-                            <div class="detail-box">
-                                <span>Inquiry Date</span>
-                                <strong>${dateFormatted}</strong>
+
+                            <div class="item-details-grid">
+                                <div class="detail-item">
+                                    <label>${user.role === 'BROKER' ? '👤 Client (Inquirer)' : '🏢 Inquired By'}</label>
+                                    <strong>${inq.customerName || 'Customer'}</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Status</label>
+                                    <strong>${isResponded ? 'Response Delivered' : 'Awaiting Broker Action'}</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Channel</label>
+                                    <strong>HouseHub Verified Lead</strong>
+                                </div>
                             </div>
-                            <div class="detail-box">
-                                <span>Inquiry ID</span>
-                                <strong>#INQ-${inq.inquiryId}</strong>
+
+                            <div class="bubble-inquiry">
+                                <span class="bubble-inquiry-header">Client Question / Request:</span>
+                                "${inq.message}"
                             </div>
-                        </div>
 
-                        <div class="message-bubble">
-                            <strong>Message:</strong> ${inq.message}
-                        </div>
+                            ${inq.brokerReply ? `
+                                <div class="bubble-reply">
+                                    <span class="bubble-reply-header">✓ Broker Response:</span>
+                                    "${inq.brokerReply}"
+                                </div>
+                            ` : ''}
 
-                        ${inq.brokerReply ? `
-                            <div class="reply-bubble">
-                                <strong>Broker Reply:</strong> ${inq.brokerReply}
+                            ${(user.role === 'BROKER' && !inq.brokerReply) ? `
+                                <form class="inline-reply-box" onsubmit="handleSendReply(event, ${inq.inquiryId})">
+                                    <input type="text" class="reply-text-input" placeholder="Type your quick reply to this customer..." required id="replyInput-${inq.inquiryId}">
+                                    <button type="submit" class="btn-send-reply">
+                                        Send Reply ➔
+                                    </button>
+                                </form>
+                            ` : ''}
+
+                            <div class="item-actions-row">
+                                <button onclick="goToChat(${inq.propertyId})" class="btn-action-chat">
+                                    💬 Open In-App Chat
+                                </button>
+                                <button onclick="viewProperty(${inq.propertyId})" class="btn-action-view">
+                                    🔍 View Property Details
+                                </button>
                             </div>
-                        ` : ''}
-
-                        ${(user.role === 'BROKER' && !inq.brokerReply) ? `
-                            <form class="reply-form" onsubmit="handleSendReply(event, ${inq.inquiryId})">
-                                <input type="text" class="reply-input" placeholder="Type your reply to this client..." required id="replyInput-${inq.inquiryId}">
-                                <button type="submit" class="action-btn confirm-btn">Send Reply</button>
-                            </form>
-                        ` : ''}
-
-                        <div class="inquiry-actions">
-                            <button onclick="goToChat(${inq.propertyId})" class="chat-btn">
-                                💬 Open In-App Chat
-                            </button>
-                            <button onclick="viewProperty(${inq.propertyId})" class="view-btn">
-                                View Property
-                            </button>
                         </div>
                     `;
-                    container.appendChild(card);
-                });
+                }).join("");
             } catch (err) {
-                container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Failed to load inquiries: ${err.message}</p>`;
+                container.innerHTML = `<div style="text-align:center; color:#b91c1c; padding:30px;">Failed to load inquiries: ${err.message}</div>`;
             }
         }
-
-        let loadedVisitsMap = {};
 
         // ==========================================
         // 2. SITE VISITS LOADER
@@ -687,75 +1127,91 @@
 
                 if (visits.length === 0) {
                     container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="icon">📅</div>
-                            <h3>No site visits scheduled</h3>
-                            <p>${user.role === 'BROKER' ? 'No site visit requests received yet.' : 'You have not scheduled any property visits yet.'}</p>
-                            ${user.role === 'CUSTOMER' ? '<a href="properties.html" class="chat-btn" style="display:inline-block; margin-top:15px;">Explore Properties</a>' : ''}
+                        <div class="empty-card">
+                            <div class="empty-icon">📅</div>
+                            <h3>No Scheduled Site Visits</h3>
+                            <p>${user.role === 'BROKER' ? 'No site visit requests received from customers yet.' : 'You have not scheduled any property visits yet. Pick convenient dates on property pages.'}</p>
+                            ${user.role === 'CUSTOMER' ? '<a href="properties.html" class="btn-action-chat" style="display:inline-flex;">Explore Properties →</a>' : ''}
                         </div>
                     `;
                     return;
                 }
 
-                container.innerHTML = "";
-                visits.forEach(v => {
+                container.innerHTML = visits.map(v => {
                     loadedVisitsMap[v.visitId] = v;
-                    const statusClass = (v.status === 'CONFIRMED') ? 'confirmed' : ((v.status === 'CANCELLED') ? 'cancelled' : 'pending');
-                    
-                    const card = document.createElement("div");
-                    card.className = "inquiry-card";
-                    card.innerHTML = `
-                        <div class="inquiry-top">
-                            <div>
-                                <h2 class="property-name">${v.propertyTitle || 'Property #' + v.propertyId}</h2>
-                                <p class="location">Property ID: #${v.propertyId}</p>
-                            </div>
-                            <span class="status ${statusClass}">${v.status || 'PENDING'}</span>
-                        </div>
+                    const status = (v.status || 'PENDING').toUpperCase();
+                    let statusClass = 'status-pending';
+                    let statusLabel = '⏳ Pending Confirmation';
 
-                        <div class="inquiry-details">
-                            <div class="detail-box">
-                                <span>${user.role === 'BROKER' ? 'Client Name' : 'Visitor'}</span>
-                                <strong>${v.customerName || 'Customer'}</strong>
-                            </div>
-                            <div class="detail-box">
-                                <span>Scheduled Date</span>
-                                <strong>📅 ${v.visitDate || 'TBD'}</strong>
-                            </div>
-                            <div class="detail-box">
-                                <span>Time Slot</span>
-                                <strong>⏰ ${v.timeSlot || 'Flexible'}</strong>
-                            </div>
-                        </div>
+                    if (status === 'CONFIRMED') {
+                        statusClass = 'status-confirmed';
+                        statusLabel = '✓ Appointment Confirmed';
+                    } else if (status === 'CANCELLED') {
+                        statusClass = 'status-cancelled';
+                        statusLabel = '✕ Appointment Cancelled';
+                    }
 
-                        ${v.notes ? `
-                            <div class="message-bubble">
-                                <strong>Special Request / Notes:</strong> ${v.notes}
+                    return `
+                        <div class="item-card">
+                            <div class="item-card-top">
+                                <div>
+                                    <h3 class="item-prop-title">🏠 ${v.propertyTitle || 'Property #' + v.propertyId}</h3>
+                                    <div class="item-prop-meta">
+                                        <span class="prop-id-tag">ID: #${v.propertyId}</span>
+                                        <span>•</span>
+                                        <span>Pass Ref: <strong>#PASS-VIS-${v.visitId}</strong></span>
+                                    </div>
+                                </div>
+                                <span class="status-pill ${statusClass}">
+                                    ${statusLabel}
+                                </span>
                             </div>
-                        ` : ''}
 
-                        <div class="inquiry-actions">
-                            ${(user.role === 'BROKER' && v.status === 'PENDING') ? `
-                                <button onclick="handleVisitStatus(${v.visitId}, 'CONFIRMED')" class="action-btn confirm-btn">
-                                    ✓ Confirm Visit
-                                </button>
-                                <button onclick="handleVisitStatus(${v.visitId}, 'CANCELLED')" class="action-btn cancel-btn">
-                                    ✗ Cancel Visit
-                                </button>
+                            <div class="item-details-grid">
+                                <div class="detail-item">
+                                    <label>📅 Scheduled Date</label>
+                                    <strong>${v.visitDate || 'To be decided'}</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <label>⏰ Time Slot</label>
+                                    <strong>${v.timeSlot || 'Flexible'}</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <label>${user.role === 'BROKER' ? '👤 Client Visitor' : '🏢 Verified Broker'}</label>
+                                    <strong>${user.role === 'BROKER' ? (v.customerName || 'Customer') : (v.brokerName || 'Verified Broker')}</strong>
+                                </div>
+                            </div>
+
+                            ${v.notes ? `
+                                <div class="bubble-inquiry">
+                                    <span class="bubble-inquiry-header">Client Notes / Special Request:</span>
+                                    "${v.notes}"
+                                </div>
                             ` : ''}
-                            <button onclick="openVisitPass(${v.visitId})" class="action-btn" style="background:#0f766e; color:#ffffff;">
-                                🖨️ Visit Pass / Slip
-                            </button>
-                            <button onclick="goToChat(${v.propertyId})" class="chat-btn">
-                                💬 Chat with ${user.role === 'BROKER' ? 'Client' : 'Broker'}
-                            </button>
-                            <button onclick="viewProperty(${v.propertyId})" class="view-btn">
-                                View Property
-                            </button>
+
+                            <div class="item-actions-row">
+                                ${(user.role === 'BROKER' && status === 'PENDING') ? `
+                                    <button onclick="handleVisitStatus(${v.visitId}, 'CONFIRMED')" class="btn-confirm-visit">
+                                        ✓ Confirm Visit
+                                    </button>
+                                    <button onclick="handleVisitStatus(${v.visitId}, 'CANCELLED')" class="btn-cancel-visit">
+                                        ✕ Cancel Visit
+                                    </button>
+                                ` : ''}
+
+                                <button onclick="openVisitPass(${v.visitId})" class="btn-action-pass">
+                                    🎫 View Official Visit Pass
+                                </button>
+                                <button onclick="goToChat(${v.propertyId})" class="btn-action-chat">
+                                    💬 In-App Chat
+                                </button>
+                                <button onclick="viewProperty(${v.propertyId})" class="btn-action-view">
+                                    🔍 Property Details
+                                </button>
+                            </div>
                         </div>
                     `;
-                    container.appendChild(card);
-                });
+                }).join("");
 
                 // Auto-open pass if passed via URL param
                 const urlParams = new URLSearchParams(window.location.search);
@@ -765,7 +1221,7 @@
                     openVisitPass(Number(autoPassId));
                 }
             } catch (err) {
-                container.innerHTML = `<p style="text-align:center; color:#b91c1c; padding:30px;">Failed to load visits: ${err.message}</p>`;
+                container.innerHTML = `<div style="text-align:center; color:#b91c1c; padding:30px;">Failed to load visits: ${err.message}</div>`;
             }
         }
 
@@ -775,16 +1231,18 @@
         function openVisitPass(visitId) {
             const v = loadedVisitsMap[visitId];
             if (!v) {
-                alert("Visit details not found.");
+                alert("Visit details could not be found.");
                 return;
             }
 
             document.getElementById("passRefCode").textContent = `PASS-VIS-${v.visitId}`;
             const statusBadge = document.getElementById("passStatusBadge");
-            statusBadge.textContent = v.status || "PENDING";
-            if (v.status === "CONFIRMED") {
+            const status = (v.status || "PENDING").toUpperCase();
+            statusBadge.textContent = status;
+
+            if (status === "CONFIRMED") {
                 statusBadge.style.background = "#10b981";
-            } else if (v.status === "CANCELLED") {
+            } else if (status === "CANCELLED") {
                 statusBadge.style.background = "#ef4444";
             } else {
                 statusBadge.style.background = "#f59e0b";
@@ -824,7 +1282,7 @@
 
             try {
                 await window.api.replyInquiry(inquiryId, input.value.trim());
-                alert("Reply sent successfully to the client.");
+                alert("✅ Reply sent successfully to the client!");
                 await loadInquiries();
             } catch (err) {
                 alert("Failed to send reply: " + err.message);
@@ -832,11 +1290,11 @@
         }
 
         async function handleVisitStatus(visitId, status) {
-            if (!confirm(`Are you sure you want to mark this visit as ${status}?`)) return;
+            if (!confirm(`Are you sure you want to mark this appointment as ${status}?`)) return;
 
             try {
                 await window.api.updateVisitStatus(visitId, status);
-                alert(`Visit marked as ${status}.`);
+                alert(`✅ Appointment marked as ${status}.`);
                 await loadVisits();
             } catch (err) {
                 alert("Failed to update visit status: " + err.message);
@@ -850,9 +1308,10 @@
 
         function viewProperty(propertyId) {
             localStorage.setItem("selectedPropertyId", propertyId);
-            window.location.href = "property-details.html";
+            window.location.href = `property-details.html?id=${propertyId}`;
         }
     </script>
 
 </body>
+
 </html>

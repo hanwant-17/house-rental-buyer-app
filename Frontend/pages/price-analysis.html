@@ -7,173 +7,635 @@
 
     <title>Property Price Analytics & Market Trends - HouseHub</title>
 
-    <link rel="stylesheet" href="../css/property.css">
     <!-- Chart.js CDN for responsive, interactive graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <style>
-        .analytics-hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #ecfdf5;
+            --emerald: #10b981;
+            --emerald-light: #ecfdf5;
+            --warning: #d97706;
+            --amber: #f59e0b;
+            --amber-light: #fffbeb;
+            --danger: #dc2626;
+            --indigo: #4f46e5;
+            --indigo-light: #eef2ff;
+            --purple: #8b5cf6;
+            --purple-light: #f5f3ff;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475467;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--slate-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================= TOP NAVBAR ================= */
+        .analytics-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 0 4%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span {
+            color: var(--primary);
+        }
+
+        .portal-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #bae6fd;
+        }
+
+        .nav-shortcuts {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-link {
+            color: var(--slate-600);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-user-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1px solid var(--slate-200);
+            padding-left: 18px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+        }
+
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .user-role-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-500);
+        }
+
+        .btn-nav-logout {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-600);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-logout:hover {
+            background: var(--slate-100);
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        .btn-nav-login {
+            background: var(--primary);
             color: #ffffff;
-            padding: 50px 6% 40px;
-            text-align: center;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-login:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-nav-register {
+            background: #ffffff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-700);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-register:hover {
+            background: var(--slate-100);
+            border-color: var(--slate-400);
+        }
+
+        /* ================= HERO BANNER ================= */
+        .analytics-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            color: #ffffff;
+            padding: 44px 4% 54px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .analytics-hero::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 16px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .hero-back-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .pulse-dot.green {
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulseGreen 2s infinite;
+        }
+
+        .pulse-dot.blue {
+            background: #3b82f6;
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            animation: pulseBlue 2s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        @keyframes pulseBlue {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
 
         .analytics-hero h1 {
-            font-size: 34px;
+            font-size: 30px;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .analytics-hero p {
             font-size: 15px;
             color: #94a3b8;
-            max-width: 750px;
-            margin: 0 auto 25px;
+            max-width: 800px;
+            margin: 0 0 20px;
             line-height: 1.6;
         }
 
-        .analytics-container {
-            max-width: 1250px;
-            margin: -25px auto 60px;
-            padding: 0 20px;
+        .hero-meta-strip {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #cbd5e1;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* KPI Cards */
+        .hero-meta-strip span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+        .analytics-container {
+            max-width: 1280px;
+            margin: -32px auto 60px;
+            padding: 0 4%;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* ================= 1. KPI SUMMARY CARDS ================= */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+            margin-bottom: 26px;
         }
 
         .kpi-card {
             background: #ffffff;
-            border-radius: 12px;
-            padding: 22px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 22px 24px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
             display: flex;
             align-items: center;
-            gap: 16px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            gap: 18px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+        .kpi-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .kpi-card.kpi-blue::before { background: var(--primary); }
+        .kpi-card.kpi-emerald::before { background: var(--emerald); }
+        .kpi-card.kpi-amber::before { background: var(--amber); }
+        .kpi-card.kpi-purple::before { background: var(--purple); }
+
         .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            border-color: var(--slate-300);
         }
 
         .kpi-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             flex-shrink: 0;
         }
 
+        .kpi-icon.icon-blue { background: #eff6ff; color: #2563eb; }
+        .kpi-icon.icon-emerald { background: #ecfdf5; color: #059669; }
+        .kpi-icon.icon-amber { background: #fffbeb; color: #d97706; }
+        .kpi-icon.icon-purple { background: #f5f3ff; color: #7c3aed; }
+
         .kpi-info label {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 600;
+            font-size: 11px;
+            color: var(--slate-500);
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             display: block;
             margin-bottom: 4px;
         }
 
         .kpi-info .kpi-value {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--slate-900);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
         }
 
         .kpi-info .kpi-sub {
-            font-size: 11px;
-            color: #10b981;
+            font-size: 12px;
             font-weight: 600;
-            margin-top: 2px;
+            margin-top: 5px;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
         }
 
-        /* Notice & Data Upload Section */
-        .data-source-card {
+        .kpi-sub.sub-blue { background: #eff6ff; color: #1d4ed8; }
+        .kpi-sub.sub-emerald { background: #ecfdf5; color: #047857; }
+        .kpi-sub.sub-amber { background: #fffbeb; color: #b45309; }
+        .kpi-sub.sub-purple { background: #f5f3ff; color: #6d28d9; }
+
+        /* ================= 2. DATASET & UPLOAD CENTER ================= */
+        .dataset-card {
             background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-            padding: 24px;
-            margin-bottom: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            padding: 24px 26px;
+            margin-bottom: 24px;
         }
 
-        .data-source-top {
+        .dataset-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
-            padding-bottom: 18px;
-            border-bottom: 1px solid #f1f5f9;
+            gap: 16px;
+        }
+
+        .dataset-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .dataset-title-row h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0;
         }
 
         .source-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 5px 12px;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .source-live {
             background: #ecfdf5;
             color: #047857;
-            border: 1px solid #a7f3d0;
+            border-color: #a7f3d0;
         }
 
-        /* Notice Box (Format Requirements) */
-        .format-notice-box {
-            background: #fffbeb;
-            border: 1px solid #fef3c7;
-            border-left: 5px solid #f59e0b;
+        .source-custom {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .dataset-desc {
+            font-size: 13.5px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        .dataset-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
             border-radius: 10px;
-            padding: 20px;
-            margin-top: 18px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
-        .format-notice-box h4 {
-            color: #92400e;
-            font-size: 15px;
-            margin-bottom: 8px;
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--slate-700);
+            border: 1px solid var(--slate-300);
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--slate-50);
+            border-color: var(--slate-400);
+            color: var(--slate-900);
+        }
+
+        .btn-reset-data {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-reset-data:hover {
+            background: #fee2e2;
+        }
+
+        /* Collapsible Schema & Format Guide */
+        .schema-accordion {
+            margin-top: 18px;
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .schema-header {
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background: #ffffff;
+            transition: background 0.2s;
+        }
+
+        .schema-header:hover {
+            background: var(--slate-50);
+        }
+
+        .schema-header-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-700);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        .schema-content {
+            display: none;
+            padding: 18px;
+            border-top: 1px solid var(--slate-200);
+            background: #ffffff;
+        }
+
         .format-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 12px 0 16px;
-            font-size: 13px;
-            background: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            font-size: 12.5px;
+            margin-bottom: 14px;
         }
 
         .format-table th {
             background: #f8fafc;
-            color: #475467;
+            color: var(--slate-600);
             text-align: left;
             padding: 9px 12px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--slate-200);
             font-weight: 700;
         }
 
         .format-table td {
             padding: 9px 12px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
+            border-bottom: 1px solid var(--slate-100);
+            color: var(--slate-700);
         }
 
         .format-table code {
@@ -186,168 +648,361 @@
             font-weight: 600;
         }
 
-        /* Filter Controls */
-        .analytics-filter-bar {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 18px 22px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) auto;
-            gap: 14px;
-            align-items: end;
-            margin-bottom: 25px;
+        .tag-required {
+            color: #dc2626;
+            font-weight: 700;
+            background: #fef2f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
         }
 
-        .analytics-filter-item label {
+        .tag-optional {
+            color: var(--slate-500);
+            font-weight: 500;
+            background: var(--slate-100);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* ================= 3. FILTER BAR ================= */
+        .filter-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .filter-header h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--slate-800);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .btn-filter-reset {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-filter-reset:hover {
+            background: var(--primary-light);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .filter-item label {
             display: block;
             font-size: 12px;
             font-weight: 700;
-            color: #475467;
+            color: var(--slate-600);
             margin-bottom: 6px;
         }
 
-        .analytics-filter-item select {
+        .filter-item select {
             width: 100%;
-            height: 40px;
-            padding: 0 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 13px;
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid var(--slate-300);
+            border-radius: 10px;
+            font-size: 13.5px;
+            color: var(--slate-800);
+            background: #ffffff;
             outline: none;
-            background: #fff;
+            transition: border-color 0.2s;
+            font-family: inherit;
         }
 
-        /* Charts Layout */
-        .charts-grid {
+        .filter-item select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        /* ================= 4. CHARTS SECTION ================= */
+        .charts-row-split {
             display: grid;
-            grid-template-columns: 1.4fr 1fr;
+            grid-template-columns: 1.45fr 1fr;
             gap: 22px;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .charts-row-equal {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 22px;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .chart-card {
             background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            border: 1px solid var(--slate-200);
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
-            padding: 22px;
+            padding: 22px 24px;
             position: relative;
         }
 
-        .chart-card-header {
+        .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid var(--slate-100);
         }
 
-        .chart-card-header h3 {
+        .chart-header h3 {
             font-size: 16px;
-            color: #0f172a;
+            font-weight: 800;
+            color: var(--slate-900);
             display: flex;
             align-items: center;
             gap: 8px;
             margin: 0;
         }
 
-        .chart-card-header span {
+        .chart-header span {
             font-size: 12px;
-            color: #64748b;
+            font-weight: 600;
+            color: var(--slate-500);
+            background: var(--slate-50);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--slate-200);
         }
 
         .chart-wrapper {
             position: relative;
-            height: 310px;
+            height: 320px;
             width: 100%;
         }
 
-        /* Summary Table */
-        .summary-table-card {
+        /* ================= 5. SUMMARY DATA TABLE ================= */
+        .table-card {
             background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            border: 1px solid var(--slate-200);
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
             padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .table-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .table-card-title h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0 0 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-card-title p {
+            font-size: 13px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        .table-tools {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-search-box {
+            position: relative;
+        }
+
+        .table-search-input {
+            height: 38px;
+            padding: 0 12px 0 34px;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            width: 220px;
+            transition: all 0.2s;
+        }
+
+        .table-search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            width: 260px;
+        }
+
+        .table-search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .record-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #bfdbfe;
+            white-space: nowrap;
+        }
+
+        .table-responsive {
             overflow-x: auto;
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 13.5px;
             text-align: left;
         }
 
         .data-table th {
             background: #f8fafc;
-            padding: 12px 14px;
-            color: #475467;
+            padding: 13px 14px;
+            color: var(--slate-600);
             font-weight: 700;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid var(--slate-200);
+            white-space: nowrap;
         }
 
         .data-table td {
-            padding: 12px 14px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #1e293b;
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--slate-100);
+            color: var(--slate-800);
+            vertical-align: middle;
         }
 
         .data-table tr:hover td {
             background: #f8fafc;
         }
 
-        .btn-primary {
-            background: #2563eb;
-            color: #ffffff;
-            border: none;
-            padding: 9px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
+        .table-city-cell {
+            display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .btn-secondary:hover {
-            background: #e2e8f0;
+        .city-name {
+            font-weight: 700;
+            color: var(--slate-900);
         }
 
-        @media (max-width: 900px) {
-            .charts-grid,
+        .table-state-badge {
+            color: var(--slate-600);
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        .table-count-pill {
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .price-rent-val {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        .price-buy-val {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .rate-sqft-val {
+            color: #7c3aed;
+            font-weight: 700;
+        }
+
+        .range-val {
+            font-size: 12.5px;
+            color: var(--slate-600);
+            font-weight: 500;
+        }
+
+        /* ================= FOOTER ================= */
+        .analytics-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--slate-200);
+            padding: 28px 4%;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .footer-brand span {
+            color: var(--primary);
+        }
+
+        .footer-sub {
+            font-size: 13px;
+            color: var(--slate-500);
+            margin: 0;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 960px) {
+            .charts-row-split,
             .charts-row-equal {
                 grid-template-columns: 1fr;
+            }
+            .analytics-nav {
+                padding: 0 16px;
+            }
+            .nav-shortcuts {
+                display: none;
             }
         }
     </style>
@@ -355,50 +1010,55 @@
 
 <body>
 
-    <!-- NAVBAR -->
-    <header class="navbar">
-        <div class="logo">
-            House<span>Hub</span>
-        </div>
-
-        <!-- Center Nav Links removed as requested -->
-
-        <div class="nav-buttons" id="navAuthArea">
-            <a href="login.html" class="login-btn">Login</a>
-            <div class="register-dropdown">
-                <a href="customer-register.html" class="register-btn">
-                    Register ▾
-                </a>
-                <div class="register-dropdown-content">
-                    <div class="register-dropdown-content-inner">
-                        <a href="customer-register.html">
-                            <span class="reg-icon">👤</span>
-                            <div class="reg-text">
-                                <strong>Customer / Tenant</strong>
-                                <span>Find homes for Rent or Buy</span>
-                            </div>
-                        </a>
-                        <a href="broker-register.html">
-                            <span class="reg-icon">🏢</span>
-                            <div class="reg-text">
-                                <strong>Broker / Owner</strong>
-                                <span>List properties & get verified</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+    <!-- TOP NAVBAR -->
+    <header class="analytics-nav">
+        <a href="../index.html" class="nav-brand" id="navBrandLink">
+            <div class="nav-logo">
+                🏠 House<span>Hub</span>
             </div>
+            <span class="portal-tag" id="portalRoleTag">Market Intelligence</span>
+        </a>
+
+        <!-- Dynamic Nav Shortcuts based on role (NO Home, Buy, Rent, About, Contact) -->
+        <nav class="nav-shortcuts" id="navShortcuts">
+            <a href="properties.html" class="nav-link">🏢 Browse Listings</a>
+            <a href="price-analysis.html" class="nav-link active">📈 Market Analytics</a>
+        </nav>
+
+        <!-- Dynamic User Area -->
+        <div class="nav-user-area" id="navAuthArea">
+            <a href="login.html" class="btn-nav-login">Sign In</a>
+            <a href="customer-register.html" class="btn-nav-register">Register</a>
         </div>
     </header>
 
 
-    <!-- HERO SECTION -->
+    <!-- HERO BANNER -->
     <section class="analytics-hero">
-        <h1>📊 Real Estate Price Analytics & Market Trends</h1>
-        <p>
-            Gain actionable insights into property prices across states, cities, BHK configurations, and square footage.
-            Analyze our live marketplace data or upload your custom property dataset.
-        </p>
+        <div class="hero-inner">
+            <a href="#" id="backToDashboard" class="hero-back-link">
+                ← Back to Dashboard
+            </a>
+
+            <div>
+                <div class="hero-badge">
+                    <span class="pulse-dot green"></span>
+                    Live Market Intelligence & Valuation Index
+                </div>
+                <h1>Property Price Analytics & Market Trends</h1>
+                <p>
+                    Real-time valuation benchmarks, rental yield comparisons, BHK room dynamics, and locality pricing indexes across active urban clusters.
+                </p>
+            </div>
+
+            <div class="hero-meta-strip">
+                <span>⚡ Dynamic Valuation Engine</span>
+                <span>•</span>
+                <span>📊 Multi-State Regional Coverage</span>
+                <span>•</span>
+                <span>🛡️ Verified Platform Listings & Benchmark Data</span>
+            </div>
+        </div>
     </section>
 
 
@@ -407,206 +1067,221 @@
 
         <!-- 1. KPI SUMMARY CARDS -->
         <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-icon" style="background:#eff6ff; color:#2563eb;">🏢</div>
+            <div class="kpi-card kpi-blue">
+                <div class="kpi-icon icon-blue">🏢</div>
                 <div class="kpi-info">
                     <label>Properties Analyzed</label>
                     <div class="kpi-value" id="kpiTotalCount">0</div>
-                    <div class="kpi-sub" id="kpiLocationsCount">Across Active Cities</div>
+                    <div class="kpi-sub sub-blue" id="kpiLocationsCount">Across Active Cities</div>
                 </div>
             </div>
 
-            <div class="kpi-card">
-                <div class="kpi-icon" style="background:#ecfdf5; color:#10b981;">💰</div>
+            <div class="kpi-card kpi-emerald">
+                <div class="kpi-icon icon-emerald">💰</div>
                 <div class="kpi-info">
                     <label>Avg. Monthly Rent</label>
                     <div class="kpi-value" id="kpiAvgRent">₹0</div>
-                    <div class="kpi-sub">Rent Listings</div>
+                    <div class="kpi-sub sub-emerald">Rental Market Benchmark</div>
                 </div>
             </div>
 
-            <div class="kpi-card">
-                <div class="kpi-icon" style="background:#fef3c7; color:#d97706;">🏡</div>
+            <div class="kpi-card kpi-amber">
+                <div class="kpi-icon icon-amber">🏡</div>
                 <div class="kpi-info">
-                    <label>Avg. Buy Price</label>
+                    <label>Avg. Sale / Buy Price</label>
                     <div class="kpi-value" id="kpiAvgBuy">₹0</div>
-                    <div class="kpi-sub">Sale Properties</div>
+                    <div class="kpi-sub sub-amber">Property Purchase Index</div>
                 </div>
             </div>
 
-            <div class="kpi-card">
-                <div class="kpi-icon" style="background:#f3e8ff; color:#9333ea;">📐</div>
+            <div class="kpi-card kpi-purple">
+                <div class="kpi-icon icon-purple">📐</div>
                 <div class="kpi-info">
                     <label>Avg. Rate / Sq.Ft</label>
                     <div class="kpi-value" id="kpiAvgRate">₹0</div>
-                    <div class="kpi-sub">Estimated Valuation</div>
+                    <div class="kpi-sub sub-purple">Estimated Area Valuation</div>
                 </div>
             </div>
         </div>
 
 
         <!-- 2. DATA SOURCE & CUSTOM DATASET UPLOAD -->
-        <div class="data-source-card">
-            <div class="data-source-top">
+        <div class="dataset-card">
+            <div class="dataset-top">
                 <div>
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-                        <h3 style="font-size:18px; color:#0f172a; margin:0;">Active Market Dataset</h3>
-                        <span id="activeSourceBadge" class="source-pill">● Live Platform Data</span>
+                    <div class="dataset-title-row">
+                        <h3>Active Market Dataset</h3>
+                        <span id="activeSourceBadge" class="source-pill source-live">
+                            <span class="pulse-dot green"></span> Live Platform Data
+                        </span>
                     </div>
-                    <p style="font-size:13px; color:#64748b; margin:0;">
+                    <p class="dataset-desc">
                         Currently analyzing properties from the HouseHub database. You can also upload custom CSV or JSON files.
                     </p>
                 </div>
 
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <div class="dataset-actions">
                     <input type="file" id="customDataFileInput" accept=".csv, .json" style="display:none;" onchange="handleFileUpload(event)">
+                    
                     <button type="button" class="btn-primary" onclick="document.getElementById('customDataFileInput').click()">
-                        📁 Upload Custom Data File
+                        📁 Upload Custom Dataset
                     </button>
-                    <button type="button" class="btn-secondary" id="resetDataBtn" onclick="resetToLiveDatabase()" style="display:none;">
+
+                    <button type="button" class="btn-secondary" onclick="downloadSampleCsv()">
+                        ⬇️ CSV Template
+                    </button>
+
+                    <button type="button" class="btn-reset-data" id="resetDataBtn" onclick="resetToLiveDatabase()" style="display:none;">
                         🔄 Reset to Live Database
                     </button>
                 </div>
             </div>
 
-            <!-- MANDATORY DATA FORMAT NOTICE -->
-            <div class="format-notice-box">
-                <h4>📋 DATA FORMAT NOTICE & REQUIREMENTS (फ़ाइल फ़ॉर्मेट निर्देश)</h4>
-                <p style="font-size:13px; color:#78350f; margin:0 0 10px; line-height:1.6;">
-                    यदि आप अपनी खुद की डेटा फ़ाइल (CSV या JSON) अपलोड कर रहे हैं, तो सुनिश्चित करें कि आपकी फ़ाइल में नीचे दिए गए 
-                    <strong>Columns / Headers</strong> अनिवार्य रूप से मौजूद हों:
-                </p>
-
-                <div style="overflow-x:auto;">
-                    <table class="format-table">
-                        <thead>
-                            <tr>
-                                <th>Column Header</th>
-                                <th>Data Type</th>
-                                <th>Required?</th>
-                                <th>Example Values</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>city</code></td>
-                                <td>Text</td>
-                                <td><strong style="color:#dc2626;">Yes</strong></td>
-                                <td>Jodhpur, Jaipur, Delhi</td>
-                                <td>City where property is located</td>
-                            </tr>
-                            <tr>
-                                <td><code>state</code></td>
-                                <td>Text</td>
-                                <td><strong style="color:#dc2626;">Yes</strong></td>
-                                <td>Rajasthan, Maharashtra</td>
-                                <td>State name</td>
-                            </tr>
-                            <tr>
-                                <td><code>purpose</code></td>
-                                <td>Text</td>
-                                <td><strong style="color:#dc2626;">Yes</strong></td>
-                                <td><code>RENT</code> or <code>BUY</code></td>
-                                <td>Property purpose (Rent or Purchase)</td>
-                            </tr>
-                            <tr>
-                                <td><code>price</code></td>
-                                <td>Number</td>
-                                <td><strong style="color:#dc2626;">Yes</strong></td>
-                                <td>25000, 8500000</td>
-                                <td>Price in INR (Monthly Rent or Buy Price)</td>
-                            </tr>
-                            <tr>
-                                <td><code>bhk</code></td>
-                                <td>Integer</td>
-                                <td><strong style="color:#dc2626;">Yes</strong></td>
-                                <td>1, 2, 3, 4</td>
-                                <td>Number of bedrooms</td>
-                            </tr>
-                            <tr>
-                                <td><code>area_sqft</code></td>
-                                <td>Number</td>
-                                <td><strong style="color:#dc2626;">Yes</strong></td>
-                                <td>1250, 2400</td>
-                                <td>Super built-up area in square feet</td>
-                            </tr>
-                            <tr>
-                                <td><code>property_type</code></td>
-                                <td>Text</td>
-                                <td>Optional</td>
-                                <td>APARTMENT, VILLA, HOUSE</td>
-                                <td>Structural configuration</td>
-                            </tr>
-                            <tr>
-                                <td><code>title</code></td>
-                                <td>Text</td>
-                                <td>Optional</td>
-                                <td>Luxury 3 BHK Flat</td>
-                                <td>Property title or description</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Expandable Schema & Format Guide Accordion -->
+            <div class="schema-accordion">
+                <div class="schema-header" onclick="toggleSchemaGuide()">
+                    <span class="schema-header-title">
+                        📋 Custom Dataset File Format & Schema Specification (Click to expand/collapse)
+                    </span>
+                    <span id="schemaToggleIcon" style="font-size:12px; color:var(--slate-500);">▼</span>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <span style="font-size:12px; color:#92400e;">
-                        💡 Tip: You can download our ready-to-use CSV template, add your records, and upload it directly.
-                    </span>
-                    <button type="button" onclick="downloadSampleCsv()" class="btn-secondary" style="background:#ffffff; border-color:#d97706; color:#92400e; font-weight:700;">
-                        ⬇️ Download Sample CSV Template
-                    </button>
+                <div class="schema-content" id="schemaGuideContent">
+                    <p style="font-size:13px; color:var(--slate-600); margin-bottom:12px;">
+                        Ensure your uploaded CSV or JSON file includes the mandatory headers below. Numeric columns will be automatically parsed:
+                    </p>
+
+                    <div style="overflow-x:auto;">
+                        <table class="format-table">
+                            <thead>
+                                <tr>
+                                    <th>Column Header</th>
+                                    <th>Data Type</th>
+                                    <th>Status</th>
+                                    <th>Example Values</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>city</code></td>
+                                    <td>Text</td>
+                                    <td><span class="tag-required">Required</span></td>
+                                    <td>Jodhpur, Jaipur, Mumbai</td>
+                                    <td>City location of property</td>
+                                </tr>
+                                <tr>
+                                    <td><code>state</code></td>
+                                    <td>Text</td>
+                                    <td><span class="tag-required">Required</span></td>
+                                    <td>Rajasthan, Maharashtra</td>
+                                    <td>State name</td>
+                                </tr>
+                                <tr>
+                                    <td><code>purpose</code></td>
+                                    <td>Text</td>
+                                    <td><span class="tag-required">Required</span></td>
+                                    <td><code>RENT</code> or <code>BUY</code></td>
+                                    <td>Listing purpose type</td>
+                                </tr>
+                                <tr>
+                                    <td><code>price</code></td>
+                                    <td>Number</td>
+                                    <td><span class="tag-required">Required</span></td>
+                                    <td>25000, 8500000</td>
+                                    <td>Price in INR (Monthly Rent or Buy Price)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>bhk</code></td>
+                                    <td>Integer</td>
+                                    <td><span class="tag-required">Required</span></td>
+                                    <td>1, 2, 3, 4</td>
+                                    <td>Bedrooms configuration</td>
+                                </tr>
+                                <tr>
+                                    <td><code>area_sqft</code></td>
+                                    <td>Number</td>
+                                    <td><span class="tag-optional">Optional</span></td>
+                                    <td>1200, 2400</td>
+                                    <td>Built-up area in square feet</td>
+                                </tr>
+                                <tr>
+                                    <td><code>property_type</code></td>
+                                    <td>Text</td>
+                                    <td><span class="tag-optional">Optional</span></td>
+                                    <td>APARTMENT, VILLA, INDEPENDENT_HOUSE</td>
+                                    <td>Property structural category</td>
+                                </tr>
+                                <tr>
+                                    <td><code>title</code></td>
+                                    <td>Text</td>
+                                    <td><span class="tag-optional">Optional</span></td>
+                                    <td>Luxury 3 BHK Flat</td>
+                                    <td>Display title</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="font-size:12px; color:var(--slate-500);">
+                        💡 Tip: Click the <strong>"CSV Template"</strong> button above to download our pre-formatted spreadsheet template.
+                    </div>
                 </div>
             </div>
         </div>
 
 
         <!-- 3. INTERACTIVE FILTERS -->
-        <div class="analytics-filter-bar">
-            <div class="analytics-filter-item">
-                <label>Filter by State</label>
-                <select id="filterState" onchange="applyFilters()">
-                    <option value="">All States</option>
-                </select>
+        <div class="filter-card">
+            <div class="filter-header">
+                <h4>🔍 Filter Market Analytics</h4>
+                <button type="button" class="btn-filter-reset" onclick="resetFilters()">
+                    Reset All Filters
+                </button>
             </div>
 
-            <div class="analytics-filter-item">
-                <label>Filter by City</label>
-                <select id="filterCity" onchange="applyFilters()">
-                    <option value="">All Cities</option>
-                </select>
-            </div>
+            <div class="filter-grid">
+                <div class="filter-item">
+                    <label>📍 State</label>
+                    <select id="filterState" onchange="applyFilters()">
+                        <option value="">All States</option>
+                    </select>
+                </div>
 
-            <div class="analytics-filter-item">
-                <label>Purpose</label>
-                <select id="filterPurpose" onchange="applyFilters()">
-                    <option value="">All (Rent & Buy)</option>
-                    <option value="RENT">Rent Only</option>
-                    <option value="BUY">Buy Only</option>
-                </select>
-            </div>
+                <div class="filter-item">
+                    <label>🏙️ City</label>
+                    <select id="filterCity" onchange="applyFilters()">
+                        <option value="">All Cities</option>
+                    </select>
+                </div>
 
-            <div class="analytics-filter-item">
-                <label>Property Type</label>
-                <select id="filterType" onchange="applyFilters()">
-                    <option value="">All Types</option>
-                    <option value="APARTMENT">Apartment / Flat</option>
-                    <option value="VILLA">Villa</option>
-                    <option value="INDEPENDENT_HOUSE">Independent House</option>
-                </select>
-            </div>
+                <div class="filter-item">
+                    <label>🏷️ Purpose</label>
+                    <select id="filterPurpose" onchange="applyFilters()">
+                        <option value="">All (Rent & Buy)</option>
+                        <option value="RENT">Rent Only</option>
+                        <option value="BUY">Buy Only</option>
+                    </select>
+                </div>
 
-            <button type="button" class="btn-secondary" onclick="resetFilters()">
-                Reset Filters
-            </button>
+                <div class="filter-item">
+                    <label>🏢 Property Type</label>
+                    <select id="filterType" onchange="applyFilters()">
+                        <option value="">All Types</option>
+                        <option value="APARTMENT">Apartment / Flat</option>
+                        <option value="VILLA">Villa</option>
+                        <option value="INDEPENDENT_HOUSE">Independent House</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
 
         <!-- 4. CHARTS SECTION -->
-        <!-- Row 1: City Price Comparison & Market Share -->
-        <div class="charts-grid">
+        <!-- Row 1: City Price Comparison & Market Purpose Share -->
+        <div class="charts-row-split">
             <div class="chart-card">
-                <div class="chart-card-header">
+                <div class="chart-header">
                     <h3>🏙️ Average Property Price by City</h3>
                     <span>Rent vs Buy Comparison</span>
                 </div>
@@ -616,8 +1291,8 @@
             </div>
 
             <div class="chart-card">
-                <div class="chart-card-header">
-                    <h3>📊 Market Purpose Share</h3>
+                <div class="chart-header">
+                    <h3>📊 Market Purpose Distribution</h3>
                     <span>Rent vs Buy Ratio</span>
                 </div>
                 <div class="chart-wrapper">
@@ -626,12 +1301,12 @@
             </div>
         </div>
 
-        <!-- Row 2: BHK Analysis & Price vs Area -->
+        <!-- Row 2: BHK Analysis & Rate per Sq.Ft -->
         <div class="charts-row-equal">
             <div class="chart-card">
-                <div class="chart-card-header">
-                    <h3>🛏️ BHK vs Average Price</h3>
-                    <span>Pricing trends across room counts</span>
+                <div class="chart-header">
+                    <h3>🛏️ BHK vs Average Price Trend</h3>
+                    <span>Room Count Benchmarking</span>
                 </div>
                 <div class="chart-wrapper">
                     <canvas id="bhkChart"></canvas>
@@ -639,9 +1314,9 @@
             </div>
 
             <div class="chart-card">
-                <div class="chart-card-header">
+                <div class="chart-header">
                     <h3>📐 Rate per Sq.Ft by Property Type</h3>
-                    <span>Valuation comparison</span>
+                    <span>Valuation Comparison</span>
                 </div>
                 <div class="chart-wrapper">
                     <canvas id="sqftRateChart"></canvas>
@@ -650,65 +1325,58 @@
         </div>
 
 
-        <!-- 5. DETAILED DATA SUMMARY TABLE -->
-        <div class="summary-table-card">
-            <div class="chart-card-header">
-                <h3>📋 City & Locality Market Summary Table</h3>
-                <span id="tableRecordCount">0 Records</span>
+        <!-- 5. DETAILED LOCATIONS SUMMARY TABLE -->
+        <div class="table-card">
+            <div class="table-card-top">
+                <div class="table-card-title">
+                    <h3>📋 City & Locality Market Summary Table</h3>
+                    <p>Aggregated benchmark metrics across tracked urban locations.</p>
+                </div>
+
+                <div class="table-tools">
+                    <div class="table-search-box">
+                        <span class="table-search-icon">🔍</span>
+                        <input type="text" id="tableSearchInput" class="table-search-input" placeholder="Search city or state...">
+                    </div>
+                    <span id="tableRecordCount" class="record-badge">0 Properties in View</span>
+                </div>
             </div>
 
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>City / Locality</th>
-                        <th>State</th>
-                        <th>Listings</th>
-                        <th>Avg. Rent Price</th>
-                        <th>Avg. Buy Price</th>
-                        <th>Avg. Rate / Sq.Ft</th>
-                        <th>Price Range (Min - Max)</th>
-                    </tr>
-                </thead>
-                <tbody id="summaryTableBody">
-                    <tr>
-                        <td colspan="7" style="text-align:center; padding:30px; color:#64748b;">
-                            Loading market analytics data...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>City / Locality</th>
+                            <th>State</th>
+                            <th>Market Listings</th>
+                            <th>Avg. Monthly Rent</th>
+                            <th>Avg. Buy / Sale Price</th>
+                            <th>Avg. Rate / Sq.Ft</th>
+                            <th>Price Range (Min - Max)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:35px; color:#64748b;">
+                                Loading market analytics data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </main>
 
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div>
-                <h3>🏠 HouseHub</h3>
-                <p>Find your perfect home for rent or purchase with verified listings and data-driven market insights.</p>
-            </div>
-
-            <div>
-                <h4>Quick Links</h4>
-                <a href="../index.html">Home</a>
-                <a href="properties.html">Properties</a>
-                <a href="about.html">About Us</a>
-                <a href="contact.html">Contact Us</a>
-            </div>
-
-            <div>
-                <h4>For Users</h4>
-                <a href="customer-register.html">Customer Registration</a>
-                <a href="broker-register.html">Broker Registration</a>
-                <a href="login.html">Login</a>
-            </div>
+    <!-- MINIMALIST PROFESSIONAL SAAS FOOTER -->
+    <footer class="analytics-footer">
+        <div class="footer-brand">
+            🏠 House<span>Hub</span> Intelligence Engine
         </div>
-
-        <div class="footer-bottom">
-            <p>© 2026 HouseHub. All Rights Reserved.</p>
-        </div>
+        <p class="footer-sub">
+            Automated property valuation & real-time rental market trends © 2026 HouseHub.
+        </p>
     </footer>
 
 
